@@ -3,7 +3,7 @@ import { flexRender } from "@tanstack/react-table";
 import ActionButtons from "./ActionButtons";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import React from "react";
-import { ChevronDown, ChevronRight, MoveUp, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ChevronDown, ChevronRight, MoveUp} from "lucide-react";
 
 export const columns: ColumnDef<any>[] = [
       {
