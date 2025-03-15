@@ -14,6 +14,6 @@ function IndeterminateCheckbox({
       }
     }, [ref, indeterminate]);
   
-    return <input type="checkbox" ref={ref} className={`${className} cursor-pointer`} {...rest} />;
+    return <input type="checkbox" ref={ref} className={`transform scale-[1.3] ${className} cursor-pointer`} {...rest} />;
   }
   export default IndeterminateCheckbox;

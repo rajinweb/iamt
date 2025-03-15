@@ -1,29 +1,28 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { flexRender } from "@tanstack/react-table";
 import ActionButtons from "./ActionButtons";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import React from "react";
-import { ChevronDown, ChevronRight, MoveUp} from "lucide-react";
+import { ChevronDown, ChevronRight, MoveUp, User} from "lucide-react";
 
 export const columns: ColumnDef<any>[] = [
       {
       accessorKey: 'user',
       header: 'User', 
+      size:150,
       cell: ({ row, column, getValue, table }) => {
         const cellText = getValue();
         const headerText = column?.columnDef?.header;
-      
+        const rowDepth = row.depth; 
         return (
           <div className="flex items-center space-x-2">
              {row.getCanExpand() ? (
               <button className="text-gray-600 hover:text-gray-900 cursor-pointer" onClick={row.getToggleExpandedHandler()}>
               {row.getIsExpanded() ?
-                 <ChevronDown className={row.getParentRow() ? 'ml-6' : ''} size={20} color="#B9BAC2" /> : 
-                 <ChevronRight className={row.getParentRow() ? 'ml-6' : ''} size={20} color="#B9BAC2" />}
+                 <ChevronDown size={20} color="#B9BAC2" /> : 
+                 <ChevronRight size={20} color="#B9BAC2" />}
               </button>
             ) : (
-              <ChevronRight className="ml-12" size={20} color="#B9BAC2"/>
-       
+              <ChevronRight  size={20} color="#B9BAC2"/>
             )}
             <IndeterminateCheckbox
               {...{
@@ -32,10 +31,21 @@ export const columns: ColumnDef<any>[] = [
                 onChange: row.getToggleSelectedHandler(),
               }}
             />
-            {row.original.avtar ?  <img src={row.original.avtar} width={40} alt="User Avatar" className="rounded-full" /> : <MoveUp strokeWidth={1} />}
-     
+          
+            {rowDepth === 0 ? ( // Parent row
+                row.original.avtar ? (
+                  <img src={row.original.avtar} width={30} alt="User Avatar" className="rounded-full" />
+                ) : (
+                  <MoveUp strokeWidth={1} />
+                )
+              ) : rowDepth === 1 ? ( // First child row
+                <MoveUp strokeWidth={1} />
+              ) : ( // Subsequent child rows
+                <User strokeWidth={1} />
+              )}
+
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800 font-bold">{cellText as string}</span>
             </div>
           </div>
@@ -50,7 +60,7 @@ export const columns: ColumnDef<any>[] = [
         const headerText = column?.columnDef?.header;
         return (
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800">{cellText as string}</span>
             </div>  
         );
@@ -64,7 +74,7 @@ export const columns: ColumnDef<any>[] = [
         const headerText = column?.columnDef?.header;
         return (
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800">{cellText as string}</span>
             </div>  
         );
@@ -78,7 +88,7 @@ export const columns: ColumnDef<any>[] = [
         const headerText = column?.columnDef?.header;
         return (
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800">{cellText as string}</span>
             </div>  
         );
@@ -92,7 +102,7 @@ export const columns: ColumnDef<any>[] = [
         const headerText = column?.columnDef?.header;
         return (
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800">{cellText as string}</span>
             </div>  
         );
@@ -125,8 +135,10 @@ export const columns: ColumnDef<any>[] = [
     {
       accessorKey: '',
       header: 'Actions',
+      size:200,
       cell: ({ row, table }: { row: any; table: any }) => <ActionButtons selectedRows={[row.original]} table={table} setData={table.options.meta?.updateData} />,
     }
   ]
   
  
+  

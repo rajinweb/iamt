@@ -15,13 +15,91 @@ export const rowData = [
     path: ["Users", "Derrick Watson"],
     subRows: [
       {
-        user: "Administrator",
+        user: "Account",
         role: "Administrator",
         roleType: "Full Access",
         path: ["Users", "Derrick Watson", "Roles", "Administrator"],
         subRows: [
           {
-            user: "Manage Users",
+            user: "Entitlement",
+            permission: "Manage Users",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+        ],
+      },
+      {
+        user: "Account",
+        role: "Administrator",
+        roleType: "Full Access",
+        path: ["Users", "Derrick Watson", "Roles", "Administrator"],
+        subRows: [
+          {
+            user: "Entitlement",
+            permission: "Manage Users",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+        ],
+      },
+      {
+        user: "Account",
+        role: "Administrator",
+        roleType: "Full Access",
+        path: ["Users", "Derrick Watson", "Roles", "Administrator"],
+        subRows: [
+          {
+            user: "Entitlement",
+            permission: "Manage Users",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+          {
+            user: "Manage Roles",
+            permission: "Manage Roles",
+            accessLevel: "Write",
+            path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"],
+          },
+        ],
+      },
+      {
+        user: "Account",
+        role: "Administrator",
+        roleType: "Full Access",
+        path: ["Users", "Derrick Watson", "Roles", "Administrator"],
+        subRows: [
+          {
+            user: "Entitlement",
             permission: "Manage Users",
             accessLevel: "Write",
             path: ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"],
@@ -49,13 +127,13 @@ export const rowData = [
     path: ["Users", "Sophia Davis"],
     subRows: [
       {
-        user: "Administrator",
+        user: "Account",
         role: "Administrator",
         roleType: "Full Access",
         path: ["Users", "Sophia Davis", "Roles", "Administrator"],
         subRows: [
           {
-            user: "Manage Users",
+            user: "Entitlement",
             permission: "Manage Users",
             accessLevel: "Write",
             path: ["Users", "Sophia Davis", "Roles", "Administrator", "Permissions", "Manage Users"]

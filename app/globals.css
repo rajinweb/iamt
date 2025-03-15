@@ -19,8 +19,31 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
-.ag-row .ag-cell {
-  display: flex;
-  justify-content: center; /* align horizontal */
-  align-items: center;
+/** DataTable custom css**/
+.rowLevel_1+.rowLevels {
+  @apply border-white border-t;
+}
+.rowLevel_1 td:first-child {
+  @apply left-6.5 relative ;
+}
+
+.rowLevels td:first-child { 
+  @apply left-12.5 relative  ;
+}
+
+ .rowLevel_1+.rowLevels td:first-child {
+  @apply rounded-tl-lg ;
+} 
+.rowLevel_default+.rowLevel_1 td:first-child{
+  @apply rounded-tl-lg 
+}
+
+.rowLevels.group-first-row td:first-child, 
+.rowLevel_1.group-first-row td:first-child{
+  @apply rounded-tl-lg ;
+}
+
+.rowLevels.group-last-row td:first-child, 
+.rowLevel_1.group-last-row td:first-child{
+  @apply rounded-bl-lg ;
 }

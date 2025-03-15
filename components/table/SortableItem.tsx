@@ -18,7 +18,7 @@ const SortableItem = ({ field, colId, table, toggleColumn, isVisible }: any) => 
       <GripVertical className="w-4 h-4 text-gray-500 cursor-grab" {...listeners} />
       
      {isVisible ? (
-        <Eye className="w-4 h-4 text-green-500" onMouseDown={(e:React.MouseEvent) => {
+        <Eye className="w-4 h-4 text-blue-500" onMouseDown={(e:React.MouseEvent) => {
           e.stopPropagation();
           toggleColumn(field)}
         } />

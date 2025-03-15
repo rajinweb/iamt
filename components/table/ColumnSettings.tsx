@@ -81,7 +81,7 @@ const ColumnSettings = ({ table }: { table: any }) => {
 
           {/* Action Buttons */}
           <div className="flex justify-between mt-2 py-3 border-t border-gray-300">
-            <button className="text-gray-600 px-3 py-2 rounded hover:bg-gray-200" onClick={() => setIsOpen(false)}>
+            <button className="text-gray-600 px-3 py-2 rounded hover:bg-gray-100 bg-gray-200 cursor-pointer" onClick={() => setIsOpen(false)}>
               Cancel
             </button>
             <button className="bg-[#15274E] text-white px-3 py-2 rounded hover:bg-[#15274E]/80 cursor-pointer" onClick={applyChanges}>
