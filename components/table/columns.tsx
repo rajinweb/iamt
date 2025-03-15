@@ -116,7 +116,7 @@ export const columns: ColumnDef<any>[] = [
         const headerText = column?.columnDef?.header;
         return (
             <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-sm">{headerText as string}</span>
+              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
               <span className="text-gray-800"> {
                 cellText=="thumbs-up" ?
                 <svg width="21" height="18" viewBox="0 0 21 18" >

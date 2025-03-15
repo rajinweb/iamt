@@ -20,30 +20,45 @@
   --background-end-rgb: 255, 255, 255;
 }
 /** DataTable custom css**/
-.rowLevel_1+.rowLevels {
+.level_1+.no_level {
   @apply border-white border-t;
 }
-.rowLevel_1 td:first-child {
+.level_1 td:first-child {
   @apply left-6.5 relative ;
 }
 
-.rowLevels td:first-child { 
-  @apply left-12.5 relative  ;
+.no_level td:first-child { 
+  @apply left-12.5 relative ;
+}
+.no_level td:first-child:before{
+  content: ' ';
+  @apply  absolute bg-[#F4F5FA] block w-[23px] h-[65px] -mt-3.5 -ml-9 
 }
 
- .rowLevel_1+.rowLevels td:first-child {
+.no_level.group-last-row{
+  @apply border-white border-b 
+}
+
+.row-pagination {
+  @apply relative h-[74px];
+
+  td {
+    @apply bg-[#F4F5FA] left-6.5 absolute right-0
+  }
+}
+.no_level.group-last-row.group-first-row{
+  @apply border-b border-b-gray-300;
+
+  td:first-child:before{
+  @apply -mt-4
+  }
+}
+.no_level.group-first-row td:first-child, 
+.level_1.group-first-row td:first-child{
   @apply rounded-tl-lg ;
 } 
-.rowLevel_default+.rowLevel_1 td:first-child{
-  @apply rounded-tl-lg 
-}
 
-.rowLevels.group-first-row td:first-child, 
-.rowLevel_1.group-first-row td:first-child{
-  @apply rounded-tl-lg ;
-}
-
-.rowLevels.group-last-row td:first-child, 
-.rowLevel_1.group-last-row td:first-child{
+.no_level.group-last-row td:first-child, 
+.level_1.group-last-row td:first-child{
   @apply rounded-bl-lg ;
 }
