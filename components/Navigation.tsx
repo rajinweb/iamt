@@ -3,28 +3,28 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Home, Settings, Users, BarChart } from 'lucide-react';
+import {navLinks as navigation} from './Navi';
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: Home },
-  { name: 'Analytics', href: '/analytics', icon: BarChart },
-  { name: 'Users', href: '/users', icon: Users },
-  { name: 'Settings', href: '/settings', icon: Settings },
-];
+interface NavigationProps {
+  isOpen?: (isCollapsed: boolean) => void; // Mobile view
+}
 
-export function Navigation() {
+export function Navigation({ isOpen }: NavigationProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={`flex flex-col h-full bg-[#15274E] w-full sticky top-0 z-[99]  transition-all duration-150 ${isCollapsed ? 'w-[65px]' : 'w-[165px]'}`}>
+    <div className={`flex flex-col h-full bg-[#15274E] w-full sticky top-0 z-[99] transition-all duration-150 ${isCollapsed ? 'w-[65px]' : 'w-[165px]'}`}>
       <div className='bg-[#ad2e2d] flex items-center justify-between p-2.5 border-b border-[#060E1F] h-[65px] relative'>
         <div className={`text-white font-bold text-2xl`}>
           Iam
         </div>
         {/* Collapse Toggle Button */}
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            setIsCollapsed(!isCollapsed)
+            isOpen && isOpen(isCollapsed)
+          }}
           className={`absolute -right-2.5 top-[46px] p-2 cursor-pointer ${
             isCollapsed ? '-right-5' : ''
           }`}
