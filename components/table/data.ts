@@ -1,6 +1,29 @@
 'use client';
 export const rowData=[
   {
+    "user": "Jaws hat",
+    "id": 7243915,
+    "avtar": "https://avatar.iran.liara.run/public/9",
+    "risk": "75 High",
+    "jobTitle": "Senior Software Engineer",
+    "changeSinceLastReview": 3,
+    "aIAssistConfidence": "thumbs-down",
+    "email": "sophia.davis@example.com",
+    "status": "Active",
+    "path": ["Users", "Sophia Davis"],
+    "subRows": [
+      {
+        "user": "Account",
+        "role": "Administrator",
+        "roleType": "Full Access",
+        "path": ["Users", "Sophia Davis", "Roles", "Administrator"],
+        "subRows": [
+          { "user": "Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Sophia Davis", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          
+        ]
+      }
+    ]
+  },{
     "user": "Derrick Watson",
     "id": 603682,
     "avtar": "https://avatar.iran.liara.run/public/8",
@@ -33,6 +56,75 @@ export const rowData=[
       },
       {
         "user": "Slack Account",
+        "role": "Administrator",
+        "roleType": "Full Access",
+        "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
+        "subRows": [
+          { "user": "Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
+          { "user": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
+          { "user": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
+          { "user": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
+          { "user": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
+          { "user": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
+        ]
+      },{
+        "user": "MS Teams Account",
+        "role": "Administrator",
+        "roleType": "Full Access",
+        "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
+        "subRows": [
+          { "user": "Rajesh Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          { "user": "Atharv Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Ibhaan Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
+          { "user": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
+          { "user": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
+          { "user": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
+          { "user": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
+          { "user": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
+        ]
+      },
+      {
+        "user": "FB Account",
+        "role": "Administrator",
+        "roleType": "Full Access",
+        "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
+        "subRows": [
+          { "user": "Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
+          { "user": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
+          { "user": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
+          { "user": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
+          { "user": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
+          { "user": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
+        ]
+      },  {
+        "user": "MSN Account",
+        "role": "Administrator",
+        "roleType": "Full Access",
+        "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
+        "subRows": [
+          { "user": "Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
+          { "user": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
+          { "user": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
+          { "user": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
+          { "user": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
+          { "user": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
+          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
+        ]
+      },  {
+        "user": "SnapChat Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],

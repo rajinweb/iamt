@@ -1,7 +1,5 @@
-import { createPortal } from "react-dom";
 import { CircleCheck, CircleOff, MoreVertical } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-
+import Dropdown from '@/components/Dropdown';
 interface ActionButtonsProps {
   table: any;
   selectedRows: any[];
@@ -10,10 +8,6 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons = ({ table, selectedRows, setData, viewChangeEnable }: ActionButtonsProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   //Bulk Approve
   const handleApprove = (e: React.MouseEvent) => {
@@ -46,42 +40,6 @@ const ActionButtons = ({ table, selectedRows, setData, viewChangeEnable }: Actio
     alert(`Adding comment for ${selectedRows.length} selected rows`);
   };
 
-  //Toggle Dropdown Menu
-  const toggleMenu = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsMenuOpen((prev) => !prev);
-
-    if (menuButtonRef.current) {
-      const rect = menuButtonRef.current.getBoundingClientRect();
-      setMenuPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left - 128 + window.scrollX,
-      });
-    }
-  };
-
-  //Handle Click Outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        menuButtonRef.current &&
-        !menuButtonRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    if (isMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMenuOpen]);
-
   return (
     <div className="flex space-x-4 h-full items-center">
       {/* Approve Button */}
@@ -110,37 +68,11 @@ const ActionButtons = ({ table, selectedRows, setData, viewChangeEnable }: Actio
     )}
 
       {/* More Actions Dropdown */}
-      <button
-        ref={menuButtonRef}
-        onClick={toggleMenu}
-        title="More Actions"
-        className={`cursor-pointer rounded-sm hover:opacity-80 ${isMenuOpen ? "bg-[#6D6E73]/20" : ""}`}
-      >
-        <MoreVertical color="#35353A" size="32" className="transform scale-[0.6]" />
-      </button>
-
-      {/* Dropdown Menu */}
-      {isMenuOpen &&
-        createPortal(
-          <div
-            ref={menuRef}
-            className="absolute bg-white border border-gray-300 shadow-lg rounded-md z-50"
-            style={{
-              position: "fixed",
-              top: `${menuPosition.top}px`,
-              left: `${menuPosition.left}px`,
-              minWidth: "160px",
-              padding: "8px",
-            }}
-          >
-            <ul className="py-2 text-sm text-gray-700">
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Proxy</li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Delegate</li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Remediate</li>
-            </ul>
-          </div>,
-          document.body
-        )}
+      <Dropdown Icon={MoreVertical} title="More Actions">
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Proxy</li>
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Delegate</li>
+          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Remediate</li>
+      </Dropdown>
     </div>
   );
 };

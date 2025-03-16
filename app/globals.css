@@ -32,7 +32,7 @@
 }
 .no_level td:first-child:before{
   content: ' ';
-  @apply  absolute bg-[#F4F5FA] block w-[23px] h-[65px] -mt-3.5 -ml-9 
+  @apply  absolute bg-[#F4F5FA] block w-[23px] h-[65px] -mt-4.5 -ml-9 
 }
 
 .no_level.group-last-row{
@@ -46,7 +46,10 @@
     @apply bg-[#F4F5FA] left-6.5 absolute right-0
   }
 }
-.no_level.group-last-row.group-first-row{
+.no_level.group-last-row td:first-child:before{
+  @apply -mt-3.5
+}
+ .no_level.group-last-row.group-first-row{
   @apply border-b border-b-gray-300;
 
   td:first-child:before{

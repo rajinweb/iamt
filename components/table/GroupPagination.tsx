@@ -2,7 +2,15 @@
 
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
-const GroupPagination = ({ table, totalCount, pageIndex, pageSize, onPageChange }) => {
+interface GroupPaginationProps {
+  table: any;
+  totalCount: number;
+  pageIndex: number;
+  pageSize: number;
+  onPageChange: (pageIndex: number, pageSize?: number) => void;
+}
+
+const GroupPagination: React.FC<GroupPaginationProps> = ({ table, totalCount, pageIndex, pageSize, onPageChange }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (

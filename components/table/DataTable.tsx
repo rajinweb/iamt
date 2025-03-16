@@ -14,6 +14,8 @@ import Pagination from './Pagination';
 import { rowData } from './data';
 import { columns } from './columns';
 import GroupPagination from './GroupPagination';
+import Exports from './Exports';
+import Filters from './Filters';
 
 const DataTable = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -37,9 +39,13 @@ const DataTable = () => {
     <>
       <div className="flex items-center justify-between mb-8 mt-4 relative z-10">
         <SelectAll table={table} />
-        <div className="flex items-center">
-          <Pagination table={table} />
-          <ColumnSettings table={table} />
+        <div className="flex items-center space-x-2">
+            <Pagination table={table} />
+          <div className='flex items-center space-x-2'>
+            <Filters/>
+            <Exports table={table}/>
+            <ColumnSettings table={table} />
+          </div>
         </div>
       </div>
 

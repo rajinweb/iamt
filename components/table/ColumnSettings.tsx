@@ -3,6 +3,7 @@ import { Settings } from "lucide-react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
+import Dropdown from "../Dropdown";
 
 const ColumnSettings = ({ table }: { table: any }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,19 +45,8 @@ const ColumnSettings = ({ table }: { table: any }) => {
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        title="Change column settings"
-        className={`cursor-pointer rounded-sm hover:opacity-80 ${isOpen ? "bg-[#6D6E73]/20" : ""}`}
-      >
-      <Settings color="#35353A" size="32" className="transform scale-[0.6]" />
-      </button>
-
-      {/* Column Settings Panel */}
-      {isOpen && (
-        <div className="absolute right-0 mt-2 bg-white shadow-lg px-3 rounded-md border border-gray-300 whitespace-nowrap z-10">
-          <h3 className="h-10 flex items-center border-b border-gray-300 font-bold px-3 mb-2">
+    <Dropdown Icon={Settings} title="Change column settings" menuWidth={230}>
+        <h3 className="h-10 flex items-center border-b border-gray-300 font-bold px-3 mb-2">
             Configure Table
           </h3>
 
@@ -88,9 +78,7 @@ const ColumnSettings = ({ table }: { table: any }) => {
               Apply
             </button>
           </div>
-        </div>
-      )}
-    </div>
+    </Dropdown>
   );
 };
 

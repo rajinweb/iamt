@@ -1,7 +1,7 @@
 
-  import { useState, useEffect } from 'react';
-  import ActionButtons from './ActionButtons';
-  import IndeterminateCheckbox from './IndeterminateCheckbox';
+import { useState, useEffect } from 'react';
+import ActionButtons from './ActionButtons';
+import IndeterminateCheckbox from './IndeterminateCheckbox';
 import { CopyMinus, CopyPlus } from 'lucide-react';
 
   const SelectAll = ({ table }: { table: any })=> {
@@ -16,9 +16,23 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
     <div className="flex items-center text-gray-700 text-sm">
       <div className='divide-x-1 divide-gray-300 h-9 flex items-center'>
         
-        <button onClick={table.getToggleAllRowsExpandedHandler()} className='h-9 pr-4 flex items-center gap-1   cursor-pointer'>
-          {table.getIsAllRowsExpanded() ? <><CopyMinus strokeWidth={1} size={18}/> Collapse All</> : <><CopyPlus strokeWidth={1} size={18} /> Expand All</>}
-        </button>   
+        <button 
+          onClick={() => {
+            // Check if all rows are expanded
+            const allExpanded = table.getIsAllRowsExpanded();
+            
+            // Get all row IDs
+            const rowIds = table.getRowModel().rows.map((row: { id: any; }) => row.id);
+            
+            // Toggle expand/collapse for all rows
+            table.setExpanded(allExpanded ? {} : Object.fromEntries(rowIds.map((id: any) => [id, true])));
+          }} 
+          className='h-9 pr-4 flex items-center gap-1 cursor-pointer'
+        >
+          {table.getIsAllRowsExpanded() ? 
+            (<><CopyMinus strokeWidth={1} size={18}/> Collapse All</>) : 
+            (<><CopyPlus strokeWidth={1} size={18} /> Expand All</>)}
+        </button>
 
         <label className="cursor-pointer px-4 items-center h-9 flex"> 
         <IndeterminateCheckbox checked={table.getIsAllRowsSelected()} 
