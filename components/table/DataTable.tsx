@@ -16,36 +16,47 @@ import { columns } from './columns';
 import GroupPagination from './GroupPagination';
 import Exports from './Exports';
 import Filters from './Filters';
+import SearchInput from './SearchInput';
 
 const DataTable = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data: rowData,
     columns,
-    state: { expanded, pagination: parentPagination },
+    state: { expanded, pagination: parentPagination, globalFilter },
     onExpandedChange: (updaterOrValue) => setExpanded(updaterOrValue as Record<string, boolean>),
     onPaginationChange: setParentPagination,
+    onGlobalFilterChange: setGlobalFilter,
     getSubRows: (row) => row.subRows || [],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    globalFilterFn: (row, columnId, filterValue) => {
+      return String(row.getValue(columnId)) // Convert value to string
+        .toLowerCase()
+        .includes(filterValue.toLowerCase()); // Case-insensitive search
+    },  
   });
 
   return (
     <>
       <div className="flex items-center justify-between mb-8 mt-4 relative z-10">
-        <SelectAll table={table} />
-        <div className="flex items-center space-x-2">
+         <div className='flex items-center'>
+           <SelectAll table={table} />
+           <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+         </div>
+          <div className="flex gap-3 items-center divide-x-1 divide-gray-300 h-9">
             <Pagination table={table} />
-          <div className='flex items-center space-x-2'>
-            <Filters/>
-            <Exports table={table}/>
-            <ColumnSettings table={table} />
-          </div>
+            <div className='flex gap-2 items-center'>
+              <Filters table={table}/>
+              <Exports table={table}/>
+              <ColumnSettings table={table} />
+            </div>
         </div>
       </div>
 

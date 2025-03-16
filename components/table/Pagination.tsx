@@ -9,7 +9,7 @@ const Pagination = ({ table }: { table: any }) => {
       </span> */}
 
       {/* Pagination Controls */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center px-3">
         <button
        onClick={() => table.setPageIndex(0)}
        disabled={!table.getCanPreviousPage()}
@@ -48,11 +48,8 @@ const Pagination = ({ table }: { table: any }) => {
         >
           <ChevronsRight color="#35353A" size="32" className="transform scale-[0.6]" />
         </button>
-      </div>
-
-      {/* Rows Per Page Dropdown */}
-      <div className="flex items-center space-x-2">
-        <span className="text-gray-700 text-sm">Rows per page:</span>
+     
+        <span className="text-gray-700 text-sm px-2">Rows per page:</span>
         <select
           className="border border-gray-300 rounded-md p-1 text-sm"
           value={table.getState().pagination.pageSize}

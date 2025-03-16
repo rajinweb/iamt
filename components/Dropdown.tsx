@@ -5,10 +5,11 @@ interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode[];
   Icon: React.ElementType;
   name?: string;
-  menuWidth?: number
+  menuWidth?: number,
+  className?: string
 }
 
-const Dropdown = ({ Icon, children, name, menuWidth, ...props }: DropdownProps) => {
+const Dropdown = ({ Icon, children, name, className,  menuWidth, ...props }: DropdownProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);  
     const menuButtonRef = useRef<HTMLButtonElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ useEffect(() => {
       ref={menuButtonRef}
       onClick={toggleMenu}
       title="Download Menu"
-      className={`cursor-pointer rounded-sm hover:opacity-80 ${isMenuOpen ? "bg-[#6D6E73]/20" : ""}`}
+      className={`cursor-pointer rounded-sm hover:opacity-80 ${className} ${isMenuOpen ? "bg-[#6D6E73]/20" : ""}`}
       {...props}
     >
     <Icon color="#35353A" size="32" className="transform scale-[0.6]"/> {name}
