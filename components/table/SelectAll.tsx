@@ -1,4 +1,5 @@
 
+'use client';
 import { useState, useEffect } from 'react';
 import ActionButtons from './ActionButtons';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
@@ -12,24 +13,44 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
     setSelectedRows(table.getRowModel().rows.filter((row: any) => row.getIsSelected()));
   }, [table.getSelectedRowModel(), table.getRowModel(), table.getState().expanded]);
 
+  // Function to get all row IDs (including nested ones)
+  const getAllRowIds = (rows: any[]): string[] => {
+    let ids: string[] = [];
+    rows.forEach((row) => {
+      ids.push(row.id);
+      if (row.subRows?.length) {
+        ids = ids.concat(getAllRowIds(row.subRows));
+      }
+    });
+    return ids;
+  };
+
+  // Function to check if all rows are expanded
+  const areAllRowsExpanded = () => {
+    const expandedState = table.getState().expanded;
+    const allRowIds = getAllRowIds(table.getRowModel().rows);
+    
+    return allRowIds.every((id) => {
+      table.resetPageSize()
+      return expandedState[id]
+    });
+  };
+  
   return (
     <div className="flex items-center text-gray-700 text-sm">
       <div className='divide-x-1 divide-gray-300 h-9 flex items-center'>
         
         <button 
           onClick={() => {
-            // Check if all rows are expanded
-            const allExpanded = table.getIsAllRowsExpanded();
-            
-            // Get all row IDs
-            const rowIds = table.getRowModel().rows.map((row: { id: any; }) => row.id);
-            
-            // Toggle expand/collapse for all rows
-            table.setExpanded(allExpanded ? {} : Object.fromEntries(rowIds.map((id: any) => [id, true])));
-          }} 
+            const allExpanded = areAllRowsExpanded();
+            const allRowIds = getAllRowIds(table.getRowModel().rows);
+            table.setExpanded(
+              allExpanded ? {} : Object.fromEntries(allRowIds.map((id) => [id, true]))
+            );          
+          }}   
           className='h-9 pr-4 flex items-center gap-1 cursor-pointer'
         >
-          {table.getIsAllRowsExpanded() ? 
+          {areAllRowsExpanded() ? 
             (<><CopyMinus strokeWidth={1} size={18}/> Collapse All</>) : 
             (<><CopyPlus strokeWidth={1} size={18} /> Expand All</>)}
         </button>

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { ChevronUp} from "lucide-react";
+import React from "react";
 import DonutChart from "./DonutChart";
 import HorizontalBarChart from "./HorizontalBarChart";
 import ProgressDonutChart from "./ProgressDonutChart";
