@@ -20,7 +20,7 @@ import SearchInput from './SearchInput';
 
 const DataTable = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -48,7 +48,7 @@ const DataTable = () => {
       <div className="flex items-center justify-between mb-8 mt-4 relative z-10">
          <div className='flex items-center'>
            <SelectAll table={table} />
-           <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+           {table.getIsSomePageRowsSelected () && <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />}
          </div>
           <div className="flex gap-3 items-center divide-x-1 divide-gray-300 h-9">
             <Pagination table={table} />

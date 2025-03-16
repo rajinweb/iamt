@@ -25,7 +25,7 @@ export function Navigation() {
         {/* Collapse Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`absolute -right-2.5 top-[46px] p-2 ${
+          className={`absolute -right-2.5 top-[46px] p-2 cursor-pointer ${
             isCollapsed ? '-right-5' : ''
           }`}
         >
