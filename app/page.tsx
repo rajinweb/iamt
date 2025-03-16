@@ -12,9 +12,9 @@ export default function Home() {
     { label: "Reports Dashboard", icon: Eye, iconOff: EyeOff, component: () => <p className='p-8'>View reports and analytics Dashboard <br/> Coming Soon...</p> },
   ];
   return (  
-    <div className="p-6">
+    <>
       <Tabs tabs={tabsData} />
       <DataTable />
-    </div>
+    </>
   );
 }

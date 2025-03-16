@@ -14,9 +14,9 @@ export function Navigation({ isOpen }: NavigationProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={`flex flex-col h-full bg-[#15274E] w-full sticky top-0 z-[99] transition-all duration-150 ${isCollapsed ? 'w-[65px]' : 'w-[165px]'}`}>
+    <div className={`h-full bg-[#15274E] z-[99] transition-all duration-150 ease-in-out transform ${isCollapsed ? 'w-[65px]' : 'w-[210px]'}`}>
       <div className='bg-[#ad2e2d] flex items-center justify-between p-2.5 border-b border-[#060E1F] h-[65px] relative'>
-        <div className={`text-white font-bold text-2xl`}>
+        <div className={`text-white font-bold text-2xl ${!isCollapsed ? 'p-3' : ''}`}>
           Iam
         </div>
         {/* Collapse Toggle Button */}

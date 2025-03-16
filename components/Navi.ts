@@ -1,7 +1,8 @@
-import { Home, Settings, Users, BarChart } from 'lucide-react';
+import { Home, Settings, Users, BarChart, ListTodo, LayoutDashboard } from 'lucide-react';
  export const navLinks = [
   { name: 'Dashboard', href: '/', icon: Home },
-  { name: 'Analytics', href: '/analytics', icon: BarChart },
-  { name: 'Users', href: '/users', icon: Users },
+  { name: 'User Manager Action', href: '/manager-action', icon: ListTodo },
+  { name: 'Application owner', href: '/app-owner', icon: LayoutDashboard },
+  { name: 'User', href: '/users', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

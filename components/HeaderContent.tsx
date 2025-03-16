@@ -2,7 +2,7 @@ import { RefreshCcw, Wand2, UserCircle, Flag } from 'lucide-react';
 
 const HeaderContent = () => {
   return (
-    <div className="flex h-full w-full items-center justify-between px-4">
+    <div className="flex h-full w-full items-center justify-between pr-4 ">
 
       <h1 className="text-md font-semibold min-w-[210px]">
         Quarterly Q1 FY25 Review

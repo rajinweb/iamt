@@ -20,7 +20,7 @@ import SearchInput from './SearchInput';
 
 const DataTable = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -57,7 +57,7 @@ const DataTable = () => {
               <Exports table={table}/>
               <ColumnSettings table={table} />
             </div>
-        </div>
+        </div>  
       </div>
 
       {/* Table */}
