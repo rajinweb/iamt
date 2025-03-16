@@ -18,7 +18,7 @@ const   Tabs: React.FC<TabsProps> = ({ tabs }) => {
   return (
     <>
       {/* Tab Headers */}
-      <div className="      mb-4 border-b border-b-gray-300 flex gap-2">
+      <div className="mb-4 border-b border-b-gray-300 flex gap-2">
         {tabs.map((tab, index) => (
           <button
             key={index}

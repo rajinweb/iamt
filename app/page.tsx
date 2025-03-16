@@ -1,8 +1,9 @@
 'use client';
-import ChartComponent from '@/components/ChartComponent';
-import DataTable from '@/components/table/DataTable';
-import Tabs from "@/components/tabs";  
 import { Eye, EyeOff } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Tabs from '@/components/tabs';
+const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
+const ChartComponent = dynamic(() => import('@/components/ChartComponent'), { ssr: false });
 
 export default function Home() {
 

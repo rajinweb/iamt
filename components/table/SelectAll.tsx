@@ -10,8 +10,13 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
 
   useEffect(() => {
-    setSelectedRows(table.getRowModel().rows.filter((row: any) => row.getIsSelected()));
-  }, [table.getSelectedRowModel(), table.getRowModel(), table.getState().expanded]);
+    setSelectedRows(
+      table.getPaginationRowModel().rows.filter((row: any) => row.getIsSelected())
+    );
+  }, [table.getSelectedRowModel(), 
+    table.getPaginationRowModel(),
+    table.getState().expanded, 
+    table.getState().pagination]);
 
   // Function to get all row IDs (including nested ones)
   const getAllRowIds = (rows: any[]): string[] => {
@@ -29,11 +34,7 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
   const areAllRowsExpanded = () => {
     const expandedState = table.getState().expanded;
     const allRowIds = getAllRowIds(table.getRowModel().rows);
-    
-    return allRowIds.every((id) => {
-      table.resetPageSize()
-      return expandedState[id]
-    });
+    return allRowIds.every((id) => expandedState[id]);
   };
   
   return (
@@ -43,10 +44,10 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
         <button 
           onClick={() => {
             const allExpanded = areAllRowsExpanded();
-            const allRowIds = getAllRowIds(table.getRowModel().rows);
+            const allRowIds = getAllRowIds(table.getPaginationRowModel().rows);
             table.setExpanded(
               allExpanded ? {} : Object.fromEntries(allRowIds.map((id) => [id, true]))
-            );          
+            );       
           }}   
           className='h-9 pr-4 flex items-center gap-1 cursor-pointer'
         >
