@@ -20,6 +20,9 @@
   --background-end-rgb: 255, 255, 255;
 }
 /** DataTable custom css**/
+html, body{
+  @apply overflow-hidden max-h-screen
+}
 .level_1+.no_level {
   @apply border-white border-t;
 }
