@@ -432,3 +432,44 @@ export const rowData=[
     ]
   }  
 ]
+
+
+export const campData=[
+  {
+    "id": 1,
+    "campaignName": "Quarterly Access Review",
+    "description": "Review user permissions and access levels across departments.",
+    "instances": 150,
+    "progress": "75%",
+    "expiryDate": "2025-04-15",
+    "owner": "John Doe"
+  },
+  {
+    "id": 2,
+    "campaignName": "Finance Role Audit",
+    "description": "Verify finance department users have appropriate access rights.",
+    "instances": 75,
+    "progress": "50%",
+    "expiryDate": "2025-05-01",
+    "owner": "Alice Johnson"
+  },
+  {
+    "id": 3,
+    "campaignName": "MFA Compliance Check",
+    "description": "Ensure all employees have enabled Multi-Factor Authentication.",
+    "instances": 200,
+    "progress": "90%",
+    "expiryDate": "2025-03-30",
+    "owner": "Robert Smith"
+  },
+  {
+    "id": 4,
+    "campaignName": "Privileged Account Review",
+    "description": "Identify and validate privileged users' access rights.",
+    "instances": 50,
+    "progress": "60%",
+    "expiryDate": "2025-04-10",
+    "owner": "Emily White"
+  }
+]
+  

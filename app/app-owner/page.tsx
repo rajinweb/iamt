@@ -1,5 +1,9 @@
 'use client';
 import { useState } from "react";
+import dynamic from "next/dynamic";
+const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
+import {rowData} from '@/components/data';
+import {columns} from '@/components/table/columns'
 
 type DataItem = {
   label: string;
@@ -51,7 +55,7 @@ export default function AppOwner() {
   return (
     <>
     <h1 className="text-xl font-bold mb-6 border-b border-gray-300 pb-2 text-blue-950">Application Owner</h1>
-    <div className="grid grid-cols-4 gap-6">
+    <div className="grid grid-cols-4 gap-10">
       {Object.entries(data).map(([category, items]) => (
         <div key={category}>
           <h3 className="font-semibold text-sm mb-2 capitalize">
@@ -61,29 +65,28 @@ export default function AppOwner() {
             {items.map((item, index) => (
               <div
                 key={index}
-                className={`flex text-sm justify-between items-center p-2 rounded-lg cursor-pointer transition-all ${
+                className={`flex text-sm relative items-center p-3 rounded-sm cursor-pointer transition-all ${
                   selected[category] === index
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
+                    ? "bg-[#6574BD] text-white"
+                    : "bg-[#F0F2FC] hover:bg-[#e5e9f9]"
                 } ${item.color || ""}`}
                 onClick={() => handleSelect(category, index)}
               >
                 <span>{item.label}</span>
-                <span className="font-semibold">{item.value}</span>
-              </div>
+                <span className={`font-semibold absolute -right-2 bg-white border p-1 text-[12px]  rounded-sm ${ selected[category] === index
+                    ? "border-[#6574BD] text-[#6574BD]"
+                    : "border-[#e5e9f9]"
+                }`}>{item.value}</span>
+              </div>  
             ))}
           </div>
         </div>
-      ))}
-      <div className="col-span-4 mt-4 flex justify-start">
-        <button
-          className="bg-blue-900 text-white px-4 py-2 rounded-md font-medium"
-          onClick={clearFilters}
-        >
-          Clear Filter
-        </button>
-      </div>
+      ))}   
     </div>
+    <button className="bg-[#15274E] text-white p-2 rounded-sm text-sm mt-4 cursor-pointer " onClick={clearFilters}> Clear Filter </button>
+      {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
+                <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
+                }
     </>
   );
 }

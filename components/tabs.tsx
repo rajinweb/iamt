@@ -1,3 +1,4 @@
+'use client';
 import { useState } from "react";
 
 interface Tab {
@@ -9,23 +10,26 @@ interface Tab {
 
 interface TabsProps {
   tabs: Tab[];
+  className?:string;
+  buttonClass?:string;
+  activeClass?:string;
 }
 
-const   Tabs: React.FC<TabsProps> = ({ tabs }) => {
+const   Tabs: React.FC<TabsProps> = ({ tabs, className, buttonClass, activeClass}) => {
   const [activeTab, setActiveTab] = useState(0);
   const ActiveComponent = tabs[activeTab].component; // Get active tab's component
 
   return (
     <>
       {/* Tab Headers */}
-      <div className="mb-4 border-b border-b-gray-300 flex gap-2">
+      <div className={`mb-4 flex gap-2 ${className}`}>
         {tabs.map((tab, index) => (
           <button
             key={index}
             onClick={() => setActiveTab(index)}
-            className={`flex items-center px-2 gap-2 py-2 text-sm cursor-pointer
-              ${activeTab === index ? "border-b-4 -mb-0.5 border-blue-500 text-blue-600" : "text-gray-500"}
-              hover:text-blue-500 transition-all`}
+            className={`flex items-center px-2 gap-2 py-2 text-sm cursor-pointer ${buttonClass ? buttonClass : 'hover:text-blue-500'}
+              ${activeTab === index ? activeClass ? activeClass : 'border-b-4 -mb-0.5 border-blue-500 text-blue-600' : "text-gray-500"}
+              `}
           >
             <small className="flex gap-2">
            {activeTab === index ? <tab.icon size={16} /> : <tab.iconOff size={16} />}

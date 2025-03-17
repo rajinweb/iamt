@@ -1,7 +1,9 @@
 'use client';
 import { Eye, EyeOff } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import Tabs from '@/components/tabs';
+import Tabs from '@/components/tabs'
+import {rowData} from '@/components/data';
+import { columns } from '@/components/table/columns';
 const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
 const ChartComponent = dynamic(() => import('@/components/ChartComponent'), { ssr: false });
 
@@ -13,8 +15,10 @@ export default function Home() {
   ];
   return (  
     <>
-      <Tabs tabs={tabsData} />
-      <DataTable />
+      <Tabs tabs={tabsData} className="border-b border-b-gray-300" />
+      {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
+      <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
+      }
     </>
   );
 }

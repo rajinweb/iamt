@@ -1,4 +1,4 @@
-import { exportToCSV, exportToJSON } from '@/utils/exportUtils';
+import { exportToCSV, exportToJSON } from '@/utils/utils';
 import { Download } from 'lucide-react';
 import Dropdown from '@/components/Dropdown';
 

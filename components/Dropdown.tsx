@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { ElementType, ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode[];
-  Icon: React.ElementType;
+  children: ReactNode[];
+  Icon: ElementType;
   name?: string;
   menuWidth?: number;
   className?: string;

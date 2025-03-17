@@ -11,22 +11,27 @@ import {
 import SelectAll from './SelectAll';
 import ColumnSettings from './ColumnSettings';
 import Pagination from './Pagination';
-import { rowData } from './data';
-import { columns } from './columns';
+
 import GroupPagination from './GroupPagination';
-import Exports from './Exports';
+import Exports from './Exports';  
 import Filters from './Filters';
 import SearchInput from './SearchInput';
 
-const DataTable = () => {
+type DataTableProps = {
+  data: Array<any>;
+  columns: Array<any>;
+  filerColumns?: Array<any>;
+};
+
+const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
   const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
-    data: rowData,
-    columns,
+    data: data,
+    columns: columns,
     state: { expanded, pagination: parentPagination, globalFilter },
     onExpandedChange: (updaterOrValue) => setExpanded(updaterOrValue as Record<string, boolean>),
     onPaginationChange: setParentPagination,
@@ -53,7 +58,7 @@ const DataTable = () => {
           <div className="flex gap-3 items-center divide-x-1 divide-gray-300 h-9">
             <Pagination table={table} />
             <div className='flex gap-2 items-center'>
-              <Filters table={table}/>
+              <Filters table={table} columns={filerColumns}/>
               <Exports table={table}/>
               <ColumnSettings table={table} />
             </div>

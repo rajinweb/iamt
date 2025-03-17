@@ -3,10 +3,12 @@ import react, { useEffect, useState } from 'react'
 import Dropdown from '../Dropdown'
 import { CircleX, Filter, FilterX } from 'lucide-react';
 
-const Filters=({ table }: { table: any })=> {
+const Filters=({ table, columns }: { table: any, columns?:string[] })=> {
     const [riskFilter, setRiskFilter] = useState<string | null>(null);
     useEffect(() => {
-        table.getColumn('risk')?.setFilterValue(riskFilter);
+        if(columns){            
+            columns.map(col =>table?.getColumn(col)?.setFilterValue(riskFilter))   
+        }
       }, [riskFilter]);
       
     return( 
