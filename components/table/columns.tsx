@@ -21,16 +21,18 @@ export const columns: ColumnDef<any>[] = [
                  <ChevronDown size={20} color="#B9BAC2" /> : 
                  <ChevronRight size={20} color="#B9BAC2" />}
               </button>
-            ) : (
-              <ChevronRight  size={20} color="#B9BAC2"/>
-            )}
+            ) 
+            : (
+            ' ' // <ChevronRight  size={20} color="#B9BAC2"/>
+            )
+            }
             <IndeterminateCheckbox
               {...{
                 checked: row.getIsSelected(),
                 indeterminate: row.getIsSomeSelected(),
                 onChange: row.getToggleSelectedHandler(),
               }}
-            />
+            className={`${row.depth >1 && 'ml-1'}`}/>
           
             {rowDepth === 0 ? ( // Parent row
                 row.original.avtar ? (
@@ -53,18 +55,31 @@ export const columns: ColumnDef<any>[] = [
       },
     },
     {
-      accessorKey: 'risk',
-      header: 'Risk',
-      cell: ({  column, getValue }) => {
-        const cellText = getValue();
+      accessorKey: "risk",
+      header: "Risk",
+      size:150,
+      cell: ({ column, getValue }) => {
+        const cellText = getValue() as keyof typeof riskConfig;
         const headerText = column?.columnDef?.header;
+    
+        // Define icons & colors based on risk level
+        const riskConfig = {
+          Critical: { icon: <div className="bg-red-600 w-3 h-3 rounded-full" />, color: "text-red-600" },
+          High: { icon: <div className="bg-orange-500 w-3 h-3 rounded-full"  />, color: "text-orange-500" },
+          Medium: { icon: <div className="bg-yellow-500 w-3 h-3 rounded-full" />, color: "text-yellow-500" },
+          Low: { icon: <div className="bg-green-500 w-3 h-3 rounded-full" />, color: "text-green-500" },
+        };
+    
+        const { icon, color } = riskConfig[cellText as keyof typeof riskConfig] || { icon: null, color: "text-gray-800" };
+    
         return (
-            <div className="flex flex-col gap-0">
-              <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
-              <span className="text-gray-800">{cellText as string}</span>
-            </div>  
+          <div className="flex flex-col gap-0">
+            <span className="font-semibold text-[#175AE4] text-[12px]">{headerText as string}</span>
+            <span className="text-gray-800 font-bold" title={cellText as string}>{icon}</span>
+            {/* <span className={`font-semibold ${color}`}>{cellText as string}</span> */}
+          </div>
         );
-      }
+      },
     },
     {
       accessorKey: 'id',

@@ -1,25 +1,34 @@
-import { ChevronDown, ChevronUp , Eye, EyeClosed, EyeOff } from "lucide-react";
+'user client';
+import { useState } from "react";
+import { CircleMinus, CirclePlus } from "lucide-react";
+
 
 interface AccordionProps {
-  title: string;
+  headerText?: string;
+  title?:string;
   children: React.ReactNode;
-  isOpen?: boolean;
-  onToggle?: () => void;
+  iconSize?:number;
+  iconClass?:string;
 }
 
-const Accordion = ({ title, children, isOpen, onToggle }: AccordionProps) => {
+const Accordion = ({ headerText, children, iconSize, title, iconClass }: AccordionProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
   return (
-    <div className="transition-all">
+    <div className="transition-all duration-150 ease-in-out transform min-h-8">
       <button
-        className="flex gap-2 p-2 cursor-pointer items-center w-full "
-        onClick={onToggle}
-      >
-        {isOpen ? <Eye size={16} /> : <EyeOff size={16} />}
-        <small className="">{title}</small>
+        className={`flex cursor-pointer items-center ${iconClass}`}
+        onClick={handleToggle}
+        title={title}
+      > 
+        {isOpen ? <CircleMinus size={iconSize || 22} /> : <CirclePlus size={iconSize || 22} />}
+        {headerText && <small>{headerText}</small>}
       </button>
 
-      {/* Content */}
-      {isOpen && <>{children}</>}
+      {isOpen && <div>{children}</div>}
     </div>
   );
 };

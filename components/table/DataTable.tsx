@@ -28,6 +28,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) =>
   const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
   const [globalFilter, setGlobalFilter] = useState('');
+  const [appliedFilter, setAppliedFilter]=useState('');
 
   const table = useReactTable({
     data: data,
@@ -58,7 +59,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) =>
           <div className="flex gap-3 items-center divide-x-1 divide-gray-300 h-9">
             <Pagination table={table} />
             <div className='flex gap-2 items-center'>
-              <Filters table={table} columns={filerColumns}/>
+              <Filters table={table} columns={filerColumns} appliedFilter={setAppliedFilter} />
               <Exports table={table}/>
               <ColumnSettings table={table} />
             </div>
