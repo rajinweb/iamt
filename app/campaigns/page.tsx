@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, Calendar, User, ListOrdered, RectangleEllipsis, ClipboardList } from "lucide-react";
   import ActionButtons from "@/components/table/ActionButtons";
 import IndeterminateCheckbox from "@/components/table/IndeterminateCheckbox";
+import Link from "next/link";
 const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
 
 export const CampaignColumns: ColumnDef<any>[] = [
@@ -159,11 +160,13 @@ export default function Campaigns() {
         <h1 className="text-xl font-bold mb-6 border-b border-gray-300 pb-2 text-blue-950">All Campaigns 
           <p className="font-normal text-sm">Access review campaigns are used to manage the certification of access for your users. to start an access review campaign, click the ‘Create’ button at the top of this page.</p>
         </h1>
-      <div>
-        <button
-            className="bg-[#15274E] text-white p-2 rounded-sm text-sm mt-2 ">
+      <div className="pt-4">
+        <Link
+          href="/campaigns/new"
+            className="bg-[#15274E] text-white p-3 rounded-sm text-sm  cursor-pointer ">
             Create Campaign
-          </button>
+            
+          </Link>
       </div>
     </div>
     <Tabs tabs={tabsData} 
