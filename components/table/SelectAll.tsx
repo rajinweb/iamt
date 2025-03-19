@@ -70,7 +70,7 @@ import { CopyMinus, CopyPlus } from 'lucide-react';
     </div>
    
     {/* Action Buttons */}
-    {selectedRows.length > 0 && table && <ActionButtons  table={table} selectedRows={selectedRows} viewChangeEnable setData={table.setData} />}
+    {selectedRows.length > 0 && table && <ActionButtons  table={table} selectedRows={selectedRows} setData={table.setData} />}
 
   </div>
 

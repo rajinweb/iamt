@@ -1,9 +1,141 @@
 'use client';
+export const rowData = [
+  {
+    user: "Derrick Watson",
+    id: 7243915,
+    avatar: "https://avatar.iran.liara.run/public/9",
+    risk: "High",
+    jobTitle: "Financial Analyst",
+    role: "Contractor",
+    employeetype: "Full Time",
+    lastLogin: "2025-03-01 14:25:43",
+    accessHistory: "2025-03-01 14:25:43",
+    changeSinceLastReview: 3,
+    aiAssistConfidence: "thumbs-down",
+    email: "Derrick.Watson@example.com",
+    status: "Active",
+    subRows: [
+      {
+        account: "dwatson",
+        id: 8243916,
+        role: "Administrator",
+        risk: "Low",
+        applications: ["SAP ERP", "Slack"],
+        roleType: "Full Access",
+        subRows: [
+          {
+            id: 9243915,
+            entitlement: "SP_DBA_CONTRIBUTOR",
+            risk: "Medium",
+            description: "Write",
+            justification: "Needs access for reporting",
+            accessHistory: "2025-03-01 14:25:43",
+            aiAssistConfidence: "thumbs-down",
+          },
+          {
+            id: 1043915,
+            entitlement: "SP_ANALYST",
+            risk: "30 Medium",
+            description: "Read",
+            justification: "View only access",
+            accessHistory: "2025-02-15 10:12:30",
+            aiAssistConfidence: "thumbs-up",
+          },
+        ],
+      },
+      {
+        account: "awatson",
+        id: 1143917,
+        role: "User",
+        risk: "Low",
+        applications: ["Google Drive", "Teams"],
+        roleType: "Limited Access",
+        subRows: [
+          {
+            id: 1243917,
+            entitlement: "SP_VIEWER",
+            risk: "Low",
+            description: "Read-Only",
+            justification: "Basic user access",
+            accessHistory: "2025-02-28 12:40:10",
+            aiAssistConfidence: "thumbs-up",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    user: "Sophia Davis",
+    id: 7243215,
+    avatar: "https://avatar.iran.liara.run/public/9",
+    risk: "High",
+    jobTitle: "Financial Analyst",
+    role: "Contractor",
+    employeetype: "Full Time",
+    lastLogin: "2025-03-01 14:25:43",
+    accessHistory: "2025-03-01 14:25:43",
+    changeSinceLastReview: 3,
+    aiAssistConfidence: "thumbs-down",
+    email: "Derrick.Watson@example.com",
+    status: "Active",
+    subRows: [
+      {
+        account: "dwatson",
+        id: 8243116,
+        role: "Administrator",
+        risk: "Low",
+        applications: ["SAP ERP", "Slack"],
+        roleType: "Full Access",
+        subRows: [
+          {
+            id: 922915,
+            entitlement: "SP_DBA_CONTRIBUTOR",
+            risk: "Medium",
+            description: "Write",
+            justification: "Needs access for reporting",
+            accessHistory: "2025-03-01 14:25:43",
+            aiAssistConfidence: "thumbs-down",
+          },
+          {
+            id: 10243915,
+            entitlement: "SP_ANALYST",
+            risk: "30 Medium",
+            description: "Read",
+            justification: "View only access",
+            accessHistory: "2025-02-15 10:12:30",
+            aiAssistConfidence: "thumbs-up",
+          },
+        ],
+      },
+      {
+        account: "awatson",
+        id: 114617,
+        role: "User",
+        risk: "Low",
+        applications: ["Google Drive", "Teams"],
+        roleType: "Limited Access",
+        subRows: [
+          {
+            id: 1244917,
+            entitlement: "SP_VIEWER",
+            risk: "Low",
+            description: "Read-Only",
+            justification: "Basic user access",
+            accessHistory: "2025-02-28 12:40:10",
+            aiAssistConfidence: "thumbs-up",
+          },
+        ],
+      },
+    ],
+  },
+];
+/*
+
 export const rowData=[
   {
     "user": "Jaws hat",
     "id": 7243915,
-    "avtar": "https://avatar.iran.liara.run/public/9",
+    "avatar": "https://avatar.iran.liara.run/public/9",
     "risk": "High",
     "jobTitle": "Senior Software Engineer",
     "changeSinceLastReview": 3,
@@ -13,7 +145,7 @@ export const rowData=[
     "path": ["Users", "Sophia Davis"],
     "subRows": [
       {
-        "user": "Account",
+        "account": "Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Sophia Davis", "Roles", "Administrator"],
@@ -26,7 +158,7 @@ export const rowData=[
   },{
     "user": "Derrick Watson",
     "id": 603682,
-    "avtar": "https://avatar.iran.liara.run/public/8",
+    "avatar": "https://avatar.iran.liara.run/public/8",
     "risk": "Medium",
     "jobTitle": "Lead Product Design",
     "changeSinceLastReview": 5,
@@ -37,25 +169,25 @@ export const rowData=[
     "path": ["Users", "Derrick Watson"],
     "subRows": [
       {
-        "user": "Skype Account",
+        "account": "Skype Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
         "subRows": [
-          { "user": "Rajesh Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
-          { "user": "Atharv Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
-          { "user": "Ibhaan Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
-          { "user": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
-          { "user": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
-          { "user": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
-          { "user": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
-          { "user": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
-          { "user": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
-          { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
+          { "entitlement": "Rajesh Entitlement", "permission": "Manage Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Users"] },
+          { "entitlement": "Atharv Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "entitlement": "Ibhaan Entitlement", "permission": "View Projects", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Projects"] },
+          { "entitlement": "Entitlement", "permission": "Create Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Create Projects"] },
+          { "entitlement": "Entitlement", "permission": "Delete Projects", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Projects"] },
+          { "entitlement": "Entitlement", "permission": "View Users", "accessLevel": "Read", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "View Users"] },
+          { "entitlement": "Entitlement", "permission": "Add Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Add Users"] },
+          { "entitlement": "Entitlement", "permission": "Delete Users", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Delete Users"] },
+          { "entitlement": "Entitlement", "permission": "Manage Roles", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Roles"] },
+          { "entitlement": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
         ]
       },
       {
-        "user": "Slack Account",
+        "account": "Slack Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
@@ -72,7 +204,7 @@ export const rowData=[
           { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
         ]
       },{
-        "user": "MS Teams Account",
+        "account": "MS Teams Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
@@ -90,7 +222,7 @@ export const rowData=[
         ]
       },
       {
-        "user": "FB Account",
+        "account": "FB Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
@@ -107,7 +239,7 @@ export const rowData=[
           { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
         ]
       },  {
-        "user": "MSN Account",
+        "account": "MSN Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
@@ -124,7 +256,7 @@ export const rowData=[
           { "user": "Entitlement", "permission": "Manage Settings", "accessLevel": "Write", "path": ["Users", "Derrick Watson", "Roles", "Administrator", "Permissions", "Manage Settings"] }
         ]
       },  {
-        "user": "SnapChat Account",
+        "account": "SnapChat Account",
         "role": "Administrator",
         "roleType": "Full Access",
         "path": ["Users", "Derrick Watson", "Roles", "Administrator"],
@@ -146,7 +278,7 @@ export const rowData=[
   {
     "user": "Sophia Davis",
     "id": 724395,
-    "avtar": "https://avatar.iran.liara.run/public/9",
+    "avatar": "https://avatar.iran.liara.run/public/9",
     "risk": "High",
     "jobTitle": "Senior Software Engineer",
     "changeSinceLastReview": 3,
@@ -178,7 +310,7 @@ export const rowData=[
   {
     "user": "James Smith",
     "id": 101234,
-    "avtar": "https://avatar.iran.liara.run/public/10",
+    "avatar": "https://avatar.iran.liara.run/public/10",
     "risk": "Low",
     "jobTitle": "Junior Developer",
     "changeSinceLastReview": 1,
@@ -210,7 +342,7 @@ export const rowData=[
   {
     "user": "Rachel Lee",
     "id": 112345,
-    "avtar": "https://avatar.iran.liara.run/public/11",
+    "avatar": "https://avatar.iran.liara.run/public/11",
     "risk": "Low",
     "jobTitle": "HR Manager",
     "changeSinceLastReview": 2,
@@ -242,7 +374,7 @@ export const rowData=[
   {
     "user": "Emily Johnson",
     "id": 132467,
-    "avtar": "https://avatar.iran.liara.run/public/12",
+    "avatar": "https://avatar.iran.liara.run/public/12",
     "risk": "Medium",
     "jobTitle": "Marketing Manager",
     "changeSinceLastReview": 4,
@@ -274,7 +406,7 @@ export const rowData=[
   {
     "user": "Daniel Turner",
     "id": 142567,
-    "avtar": "https://avatar.iran.liara.run/public/13",
+    "avatar": "https://avatar.iran.liara.run/public/13",
     "risk": "Medium",
     "jobTitle": "Product Owner",
     "changeSinceLastReview": 6,
@@ -306,7 +438,7 @@ export const rowData=[
   {
     "user": "Sarah Wilson",
     "id": 152768,
-    "avtar": "https://avatar.iran.liara.run/public/14",
+    "avatar": "https://avatar.iran.liara.run/public/14",
     "risk": "High",
     "jobTitle": "Senior Analyst",
     "changeSinceLastReview": 2,
@@ -338,7 +470,7 @@ export const rowData=[
   {
     "user": "Joshua Parker",
     "id": 162768,
-    "avtar": "https://avatar.iran.liara.run/public/15",
+    "avatar": "https://avatar.iran.liara.run/public/15",
     "risk": "Low",
     "jobTitle": "Team Lead",
     "changeSinceLastReview": 5,
@@ -370,7 +502,7 @@ export const rowData=[
   {
     "user": "Olivia Harris",
     "id": 172869,
-    "avtar": "https://avatar.iran.liara.run/public/16",
+    "avatar": "https://avatar.iran.liara.run/public/16",
     "risk": "Medium",
     "jobTitle": "Business Analyst",
     "changeSinceLastReview": 3,
@@ -402,7 +534,7 @@ export const rowData=[
   {
     "user": "Michael Scott",
     "id": 182970,
-    "avtar": "https://avatar.iran.liara.run/public/17",
+    "avatar": "https://avatar.iran.liara.run/public/17",
     "risk": "Critical",
     "jobTitle": "Chief Executive Officer",
     "changeSinceLastReview": 1,
@@ -433,7 +565,7 @@ export const rowData=[
   }  
 ]
 
-
+*/
 export const campData=[
   {
     "id": 1,

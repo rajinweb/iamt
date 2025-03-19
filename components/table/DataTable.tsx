@@ -16,6 +16,7 @@ import GroupPagination from './GroupPagination';
 import Exports from './Exports';  
 import Filters from './Filters';
 import SearchInput from './SearchInput';
+import GroupedTable from './GroupedTable';
 
 type DataTableProps = {
   data: Array<any>;
@@ -27,8 +28,28 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) =>
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [parentPagination, setParentPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [subPagination, setSubPagination] = useState<{ [key: string]: { pageIndex: number; pageSize: number } }>({});
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState<{ search?: string; group?: string }>({
+    search: "",
+    group: "",
+  });
   const [appliedFilter, setAppliedFilter]=useState('');
+
+  const filterRows = (row: any, groupFilter: string): boolean => {
+    if (!groupFilter) return true; 
+    if (groupFilter === "all" && row.original) return true; 
+    if (groupFilter === "user" && row.original?.user) return true; 
+    if (groupFilter === "account" && row.original?.account) return true; 
+    if (groupFilter === "entitlement" && row.original?.entitlement) return true; 
+    
+    // **Check recursively in subRows**
+    if (row.subRows?.length) {
+      return row.subRows.some((subRow: any) => {
+        return filterRows(subRow, groupFilter)
+      }); 
+    }
+
+    return false;
+  };
 
   const table = useReactTable({
     data: data,
@@ -43,18 +64,28 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) =>
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     globalFilterFn: (row, columnId, filterValue) => {
-      return String(row.getValue(columnId)) // Convert value to string
-        .toLowerCase()
-        .includes(filterValue.toLowerCase()); // Case-insensitive search
-    },  
+      const searchFilter = filterValue.search?.toLowerCase() || "";
+      const groupFilter = filterValue.group;
+      // Apply recursive filter for GroupedTable filter
+      const matchesGroup = filterRows(row, groupFilter);
+      // Existing Search Filter
+      const matchesSearch = searchFilter
+        ? String(row.getValue(columnId)).toLowerCase().includes(searchFilter)
+        : true;
+      return matchesSearch && matchesGroup; // Conditions should match
+    },
   });
 
   return (
     <>
       <div className="flex items-center justify-between mb-8 mt-4 relative z-10">
          <div className='flex items-center'>
-           <SelectAll table={table} />
-           {table.getIsSomePageRowsSelected () && <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />}
+           <SelectAll table={table} /> 
+           <div className='flex gap-4'>
+            <GroupedTable setGlobalFilter={setGlobalFilter} /> 
+           <SearchInput setGlobalFilter={setGlobalFilter} />
+           </div>
+           
          </div>
           <div className="flex gap-3 items-center divide-x-1 divide-gray-300 h-9">
             <Pagination table={table} />

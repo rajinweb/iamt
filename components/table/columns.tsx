@@ -35,8 +35,8 @@ export const columns: ColumnDef<any>[] = [
             className={`${row.depth >1 && 'ml-1'}`}/>
           
             {rowDepth === 0 ? ( // Parent row
-                row.original.avtar ? (
-                  <img src={row.original.avtar} width={30} alt="User Avatar" className="rounded-full" />
+                row.original.avatar ? (
+                  <img src={row.original.avatar} width={30} alt="User Avatar" className="rounded-full" />
                 ) : (
                   <MoveUp strokeWidth={1} />
                 )
