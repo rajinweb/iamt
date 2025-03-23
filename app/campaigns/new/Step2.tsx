@@ -98,6 +98,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
             <div className="flex items-center gap-1 my-2">
               <span className={`flex items-center ${!watch("reviewerlistIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Write a generic Expression</span>
               <ToggleSwitch
+                  iconEnable
                   checked={watch("reviewerlistIsChecked")}
                   onChange={(checked) => {
                     setValue("reviewerlistIsChecked", checked, { shouldValidate: true });
