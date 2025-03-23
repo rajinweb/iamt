@@ -15,7 +15,7 @@ interface TabsProps {
   activeClass?:string;
 }
 
-const   Tabs: React.FC<TabsProps> = ({ tabs, className, buttonClass, activeClass}) => {
+const Tabs: React.FC<TabsProps> = ({ tabs, className, buttonClass, activeClass}) => {
   const [activeTab, setActiveTab] = useState(0);
   const ActiveComponent = tabs[activeTab].component; // Get active tab's component
 
