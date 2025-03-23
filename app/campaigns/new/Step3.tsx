@@ -183,7 +183,7 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
                   type="button"
                   className={`px-4 py-2 rounded-md border border-gray-300 ${
                     watch("end") === option ? "bg-[#15274E] text-white" : ""
-                  } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none" : "rounded-l-none"}`}
+                  } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 px-4.5" : "rounded-l-none"}`}
                   onClick={() => setValue("end", option, { shouldValidate: true })}
                 >
                   {option}

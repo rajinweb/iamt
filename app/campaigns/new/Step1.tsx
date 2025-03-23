@@ -107,7 +107,7 @@ const Step1: React.FC<Step1Props> = ({ formData, setFormData, onValidationChange
               type="button"
               className={`px-4 py-2 rounded-md border border-gray-300 ${
                 watch("reviewer") === option ? "bg-[#15274E] text-white" : ""
-              } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none  border-r-0  border-l-0 px-5" : "rounded-l-none"}`}
+              } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 px-5" : "rounded-l-none"}`}
               onClick={() => setValue("reviewer", option, { shouldValidate: true })}
             >
               {option}
