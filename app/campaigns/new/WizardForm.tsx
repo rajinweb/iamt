@@ -17,7 +17,7 @@ import { asterisk } from "@/utils/utils";
   }
 
   const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(1);
     const [isStepValid, setIsStepValid] = useState(false); 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [saveAsTemplate, setSaveAsTemplate] = useState(false);
@@ -49,7 +49,7 @@ import { asterisk } from "@/utils/utils";
         reviewer:"",  
         reviewerlistIsChecked:false,
         customReviewerlist:[],
-        genericExpression:""
+        genericExpression:[]
       },
       step3:{
         multiStageReview: false,  

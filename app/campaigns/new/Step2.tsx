@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useForm, FormProvider} from "react-hook-form";
+import { useEffect } from "react";
+import { useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
@@ -37,7 +37,7 @@ const validationSchema = yup.object().shape({
   }),
   groupListIsChecked:yup.boolean(),
   userGroupList: yup.array().when("userType", {
-    is: (userType: string, groupListIsChecked: boolean) => userType === "Custom User Group" && groupListIsChecked === false,
+    is: (userType: string, groupListIsChecked: boolean) => userType === "Custom User Group" && !groupListIsChecked,
     then: (schema) => schema.min(1, "Select at least one application").required(),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -124,7 +124,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
     defaultValues: {
       ...formData.step2,
       userType: "All users",
-      specificUserExpression: [defaultExpression],
+      specificUserExpression: [],
     }
   });
   
@@ -142,18 +142,45 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
    useEffect(() => {
     if (userType === "All users") {
       setValue("userGroupList", [], { shouldValidate: true });
-      setValue("specificUserExpression", [defaultExpression], { shouldValidate: true });
+      setValue("specificUserExpression", [], { shouldValidate: true });
     } 
     if (userType === "Custom User Group") {
       setValue("allUsers", [], { shouldValidate: true });
       setValue("userGroupList", [], { shouldValidate: true });
-      setValue("specificUserExpression", [defaultExpression], { shouldValidate: true });
+      setValue("specificUserExpression", [], { shouldValidate: true });
     } 
     if (userType === "Specific users") {
       setValue("allUsers", [], { shouldValidate: true });
       setValue("userGroupList", [], { shouldValidate: true });
     }
   }, [userType, setValue]);
+
+
+  const selectData = watch("selectData");
+   useEffect(() => {
+    if (selectData === "All Applications") {
+      setValue("specificApps", [], { shouldValidate: true });
+      setValue("expressionApps", [], { shouldValidate: true });
+      setValue("expressionEntitlement", [], { shouldValidate: true });
+    }
+    if (selectData === "Specific Applications") {
+      setValue("allApps", [], { shouldValidate: true });
+      setValue("expressionEntitlement", [], { shouldValidate: true });
+    }
+    if (selectData === "Select Entitlement") {
+      setValue("allApps", [], { shouldValidate: true });
+      setValue("specificApps", [], { shouldValidate: true });
+    }
+  }, [selectData, setValue]); 
+
+  const reviewer = watch("reviewer");
+
+  useEffect(() => {
+    if (reviewer !== "Custom Reviewer") {
+      setValue("genericExpression", [], { shouldValidate: true });
+      setValue("customReviewerlist", null, { shouldValidate: true });
+    }
+  }, [reviewer, setValue]); 
 
   return (
     <div className="py-6">
@@ -323,8 +350,11 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                 </button>
               ))}
          
-
-              { watch("reviewer")==="Custom Reviewer" &&
+              {errors.reviewer?.message && typeof errors.reviewer.message === 'string' && (
+                <p className="text-red-500">{errors.reviewer.message}</p>
+              )}
+           
+              { watch("reviewer") === "Custom Reviewer" &&
       
               <div className="">
                 <div className="flex items-center gap-1 my-2">
@@ -341,17 +371,25 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                 </div>
             
                 {watch("reviewerlistIsChecked") && <div className="w-[450px]"><FileDropzone name="customReviewerlist" control={control} /></div>}
-                {!watch("reviewerlistIsChecked") && <textarea
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  rows={2 }
-                  {...register("genericExpression")}
-                />}
-                </div>
-          
+                {!watch("reviewerlistIsChecked") && 
+                     <>
+                     <ExpressionBuilder
+                       //title="Build Generic Expression"
+                       control={control}
+                       setValue={setValue}
+                       watch={watch}
+                       fieldName="genericExpression"
+                     />
+                     {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (
+                       <p className="text-red-500">{errors.genericExpression.message}</p>
+                     )}
+                   </>
+                  }
+              </div>
+
               }
-          </div>
         </div>
-  
+        </div>
       
     </div>
   </div>
