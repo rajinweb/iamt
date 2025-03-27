@@ -69,3 +69,7 @@ html, body{
 .level_1.group-last-row td:first-child{
   @apply rounded-bl-lg ;
 }
+
+.form-input{
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500
+}

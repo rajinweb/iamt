@@ -1,9 +1,10 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 const Select = dynamic(() => import('react-select'), { ssr: false });
 import { Control, Controller } from "react-hook-form";
 import AsyncSelect from "react-select/async";
+import { GroupBase, OptionProps, components as component } from "react-select";
 
 const MultiSelect = ({ 
     name, 
@@ -17,7 +18,8 @@ const MultiSelect = ({
     isMulti=true,
     isSearchable=true,
     defaultValue,
-    isDisabled=false
+    isDisabled=false,
+    optionCheck=false
   } : { 
     name: string, 
     control: Control, 
@@ -30,7 +32,8 @@ const MultiSelect = ({
     isMulti?:boolean,
     isSearchable?:boolean,
     defaultValue?:any[],
-    isDisabled?:boolean
+    isDisabled?:boolean,
+    optionCheck?:boolean
    }) => {
 
 
@@ -39,7 +42,31 @@ const MultiSelect = ({
   useEffect(() => setIsClient(true), []);
   if (!isClient) return null; // Prevents SSR mismatches
   
-  
+  interface CustomOptionProps extends OptionProps<unknown, boolean, GroupBase<unknown>> {
+    image?: string;
+  }
+  const Option = (props: JSX.IntrinsicAttributes & CustomOptionProps) => {
+    console.log('ok', props)
+    return (
+      <component.Option {...props} className="!flex items-center">
+        <input 
+          type="checkbox" 
+          checked={props.isSelected} 
+          readOnly 
+          style={{ marginRight: "8px" }} 
+        />
+         {"image" in (props.data as Record<string, unknown>) && (
+            <img
+              src={(props.data as { image: string }).image}
+              alt={props.label}
+              className="w-8 h-8 rounded-full mr-2"           
+            />
+          )}
+        <label>{props.label}</label>
+      </component.Option>
+    );
+  };
+
   return (
     <Controller
       name={name}
@@ -62,9 +89,12 @@ const MultiSelect = ({
             placeholder={placeholder}
             onChange={handleChange}
             value={selectedValue ? selectedValue : defaultValue} 
-            {...components && {components: components}}
+            //{...components && {components: components}}
+            components={optionCheck && isMulti ? { ...components, Option } : components} 
             className={className}
             isDisabled={isDisabled}
+            hideSelectedOptions={false}
+            closeMenuOnSelect={isMulti? false : true}
             menuPlacement="auto"
           />
          : 
@@ -77,9 +107,12 @@ const MultiSelect = ({
             placeholder={placeholder}
             onChange={handleChange} 
             value={selectedValue ? selectedValue : defaultValue} 
-            {...components && {components: components}}
+            //{...components && {components: optionCheck && isMulti ? { ...components, Option } : components}}
+            components={optionCheck && isMulti ? { ...components, Option } : components} 
             className={className}
             isDisabled={isDisabled}
+            hideSelectedOptions={false}
+            closeMenuOnSelect={isMulti? false : true}
             menuPlacement="auto"
           />
         

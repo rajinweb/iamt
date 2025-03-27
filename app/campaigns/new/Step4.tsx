@@ -1,5 +1,5 @@
 import { InfoIcon, Mail, Search } from "lucide-react";
-import { useEffect } from "react";
+import { JSX, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -7,6 +7,7 @@ import ToggleSwitch from "@/components/ToggleSwitch";
 import MultiSelect from "@/components/MultiSelect";
 import { asterisk, beforeReminders, enforceComments } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
+import { components, GroupBase, OptionProps } from "react-select";
 
 
 interface Step4Props {
@@ -19,9 +20,7 @@ interface Step4Props {
 const validationSchema = yup.object().shape({
   // Notifications
   socIsChecked: yup.boolean(),
-  socReminders: yup.array().when("socIsChecked", (socIsChecked) => 
-    socIsChecked ? yup.array().min(1, "Select at least one user").required() : yup.array().notRequired()
-  ),
+  socReminders: yup.string(),
   eocIsChecked: yup.boolean(),
   eocReminders: yup.array().when("eocIsChecked", (eocIsChecked) => 
     eocIsChecked ? yup.array().min(1, "Select at least one user").required() : yup.array().notRequired()
@@ -93,7 +92,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
             <input type="checkbox" className="scale-130"  {...register("socIsChecked")} />
           </label>
           <div>
-          <MultiSelect isDisabled={!watch("socIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false}  control={control} options={beforeReminders} {...register("socReminders")}/>
+          <MultiSelect isMulti={false} isDisabled={!watch("socIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false}  control={control} options={beforeReminders} {...register("socReminders")}/>
           {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
             <p className="text-red-500">{errors.socReminders.message}</p>
           )}
@@ -105,7 +104,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
               <input type="checkbox" className="scale-130" {...register("eocIsChecked")} />
            </label>
            <div>
-          <MultiSelect isDisabled={!watch("eocIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false}  control={control} options={beforeReminders} {...register("eocReminders")}/>
+          <MultiSelect isDisabled={!watch("eocIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false} optionCheck={true} control={control} options={beforeReminders} {...register("eocReminders")}/>
           {errors.eocReminders?.message && typeof errors.eocReminders.message === 'string' && (
             <p className="text-red-500">{errors.eocReminders.message}</p>
           )}
@@ -138,8 +137,8 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
           <dt>Enforce Comments/Justification on </dt>
           <dd>
             <MultiSelect isSearchable={false} isMulti={false} control={control} options={enforceComments} {...register("enforceComments")}/>
-            {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
-              <p className="text-red-500">{errors.socReminders.message}</p>
+            {errors.enforceComments?.message && typeof errors.enforceComments.message === 'string' && (
+              <p className="text-red-500">{errors.enforceComments.message}</p>
             )}
           </dd>
 

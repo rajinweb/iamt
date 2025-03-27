@@ -58,8 +58,22 @@ export const enforceComments=[
   { value: "Revoke", label: "Revoke" },
   { value: "Custom Fields", label: "Custom Fields" },
 ]
+export const  template=[
+  { value: "Template 1", label: "Template 1" },
+  { value: "Template 2", label: "Template 2" },
+  { value: "Template 3", label: "Template 3" },
+  { value: "Template 4", label: "Template 4" },
+]
 
+export const userGroups = [
+  { label: "UserGroup A", value: "UserGroup_a" },
+  { label: "UserGroup B", value: "UserGroup_b" },
+];
 
+export const excludeUsers = [
+  { label: "excludeUser A", value: "excludeUser_1" },
+  { label: "excludeUser B", value: "excludeUser_2" },
+];
 export function numberToWords(n:number) {
   const ones = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"];
   const teens = ["eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth"];

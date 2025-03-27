@@ -17,26 +17,39 @@ import { asterisk } from "@/utils/utils";
   }
 
   const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
-    const [currentStep, setCurrentStep] = useState(3);
+    const [currentStep, setCurrentStep] = useState(0);
     const [isStepValid, setIsStepValid] = useState(false); 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [saveAsTemplate, setSaveAsTemplate] = useState(false);
     // Store form data globally
     const [formData, setFormData] = useState({
       step1:{
-        campaignName: "",
+        certificationName: "",
         description: "",
+        template:"",
         duration: "",
-        owners: [],
+        ownerType:"",
+        ownerUser: [],
+        ownerGroup: [],
         reviewer: "",
       },
       step2:{
-        users:"",
-        apps:"",
+        userType:"",
+        allUsers:[],
+        specificUserExpression:[],
+        groupListIsChecked:false,
+        userGroupList:[],
+        excludeUsersIsChecked:false,
+        excludeUsers:[],
+        selectData:"",
+        allApps:[],
+        specificApps:[],
+        expressionApps:[],
+        expressionEntitlement:[],
         reviewer:"",  
         reviewerlistIsChecked:false,
         customReviewerlist:[],
-        genricExpression:""
+        genericExpression:""
       },
       step3:{
         multiStageReview: false,  
@@ -70,7 +83,7 @@ import { asterisk } from "@/utils/utils";
   const handleSubmit = async () => {
     try {
      // console.log("Submitting form data:", formData); // Log before sending
-  
+     setIsDialogOpen(true)
       const response = await fetch("https://run.mocky.io/v3/ecaeebf3-b936-41b0-9d8e-176afc79099c", {
         method: "POST",
         headers: {
@@ -93,7 +106,7 @@ import { asterisk } from "@/utils/utils";
         }
      // const result = await response.json();
      // alert("Data submitted successfully. \n" + JSON.parse(responseText)?.message);
-      setIsDialogOpen(true)
+
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -203,7 +216,7 @@ import { asterisk } from "@/utils/utils";
           </button>
           ) : (
             <div className="flex gap-5">
-            <button
+            {/* <button
             className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center ${
               isStepValid ? "bg-[#15274E] text-white hover:bg-[#15274E]/80" : "cursor-not-allowed"
             }`}
@@ -211,7 +224,7 @@ import { asterisk } from "@/utils/utils";
             onClick={handleSubmit}  
           >
             <Send size={18} /> Prepare Campaign
-          </button>
+          </button> */}
             <button
             className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center ${
               isStepValid ? "bg-[#8b03c6] text-white hover:bg-[#8b03c6]/80" : "cursor-not-allowed"

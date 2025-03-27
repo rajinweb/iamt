@@ -91,9 +91,9 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
       {/* if multiStageReview off */}
       {!watch("multiStageReview") && 
         <>
-        <h2 className="font-medium mb-6 mt-12">
+        {/* <h2 className="font-medium mb-6 mt-12">
           Specify Reviewers
-        </h2>
+        </h2> */}
          <div className={`grid grid-cols-2 items-center mb-2 w-138 text-sm`}>
           <label className={`pl-2 ${asterisk}`}>Select reviewers</label>
           <div> 

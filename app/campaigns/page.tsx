@@ -164,9 +164,8 @@ export default function Campaigns() {
         <Link
           href="/campaigns/new"
             className="bg-[#15274E] text-white p-3 rounded-sm text-sm  cursor-pointer ">
-            Create Campaign
-            
-          </Link>
+            Create Cert Definition
+        </Link>
       </div>
     </div>
     <Tabs tabs={tabsData} 
