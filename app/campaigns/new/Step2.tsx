@@ -3,131 +3,49 @@ import { useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
-import { loadUsers, customOption, loadApps } from "@/components/MsAsyncData";
+import { customOption, loadApps } from "@/components/MsAsyncData";
 import FileDropzone from "@/components/FileDropzone";
 import ToggleSwitch from "@/components/ToggleSwitch";
-import { asterisk, userGroups, excludeUsers } from "@/utils/utils";
+import { asterisk, userGroups, excludeUsers, downArrow} from "@/utils/utils";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
+import { v4 as uuidv4 } from "uuid";
+import {validationSchema} from "./step2Validation";
 interface Step2Props {
   formData: any;
   setFormData: (data: any) => void;
   onValidationChange: (isValid: boolean) => void;
 }
-
-const validationSchema = yup.object().shape({
-  userType: yup.string(),
-  allUsers: yup.array().of(yup.string()).when("userType", {
-    is: "All users",
-    then: (schema) => schema.min(1, "Select at least one user").required(),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  specificUserExpression: yup.array().when("userType", {
-    is: "Specific users",
-    then: (schema) =>
-      schema
-        .of(
-          yup.object().shape({
-            attribute: yup.object().nullable().required("Attribute is required"),
-            operator: yup.object().nullable().required("Operator is required"),
-            value: yup.string().required("Value is required"),
-          })
-        )
-        .min(1, "At least one condition is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  groupListIsChecked:yup.boolean(),
-  userGroupList: yup.array().when("userType", {
-    is: (userType: string, groupListIsChecked: boolean) => userType === "Custom User Group" && !groupListIsChecked,
-    then: (schema) => schema.min(1, "Select at least one application").required(),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-
-  excludeUsersIsChecked: yup.boolean(),
-  excludeUsers: yup.array().when("excludeUsersIsChecked", {
-    is: true,
-    then: (schema) => schema.min(1, "Select at least one user").required(),
-    otherwise: (schema) => schema.transform(() => []).default([]).notRequired(),
-  }),
-
-  selectData: yup.string(),
-  allApps: yup.array().when("selectData", {
-    is: "All Applications",
-    then: (schema) => schema.min(1, "Select at least one application").required(),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-
-  specificApps: yup.array().when("selectData", {
-    is: "Specific Applications",
-    then: (schema) => schema.min(1, "Select at least one application").required(),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-
-  expressionApps: yup.array().when("selectData", {
-    is: "Specific Applications",
-    then: (schema) =>
-      schema
-        .of(
-          yup.object().shape({
-            attribute: yup.object().nullable().required("Attribute is required"),
-            operator: yup.object().nullable().required("Operator is required"),
-            value: yup.string().required("Value is required"),
-          })
-        )
-        .min(1, "At least one condition is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-
-  expressionEntitlement: yup.array().when("selectData", {
-    is: "Select Entitlement",
-    then: (schema) =>
-      schema
-        .of(
-          yup.object().shape({
-            attribute: yup.object().nullable().required("Attribute is required"),
-            operator: yup.object().nullable().required("Operator is required"),
-            value: yup.string().required("Value is required"),
-          })
-        )
-        .min(1, "At least one condition is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-
-
-
-  reviewer: yup.string(),
-  reviewerlistIsChecked: yup.boolean(),
-  genericExpression: yup.string().when("reviewerlistIsChecked", {
-    is: (reviewer: string, reviewerlistIsChecked: boolean) => reviewer === "Custom Reviewer" && reviewerlistIsChecked === false,
-    then: (schema) => schema.required("Generic Expression is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  customReviewerlist: yup.mixed<File>().when("reviewerlistIsChecked", {
-    is: (reviewer: string, reviewerlistIsChecked: boolean) => reviewer === "Custom Reviewer" && reviewerlistIsChecked === true,
-    then: (schema) =>
-      schema.test("fileRequired", "A file must be uploaded", (value) => {
-        return value instanceof File;
-      }).required("A file must be uploaded"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-});
-const defaultExpression= { id: "1", attribute: null, operator: null, value: "", logicalOp: "AND" };
+const defaultExpression= { id: uuidv4(), attribute: null, operator: null, value: "", logicalOp: "AND" };
 const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
+    unregister,
     setValue,
     control,
     watch,
+    resetField,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: "onChange",
+    mode: "all", 
     defaultValues: {
       ...formData.step2,
-      userType: "All users",
-      specificUserExpression: [],
+      //userType: "All users",
+      specificUserExpression: [defaultExpression],
+      genericExpression:[],
+      expressionEntitlement:[defaultExpression],
+      groupListIsChecked: false,
+      customReviewerlist: null,
+      reviewerlistIsChecked: false,
     }
   });
-  
+  const customReviewerlist = watch("customReviewerlist");
+
+  useEffect(() => {
+    console.log("formState:", errors);
+    console.log("isValid:", isValid);
+  }, [errors, isValid, customReviewerlist]);
+
   useEffect(() => {
     onValidationChange(isValid);
   }, [isValid, onValidationChange]);
@@ -137,50 +55,73 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
-   // **CLEAR THE OTHER FIE LD WHEN OWNER TYPE CHANGES**
+   // **Reseting**
    const userType = watch("userType");
+   const groupListIsChecked = watch("groupListIsChecked");
+   const excludeUsersIsChecked = watch("excludeUsersIsChecked");
+
    useEffect(() => {
     if (userType === "All users") {
-      setValue("userGroupList", [], { shouldValidate: true });
-      setValue("specificUserExpression", [], { shouldValidate: true });
-    } 
-    if (userType === "Custom User Group") {
-      setValue("allUsers", [], { shouldValidate: true });
-      setValue("userGroupList", [], { shouldValidate: true });
-      setValue("specificUserExpression", [], { shouldValidate: true });
-    } 
-    if (userType === "Specific users") {
-      setValue("allUsers", [], { shouldValidate: true });
-      setValue("userGroupList", [], { shouldValidate: true });
-    }
-  }, [userType, setValue]);
 
+      setValue("userGroupList", "", { shouldValidate: false });
+      setValue("specificUserExpression", [], { shouldValidate: false });
+      setValue('groupListIsChecked', false, { shouldValidate: false });
+      
+    } else if (userType === "Custom User Group") {
+      setValue("specificUserExpression", [], { shouldValidate: false });
+    
+      if (groupListIsChecked) {
+        setValue("userGroupList", "", { shouldValidate: false });
+      }
+    } else if (userType === "Specific users") {
+      setValue("userGroupList", "", { shouldValidate: false });
+      setValue('groupListIsChecked', false, { shouldValidate: false });
+    }
+    if(!groupListIsChecked){
+      resetField('importNewUserGroup');
+    }
+    if (!excludeUsersIsChecked) {
+      resetField("excludeUsers");
+    }
+  }, [userType, groupListIsChecked, excludeUsersIsChecked, resetField, setValue]);
 
   const selectData = watch("selectData");
    useEffect(() => {
-    if (selectData === "All Applications") {
-      setValue("specificApps", [], { shouldValidate: true });
-      setValue("expressionApps", [], { shouldValidate: true });
-      setValue("expressionEntitlement", [], { shouldValidate: true });
+    if (selectData === "All Applications" || selectData === "Select Entitlement") {
+      setValue("specificApps", [], { shouldValidate: false });
+      setValue("expressionApps", [], { shouldValidate: false });
     }
-    if (selectData === "Specific Applications") {
-      setValue("allApps", [], { shouldValidate: true });
-      setValue("expressionEntitlement", [], { shouldValidate: true });
+    if (selectData === "All Applications"){
+      setValue("expressionEntitlement", [], { shouldValidate: false });
+     }
+    if (selectData === "Specific Applications") {   
+      setValue("expressionEntitlement", [], { shouldValidate: false });
     }
     if (selectData === "Select Entitlement") {
-      setValue("allApps", [], { shouldValidate: true });
-      setValue("specificApps", [], { shouldValidate: true });
+      setValue("specificApps", [], { shouldValidate: false });
     }
   }, [selectData, setValue]); 
 
   const reviewer = watch("reviewer");
+  const reviewerlistIsChecked = watch("reviewerlistIsChecked");
 
   useEffect(() => {
     if (reviewer !== "Custom Reviewer") {
-      setValue("genericExpression", [], { shouldValidate: true });
-      setValue("customReviewerlist", null, { shouldValidate: true });
+      setValue("customReviewerlist", null, { shouldValidate: false });
+      resetField("customReviewerlist");
+      setValue("reviewerlistIsChecked", false, { shouldValidate: false });
+      
+    } 
+    if (!reviewerlistIsChecked) {
+      setValue("customReviewerlist", null, { shouldValidate: false });
+    
     }
-  }, [reviewer, setValue]); 
+    if (reviewerlistIsChecked) {
+      unregister("genericExpression");
+      setValue("genericExpression", [], { shouldValidate: false });
+    }
+  }, [reviewer, reviewerlistIsChecked, customReviewerlist, resetField, setValue]);
+  
 
   return (
     <div className="py-6">
@@ -198,24 +139,16 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
             <button
               key={option}
               type="button"
-              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${
+              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${watch("userType") === option && index > 0 && downArrow} ${
                 watch("userType") === option ? "bg-[#15274E] text-white" : ""
               } ${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none"}`}
               onClick={() => setValue("userType", option, { shouldValidate: true })}
             >
               {option}  
-              {watch("userType") === option && 
-              <span className="-bottom-2 absolute left-1/2 -translate-x-1/2 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[#15274E] border-t-[10px]"></span>
-            }
             </button>
           ))}
 
-            {watch("userType") === "All users" && 
-              <><MultiSelect className="max-w-[420px]" control={control} isAsync loadOptions={loadUsers}  components={{ Option: customOption }} {...register("allUsers")}/>
-                {errors.allUsers?.message && typeof errors.allUsers.message === 'string' && (
-                <p className="text-red-500">{errors.allUsers.message}</p>
-                )}</>
-              }
+       
               {watch("userType") === "Specific users" &&  <ExpressionBuilder title="Build Expression" control={control} setValue={setValue} watch={watch} fieldName={"specificUserExpression"} /> }
 
               {watch("userType") === "Custom User Group" &&
@@ -234,7 +167,10 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                   <span className={`flex items-center ${watch("groupListIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Import New User Group</span>
                 </div>
             
-                {watch("groupListIsChecked") && <div className="w-[450px]"><FileDropzone name="ImportNewUserGroup" control={control} /></div>}
+                {watch("groupListIsChecked") && 
+                  <div className="w-[450px]">
+                      <FileDropzone name="importNewUserGroup" control={control} />
+                  </div>}
                 {!watch("groupListIsChecked") && <>
                   <MultiSelect  className="max-w-[420px]" isMulti={false} control={control} options={userGroups} {...register("userGroupList")}/>
                   
@@ -267,25 +203,16 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
             <button
               key={option}
               type="button"
-              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${
+              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300  ${watch("selectData") === option && index > 0 && downArrow} ${
                 watch("selectData") === option ? "bg-[#15274E] text-white" : ""
               } ${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none"}`}
               onClick={() => setValue("selectData", option, { shouldValidate: true })}
             >
               {option}  
-              {watch("selectData") === option && 
-              <span className="-bottom-2 absolute left-1/2 -translate-x-1/2 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[#15274E] border-t-[10px]"></span>
-            }
+            
             </button>
           ))}
-          {watch("selectData") === "All Applications" &&
-              <>
-            <MultiSelect className="max-w-[420px]" placeholder="Select App(s)" control={control} isAsync loadOptions={loadApps}  components={{ Option: customOption }} {...register("allApps")}/>
-            {errors.allApps?.message && typeof errors.allApps.message === 'string' && (
-            <p className="text-red-500">{errors.allApps.message}</p>
-            )}
-            </>
-          }
+        
 
           {watch("selectData") === "Specific Applications" &&
               <div className="grid grid-cols-[300px_1.5fr] gap-2 bg-[#F4F5FA]/60 border-1 border-gray-300 p-2 rounded-md">
@@ -370,7 +297,11 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                   <span className={`flex items-center ${watch("reviewerlistIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Upload a custom reviewer list</span>
                 </div>
             
-                {watch("reviewerlistIsChecked") && <div className="w-[450px]"><FileDropzone name="customReviewerlist" control={control} /></div>}
+                {watch("reviewerlistIsChecked") && 
+                  <div className="w-[450px]">
+                    <FileDropzone name="customReviewerlist" control={control} />
+                  </div>
+                }
                 {!watch("reviewerlistIsChecked") && 
                      <>
                      <ExpressionBuilder

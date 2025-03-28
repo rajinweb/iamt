@@ -29,6 +29,7 @@ export const exportToJSON = (rows: any[]) => {
   };
   
 export const asterisk="[&:after]:text-red-400 [&:after]:content-['*'] ";
+export const downArrow= `after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-2 after:border-l-[10px] after:border-l-transparent after:border-r-[10px] after:border-r-transparent after:border-t-[#15274E] after:border-t-[10px]`;
 export const durationOptions=[
   { value: "7 Days", label: "7 Days" },
   { value: "15 Days", label: "15 Days" },

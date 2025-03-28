@@ -5,9 +5,10 @@ import { useController, Control } from "react-hook-form";
 interface FileDropzoneProps {
   name: string;
   control: Control;
+  onChange?: (file: File | null) => void; // Optional external onChange handler
 }
 
-const FileDropzone: React.FC<FileDropzoneProps> = ({ name, control }) => {
+const FileDropzone: React.FC<FileDropzoneProps> = ({ name, control, onChange: externalOnChange }) => {
   const {
     field: { onChange, value },
     fieldState: { error },
@@ -15,12 +16,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ name, control }) => {
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
-      //onChange(acceptedFiles); // Update react-hook-form state
-      if (acceptedFiles.length > 0) {
-        onChange(acceptedFiles[0]); // Store only the first file
+      const file = acceptedFiles.length > 0 ? acceptedFiles[0] : null;
+      onChange(file); // Update react-hook-form state
+      if (externalOnChange) {
+        externalOnChange(file); // Trigger external onChange handler
       }
     },
-    [onChange]
+    [onChange, externalOnChange]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -49,8 +51,12 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ name, control }) => {
         )}
       </div>
 
-      {/* Show selected file name */}      
-      {value && <small className="text-green-700 font-semibold">Selected: {value.name}</small>}
+      {/* Show selected file name */}
+      {value instanceof File && (
+        <small className="text-green-700 font-semibold">
+          Selected: {value.name}
+        </small>
+      )}
 
       {/* Show error if validation fails */}
       {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}

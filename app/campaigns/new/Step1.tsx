@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { loadUsers, customOption } from "@/components/MsAsyncData";
-import { asterisk, template } from "@/utils/utils";
+import { asterisk, downArrow, template } from "@/utils/utils";
 
 interface Step1Props {
   formData: any;
@@ -155,17 +155,12 @@ const Step1: React.FC<Step1Props> = ({ formData, setFormData, onValidationChange
             <button
               key={option}
               type="button"
-              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${
+              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${watch("ownerType") === option && downArrow}  ${
                 watch("ownerType") === option ? "bg-[#15274E] text-white" : ""
               } ${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none"}`}
               onClick={() => setValue("ownerType", option, { shouldValidate: true })}
             >
               {option}  
-              {watch("ownerType") === option && <span className="absolute -bottom-2 left-[25px] peer-checked:left-[100px] transition-all duration-300 w-0 h-0
-                        border-l-[10px] border-l-transparent 
-                        border-r-[10px] border-r-transparent 
-                        border-t-[10px] border-t-[#15274E]">
-            </span>}
             </button>
           ))}
 
