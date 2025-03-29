@@ -5,16 +5,16 @@ import MultiSelect from "@/components/MultiSelect";
 import { customOption, loadApps } from "@/components/MsAsyncData";
 import FileDropzone from "@/components/FileDropzone";
 import ToggleSwitch from "@/components/ToggleSwitch";
-import { asterisk, userGroups, excludeUsers, downArrow} from "@/utils/utils";
+import { asterisk, userGroups, excludeUsers, downArrow, defaultExpression} from "@/utils/utils";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-import { v4 as uuidv4 } from "uuid";
+
 import {validationSchema} from "./step2Validation";
 interface Step2Props {
   formData: any;
   setFormData: (data: any) => void;
   onValidationChange: (isValid: boolean) => void;
 }
-const defaultExpression= { id: uuidv4(), attribute: null, operator: null, value: "", logicalOp: "AND" };
+
 const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,

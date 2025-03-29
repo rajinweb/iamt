@@ -89,7 +89,7 @@ const MultiSelect = ({
             placeholder={placeholder}
             onChange={handleChange}
             value={selectedValue ? selectedValue : defaultValue} 
-            //{...components && {components: components}}
+            
             components={optionCheck && isMulti ? { ...components, Option } : components} 
             className={className}
             isDisabled={isDisabled}
@@ -107,7 +107,7 @@ const MultiSelect = ({
             placeholder={placeholder}
             onChange={handleChange} 
             value={selectedValue ? selectedValue : defaultValue} 
-            //{...components && {components: optionCheck && isMulti ? { ...components, Option } : components}}
+            
             components={optionCheck && isMulti ? { ...components, Option } : components} 
             className={className}
             isDisabled={isDisabled}

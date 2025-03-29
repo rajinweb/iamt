@@ -1,13 +1,13 @@
-import { InfoIcon, Mail, Search } from "lucide-react";
-import { JSX, useEffect } from "react";
+import { BookTemplate, InfoIcon } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import MultiSelect from "@/components/MultiSelect";
-import { asterisk, beforeReminders, enforceComments } from "@/utils/utils";
+import { asterisk, beforeExpiryReminders, defaultExpression, enforceComments, everyDayReminders } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
-import { components, GroupBase, OptionProps } from "react-select";
+import ExpressionBuilder from "@/components/ExpressionBuilder";
 
 
 interface Step4Props {
@@ -19,62 +19,83 @@ interface Step4Props {
 
 const validationSchema = yup.object().shape({
   // Notifications
-  socIsChecked: yup.boolean(),
-  socReminders: yup.string(),
-  eocIsChecked: yup.boolean(),
-  eocReminders: yup.array().when("eocIsChecked", (eocIsChecked) => 
-    eocIsChecked ? yup.array().min(1, "Select at least one user").required() : yup.array().notRequired()
-  ),
+  socReminders: yup.array(),
+  eocReminders: yup.array(),
   msTeamsNotification: yup.boolean(),
+  remediationTicketing: yup.boolean(),
   allowDownloadUploadCropNetwork: yup.boolean(),
 
-  // Campaign Management
+   // Campaign Management
   markUndecidedRevoke: yup.boolean(),
   disableBulkAction: yup.boolean(),
-  enforceComments: yup.array().min(1, "Select at least one user").required(),
-
-  genricExpression: yup.string().when("enforceComments", (enforceComments) => 
-    enforceComments.includes("Custom Fields") ? yup.string().required("Generic Expression is required") : yup.string().notRequired()
-  ),
-
+  enforceComments: yup.string(),
+  genericExpression: yup.array().when("enforceComments", {
+      is: "Custom Fields",
+      then: (schema) =>
+        schema
+          .of(
+            yup.object().shape({
+              attribute: yup.object().nullable().required("Attribute is required"),
+              operator: yup.object().nullable().required("Operator is required"),
+              value: yup.string().required("Value is required"),
+            })
+          )
+          .min(1, "At least one condition is required")
+          .default([]), // 👈 Ensures validation even if untouched
+      otherwise: (schema) => schema.notRequired(),
+    }),
   // Advanced Setting
-  certifierUnavailableUsers: yup.array().min(1, "Select at least one user").required(),
+  allowEscalation: yup.string(),
+  certifierUnavailableUsers: yup.array().min(1, "Select at least one user").default([]),
   ticketConditionalApproval: yup.boolean(),
   authenticationSignOff: yup.boolean(),
-  generatePin: yup.string().when("authenticationSignOff", (authenticationSignOff) => 
-    authenticationSignOff ? yup.string().required("User Pin is required") : yup.string().notRequired()
-  ),
-  verifyUserAttribute: yup.string().when("authenticationSignOff", (authenticationSignOff) => 
-    authenticationSignOff ? yup.string().required("User Attribute is required") : yup.string().notRequired()
-  ),
+  generatePin: yup.string().when("authenticationSignOff", {
+    is: true,
+    then: (schema) => schema.required("User Pin is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  verifyUserAttribute: yup.string().when("authenticationSignOff", {
+    is: true,
+    then: (schema) => schema.required("User Attribute is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
   applicationScope: yup.boolean(),
+  preDelegate: yup.boolean(),
 });
 
 
 const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
-    setValue,
-    getValues,
+    setValue,    
     watch,
     control,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(validationSchema),
+    shouldUnregister: true,
     mode: "onChange",
-    defaultValues: formData.step4,
+    defaultValues: {
+      ...formData.step4,
+      genericExpression:[],
+      certifierUnavailableUsers: []
+    }
   });
 
-  useEffect(() => {
-    onValidationChange(Object.keys(errors).length === 0);
-  }, [errors, onValidationChange]);
+    useEffect(() => {
+      onValidationChange(isValid);
+    }, [isValid, onValidationChange]);
+
+  // useEffect(() => {
+  //   onValidationChange(Object.keys(errors).length === 0);
+  // }, [errors, onValidationChange]);
 
   useEffect(() => {
     const subscription = watch((values) => setFormData({...formData, step4:values}));
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
-  const enforceCommentsValue = watch("enforceComments");
+
 
   return (
   <>
@@ -85,35 +106,49 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
    
     <h2 className="font-medium"> Notification(s) </h2>
     <dl className="px-4 py-8 border-b border-gray-300 space-y-4 mb-8 text-sm">
-        <dt>Enable Email notification for:- </dt>
-        <dd className="grid grid-cols-2 px-6">
-          <label className="flex gap-4 items-center w-44">
-            <span className="w-34">Start of Campaign</span>
-            <input type="checkbox" className="scale-130"  {...register("socIsChecked")} />
-          </label>
-          <div>
-          <MultiSelect isMulti={false} isDisabled={!watch("socIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false}  control={control} options={beforeReminders} {...register("socReminders")}/>
-          {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
-            <p className="text-red-500">{errors.socReminders.message}</p>
-          )}
+
+        <dd className="mb-10">
+           Enable Email notification for:- 
+           <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="h-10 flex gap-4 items-center">
+                Start of Campaign
+              </label>
+              <MultiSelect placeholder="Reminders..." defaultValue={[everyDayReminders[0]]} isSearchable={false}  control={control} options={everyDayReminders} {...register("socReminders")}/>
+              {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
+                <p className="text-red-500">{errors.socReminders.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="h-10 flex gap-4 items-center">
+                End of Campaign
+              </label>
+            
+              <MultiSelect placeholder="Reminders..." defaultValue={[beforeExpiryReminders[0]]} isSearchable={false} control={control} options={beforeExpiryReminders} {...register("eocReminders")}/>
+              {errors.eocReminders?.message && typeof errors.eocReminders.message === 'string' && (
+                <p className="text-red-500">{errors.eocReminders.message}</p>
+              )}
+            </div>
+            <div className="flex items-start mt-10 justify-center">
+              <button className="h-10 flex gap-4 items-center bg-blue-500 text-white rounded-md px-4">
+                <BookTemplate size={16} />
+                Review and Edit Template
+              </button>
+            </div>
           </div>
+          
         </dd>
-        <dd className="grid grid-cols-2 px-6">
-           <label className="flex gap-4 items-center w-44">
-              <span className="w-34">End of Campaign</span>
-              <input type="checkbox" className="scale-130" {...register("eocIsChecked")} />
-           </label>
-           <div>
-          <MultiSelect isDisabled={!watch("eocIsChecked")} defaultValue={[beforeReminders[0]]} isSearchable={false} optionCheck={true} control={control} options={beforeReminders} {...register("eocReminders")}/>
-          {errors.eocReminders?.message && typeof errors.eocReminders.message === 'string' && (
-            <p className="text-red-500">{errors.eocReminders.message}</p>
-          )}
-           </div>
-        </dd>
+     
         <dd className="grid grid-cols-2">
           <span>Integrate with Microsoft Teams for notification(s)</span>
           <span className="flex gap-2 items-center">
             No<ToggleSwitch iconEnable checked={watch("msTeamsNotification")} onChange={(checked) => setValue("msTeamsNotification", checked)} />Yes
+          </span>
+        </dd>
+        <dd className="grid grid-cols-2">
+          <span>Integrate with Ticketing tool for Remediation</span>
+          <span className="flex gap-2 items-center">
+            No<ToggleSwitch iconEnable checked={watch("remediationTicketing")} onChange={(checked) => setValue("remediationTicketing", checked)} />Yes
           </span>
         </dd>
         <dd className="grid grid-cols-2">
@@ -140,25 +175,26 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
             {errors.enforceComments?.message && typeof errors.enforceComments.message === 'string' && (
               <p className="text-red-500">{errors.enforceComments.message}</p>
             )}
-          </dd>
-
-          {enforceCommentsValue =="Custom Fields" && 
-          <>
-           <dt> <span className={`flex items-center ${asterisk}`}>Write a generic Expression</span> </dt>
-           <dd>
-            <textarea
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                rows={2}
-                {...register("genricExpression")}
-              />
-          </dd>
-          </>
+          {
+         watch("enforceComments") =="Custom Fields" && 
+           <div className="mt-4"> 
+            <ExpressionBuilder title="Build Expressions" control={control} setValue={setValue} watch={watch} fieldName={"genericExpression"}/>
+            {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (
+              <p className="text-red-500">{errors.genericExpression.message}</p>
+            )}
+          </div>
           }
+          </dd>
     </dl>
     <h2 className="font-medium">
     Advanced Setting
     </h2>
     <dl className="px-4 py-8 space-y-4 mb-8 grid grid-cols-2 text-sm">
+          <dt> Allow Escalation</dt>
+          <dd className="flex gap-2 items-center">
+          <input type="text" className="form-input !w-1/3" {...register("allowEscalation")}/><span> days before end of campaign.</span>
+          </dd>
+      
           <dt> If Certifier is Unavailable, then select user</dt>
           <dd>
            <MultiSelect placeholder="Select User(s)" control={control} isAsync loadOptions={loadUsers}  components={{ Option: customOption }}  {...register("certifierUnavailableUsers")}/>
@@ -178,7 +214,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
               <span className={`flex items-center ${asterisk}`}>  Generate User Pin</span>
                 <input
                   type="text"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="form-input"
                   {...register("generatePin")}
                 />
               </div>
@@ -186,7 +222,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
                 <span className={`flex items-center ${asterisk}`}> Verify User Attribute</span>
                 <input
                   type="text"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="form-input"
                   {...register("verifyUserAttribute")}
                 />
               </div>
@@ -199,8 +235,11 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
        <ToggleSwitch checked={watch("applicationScope")} iconEnable onChange={(checked) => setValue("applicationScope", checked)} />
         <span className={`flex items-center ${watch("applicationScope") ? ` text-black` : 'text-black/50'}`}>All User Accounts</span>
       </dd>
-    </dl> 
 
+      <dt>Do you want to allow pre-delegate for users</dt>
+      <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("preDelegate")} onChange={(checked) => setValue("preDelegate", checked)} />Yes </dd>
+
+    </dl> 
 
     </>
   );

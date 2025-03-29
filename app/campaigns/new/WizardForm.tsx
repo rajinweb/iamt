@@ -17,7 +17,7 @@ import { asterisk } from "@/utils/utils";
   }
 
   const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(3);
     const [isStepValid, setIsStepValid] = useState(false); 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [saveAsTemplate, setSaveAsTemplate] = useState(false);
@@ -56,16 +56,28 @@ import { asterisk } from "@/utils/utils";
         duration: "",
         reviewRecurrence: "",
         startDate: null, 
-        end: "",
-         
+        end: ""
       },
       step4:{
+        socReminders:[],
+        eocReminders:[],
+        msTeamsNotification:false,
+        remediationTicketing:false,
+        allowDownloadUploadCropNetwork:false,
+         // Campaign Management
+         markUndecidedRevoke: false,
+         disableBulkAction: false,
+         enforceComments:"",
+         genericExpression:[],
+        // Advanced Setting
+        allowEscalation:"",
         certifierUnavailableUsers: [],
         ticketConditionalApproval: false,
         authenticationSignOff: false,
         generatePin: "",
         verifyUserAttribute: "",
-        applicationScope: false
+        applicationScope: false,
+        preDelegate: false,
       }
   });
 
@@ -225,11 +237,12 @@ import { asterisk } from "@/utils/utils";
             <Send size={18} /> Prepare Campaign
           </button> */}
             <button
-            className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center ${
-              isStepValid ? "bg-[#8b03c6] text-white hover:bg-[#8b03c6]/80" : "cursor-not-allowed"
+            className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center bg-[#8b03c6] text-white hover:bg-[#8b03c6]/80 ${
+              isStepValid ? "" : "opacity-50 cursor-not-allowed"
             }`}
             disabled={!isStepValid}
             onClick={() => {
+              console.log(formData)
               setIsDialogOpen(true)
               setSaveAsTemplate(true)
             }}  

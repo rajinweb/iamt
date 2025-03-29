@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 export const exportToCSV = (rows: any[]) => {
     const headers = Object.keys(rows[0]?.original || {}).join(','); // Extract column headers
     const csvContent = rows.map(row => Object.values(row.original).join(',')).join('\n');
@@ -27,7 +28,7 @@ export const exportToJSON = (rows: any[]) => {
     link.click();
     document.body.removeChild(link);
   };
-  
+export const defaultExpression= { id: uuidv4(), attribute: null, operator: null, value: "", logicalOp: "AND" };
 export const asterisk="[&:after]:text-red-400 [&:after]:content-['*'] ";
 export const downArrow= `after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-2 after:border-l-[10px] after:border-l-transparent after:border-r-[10px] after:border-r-transparent after:border-t-[#15274E] after:border-t-[10px]`;
 export const durationOptions=[
@@ -45,7 +46,18 @@ export const recurrenceOptions=[
   { value: "Yearly ", label: "Yearly" },
 ]
 
-
+export const everyDayReminders=[
+  { value: "every 2 Days", label: "every 2 Days" },
+  { value: "every 7 Days", label: "every 7 Days" },
+  { value: "every 15 Days", label: "every 15 Days" },
+  { value: "every 30 Days", label: "every 30 Days" },
+]
+export const beforeExpiryReminders=[
+  { value: "before 2 Days expiry", label: "Before 2 Days Expiry" },
+  { value: "before 7 Days expiry", label: "Before 7 Days Expiry" },
+  { value: "before 15 Days expiry", label: "Before 15 Days Expiry" },
+  { value: "before 30 Days expiry", label: "Before 30 Days Expiry" },
+]
 export const beforeReminders=[
   { value: "before 2 Days", label: "Before 2 Days" },
   { value: "before 7 Days", label: "Before 7 Days" },
