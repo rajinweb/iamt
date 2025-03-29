@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { customOption, loadApps } from "@/components/MsAsyncData";
 import FileDropzone from "@/components/FileDropzone";
@@ -40,11 +39,6 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
     }
   });
   const customReviewerlist = watch("customReviewerlist");
-
-  useEffect(() => {
-    console.log("formState:", errors);
-    console.log("isValid:", isValid);
-  }, [errors, isValid, customReviewerlist]);
 
   useEffect(() => {
     onValidationChange(isValid);

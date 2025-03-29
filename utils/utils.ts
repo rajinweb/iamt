@@ -92,3 +92,13 @@ export function numberToWords(n:number) {
     return tens[tensPlace] + "-" + ones[onesPlace];
   }
 }
+
+
+export const reviewersOptions = [
+  { value: "self-review", label: "Self Review" },
+  { value: "user-manager", label: "User Manager" },
+  { value: "app-owner", label: "App Owner" },
+  { value: "entitlement-owner", label: "Entitlement Owner" },
+  { value: "security-team", label: "Security Team" },
+  { value: "custom-reviewer", label: "Custom Reviewer" }
+];
