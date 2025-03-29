@@ -46,7 +46,7 @@ const validationSchema = yup.object().shape({
     }),
   // Advanced Setting
   allowEscalation: yup.string(),
-  certifierUnavailableUsers: yup.array().min(1, "Select at least one user").default([]),
+  certifierUnavailableUsers: yup.array().nullable().notRequired(),
   ticketConditionalApproval: yup.boolean(),
   authenticationSignOff: yup.boolean(),
   generatePin: yup.string().when("authenticationSignOff", {
@@ -70,6 +70,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
     setValue,    
     watch,
     control,
+    unregister,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -81,14 +82,13 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
       certifierUnavailableUsers: []
     }
   });
-
+  const enforComments = watch("enforceComments");
+  const showGenericExpression = enforComments === "Custom Fields";
+  
+ 
     useEffect(() => {
       onValidationChange(isValid);
     }, [isValid, onValidationChange]);
-
-  // useEffect(() => {
-  //   onValidationChange(Object.keys(errors).length === 0);
-  // }, [errors, onValidationChange]);
 
   useEffect(() => {
     const subscription = watch((values) => setFormData({...formData, step4:values}));
@@ -176,7 +176,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
               <p className="text-red-500">{errors.enforceComments.message}</p>
             )}
           {
-         watch("enforceComments") =="Custom Fields" && 
+         showGenericExpression && 
            <div className="mt-4"> 
             <ExpressionBuilder title="Build Expressions" control={control} setValue={setValue} watch={watch} fieldName={"genericExpression"}/>
             {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (
