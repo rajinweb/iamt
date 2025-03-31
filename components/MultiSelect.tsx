@@ -8,10 +8,7 @@ import { GroupBase, OptionProps, components as component } from "react-select";
 
 type MultiSelectProps<T extends FieldValues = FieldValues> = {
   control: Control<FieldValues>;
-  // other props
-//}; interface MultiSelectProps {
   name: Path<T>;
- // control: Control<FieldValues>;
   options?: { value: string; label: string; image?: string }[];
   isAsync?: boolean;
   loadOptions?: (inputValue: string, callback: (options: { value: string; label: string; image?: string }[]) => void) => void;

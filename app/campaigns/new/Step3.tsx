@@ -1,4 +1,4 @@
-import { CirclePlus, Info, InfoIcon } from "lucide-react";
+import { CirclePlus, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useFieldArray, useForm, Resolver, Control, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -33,7 +33,6 @@ const validationSchema = yup.object().shape({
 const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
-    setValue,
     watch,
     control,
     formState: { errors, isValid },
@@ -57,7 +56,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   useEffect(() => {
     const subscription = watch((values) => setFormData({ ...formData, step3: values as Step3FormData }));
     return () => subscription.unsubscribe();
-  }, [watch, setFormData]);
+  }, [watch, setFormData, formData]);
 
   const multiStageReviewEnabled = watch("multiStageReview");
   useEffect(() => {
@@ -70,6 +69,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
         if (index > 0) remove(fields.length - index);
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[multiStageReviewEnabled]);
 
   return (
@@ -94,16 +94,16 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 control={control as unknown as Control<FieldValues>}
                 register={register}
                 errors={errors}
-                removeStage={() => remove(index)}  
-                children={
+                removeStage={() => remove(index)}            
+                >
+                {
                    index < fields.length - 1 && ( 
                     <div className="my-2 flex items-center gap-2 px-1">
                       <input type="checkbox" className="scale-130" {...register(`stages.${index}.nextReviewerAction`)} />
                       Show action to next reviewer <InfoIcon className="text-gray-500" size={16} />
                     </div>
                   )
-                }
-              />
+                }</MultiStageReview>
 
             </div> 
             )

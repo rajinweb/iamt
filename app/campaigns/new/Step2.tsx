@@ -42,7 +42,7 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   useEffect(() => {
         const subscription = watch((values) => setFormData({ ...formData, step2: values as Step2FormData }));
     return () => subscription.unsubscribe();
-  }, [watch, setFormData]);
+  }, [watch, setFormData, formData]);
 
    // **Reseting**
    const userType = watch("userType");
@@ -109,7 +109,7 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
       unregister("genericExpression");
       setValue("genericExpression", [], { shouldValidate: false });
     }
-  }, [reviewer, reviewerlistIsChecked, customReviewerlist, resetField, setValue]);
+  }, [reviewer, reviewerlistIsChecked, customReviewerlist, unregister, resetField, setValue]);
   
 
   return (

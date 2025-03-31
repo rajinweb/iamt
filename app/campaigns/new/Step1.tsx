@@ -65,7 +65,7 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   useEffect(() => {
     const subscription = watch((values) => setFormData({ ...formData, step1: values as Step1FormData }));
     return () => subscription.unsubscribe();
-  }, [watch, setFormData]);
+  }, [watch, setFormData, formData]);
 
   // **CLEAR THE OTHER FIELD WHEN OWNER TYPE CHANGES**
   const ownerType = watch("ownerType");

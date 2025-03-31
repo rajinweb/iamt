@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import MultiSelect from "@/components/MultiSelect";
-import { asterisk, beforeExpiryReminders, defaultExpression, enforceComments, everyDayReminders, startOfCampaign } from "@/utils/utils";
+import { asterisk, beforeExpiryReminders, enforceComments, startOfCampaign } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
 import { Step4FormData, StepProps } from "@/types/StepTypes";
@@ -85,9 +85,7 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   useEffect(() => {
     const subscription = watch((values) => setFormData({ ...formData, step4: values as Step4FormData }));
     return () => subscription.unsubscribe();
-  }, [watch, setFormData]);
-
-
+  }, [watch, setFormData, formData]);
 
   return (
   <>

@@ -3,7 +3,7 @@ import WizardSteps from "@/components/WizardSteps";
 import SubmitDialog from "@/components/SubmitDialog";
 import { useFormData } from "@/hooks/useFormData";
 import { Step } from "@/types/StepTypes";
-import { BookType, MoveLeft, MoveRight, Send } from "lucide-react";
+import { BookType, MoveLeft, MoveRight } from "lucide-react";
 
 interface WizardFormProps {
   steps: Step[];

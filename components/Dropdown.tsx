@@ -1,4 +1,4 @@
-import { ElementType, ReactNode, useEffect, useRef, useState } from "react";
+import { ElementType, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -29,14 +29,14 @@ const Dropdown = ({ Icon, children, name, className, menuWidth = 160, ...props }
   };
 
 
-  const updateMenuPosition = () => {
+  const updateMenuPosition = useCallback(() => {
     if (menuButtonRef.current) {
       const buttonRect = menuButtonRef.current.getBoundingClientRect();
-      let top = buttonRect.bottom;
-      let left = buttonRect.right - menuWidth;
+      const top = buttonRect.bottom;
+      const left = buttonRect.right - menuWidth;
       setMenuPosition({ top, left });
     }
-  };
+  },[menuWidth]);
 
 
   const toggleMenu = (e: React.MouseEvent) => {
@@ -82,7 +82,7 @@ const Dropdown = ({ Icon, children, name, className, menuWidth = 160, ...props }
         });
       };
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, updateMenuPosition]);
 
   return (
     <>
