@@ -1,6 +1,3 @@
-// components/WizardSteps.tsx
-import { MoveLeft, MoveRight } from "lucide-react";
-
 interface Step {
   name: string;
 }
@@ -8,38 +5,45 @@ interface Step {
 interface WizardStepsProps {
   currentStep: number;
   steps: Step[];
-  onPrevStep: () => void;
-  onNextStep: () => void;
-  isStepValid: boolean;
+  onStepChange: (step: number) => void; 
+  validationStatus: boolean[]; 
 }
 
-const WizardSteps: React.FC<WizardStepsProps> = ({ currentStep, steps, onPrevStep, onNextStep, isStepValid }) => {
+const WizardSteps: React.FC<WizardStepsProps> = ({ currentStep, steps, onStepChange, validationStatus }) => {
+
   return (
     <div className="max-w-2xl mx-auto flex justify-between items-center mb-6">
-      {steps.map((step, index) => (
-        <div key={index} className="flex flex-col items-center relative">
-          <div
-            className={`w-8 h-8 flex relative items-center justify-center rounded-full text-white text-sm font-bold
-              ${index < currentStep ? 'bg-blue-500' : currentStep === index ? "bg-blue-500" : "bg-gray-300"}
-            `}
-          >
-            {index + 1}
-          </div>
-          <span className={`mt-2 text-sm ${index < currentStep || currentStep === index ? "text-black font-semibold" : "text-gray-500"}`}>
-            {step.name}
-          </span>
+      {steps.map((step, index) => {
+       
+        const isClickable = validationStatus.slice(0, index).every(Boolean); 
+        console.log( step, 'tes', isClickable)
+        return (
+            <div key={index} className="flex flex-col items-center relative">
+              <button
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-bold
+                  ${index <= currentStep ? "bg-blue-500" : `${isClickable ? "bg-blue-200" : "bg-gray-300"}`}  
+                  ${isClickable ? "cursor-pointer" : "cursor-not-allowed"}
+                `}
+                onClick={() => isClickable && onStepChange(index)}>
+                {index + 1}
+            </button>
+            <span className={`mt-2 text-sm ${isClickable ? "text-black font-semibold" : "text-gray-500"}`}>
+              {step.name}
+            </span>
           {index < steps.length - 1 && (
-            <div className="h-2 w-[100px] bg-gray-300 rounded-full absolute top-3 -right-20">
-              <div
-                className="h-full w-1/2 bg-blue-500 rounded-full transition-all duration-300"
-                style={{
-                  width: currentStep >= index + 1 ? "100%" : "0%",
-                }}
-              ></div>
-            </div>
+              <div className={`h-2 w-[100px] rounded-full absolute top-3 -right-20  ${currentStep >= index + 1 || validationStatus[index] ? "bg-blue-200" : "bg-gray-300"}`}>
+                <div
+                  className="h-full w-1/2 bg-blue-500 rounded-full transition-all duration-300"
+                  style={{
+                    width: currentStep >= index + 1 ? "100%" : "0%",
+                  }}
+                ></div>
+              </div>
           )}
         </div>
-      ))}
+      )
+    }
+    )}
     </div>
   );
 };

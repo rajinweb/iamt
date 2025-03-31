@@ -1,4 +1,3 @@
-// components/WizardForm.tsx
 import { useState } from "react";
 import WizardSteps from "@/components/WizardSteps";
 import SubmitDialog from "@/components/SubmitDialog";
@@ -11,23 +10,16 @@ interface WizardFormProps {
 }
 
 const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
-  const [currentStep, setCurrentStep] = useState(2);
-  const [isStepValid, setIsStepValid] = useState(false);
-  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useFormData();
+  const [validationStatus, setValidationStatus] = useState<boolean[]>(Array(steps.length).fill(false));
+  
+  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const nextStep = () => {
-    if (isStepValid && currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  };
+  
+ 
   const handleSubmit = async () => {
     try {
       // Show the loading dialog (optional)
@@ -67,24 +59,62 @@ const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
       alert("An error occurred while submitting the form. Please try again.");
     }
   };
+
+  const handleValidationChange = (isValid: boolean) => {
+    setValidationStatus((prev) => {
+      if (prev[currentStep] !== isValid) { 
+        const newStatus = [...prev];
+        newStatus[currentStep] = isValid;
+        return newStatus;
+      }
+      return prev;
+    });
+  };  
   
+
+  const nextStep = () => {
+    if (validationStatus[currentStep] && currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);  // Go to the previous step
+    }
+  };
+  
+
   return (
     <>
       <WizardSteps
         currentStep={currentStep}
         steps={steps}
-        onPrevStep={prevStep}
-        onNextStep={nextStep}
-        isStepValid={isStepValid}
+        validationStatus={validationStatus}
+        onStepChange={(step) => {
+          if (step <= currentStep || validationStatus.slice(0, step).every(Boolean)) {
+            setCurrentStep(step);
+          }
+        }} 
       />
       <div className="mb-6">
-        {steps[currentStep].component({ formData, setFormData, onValidationChange: setIsStepValid })}
+        {steps[currentStep].component({ 
+          formData, 
+          setFormData, 
+          onValidationChange: handleValidationChange })}
       </div>
       <SubmitDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         saveAsTemplate={saveAsTemplate}
         setSaveAsTemplate={setSaveAsTemplate}
+        certificationTemplate={formData.step1?.certificationTemplate || ""}
+        setCertificationTemplate={(value) =>
+          setFormData((prev) => ({
+            ...prev,
+            step1: { ...prev.step1, certificationTemplate: value }, // Update formData
+          }))
+        }
       />
     <div className="flex gap-5 my-8 px-2">
   {/* Previous Button */}
@@ -98,35 +128,35 @@ const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
     <MoveLeft /> Previous
   </button>
 
-  {/* Next Button or Save As Template Button */}
   {currentStep < steps.length - 1 ? (
-    <button
-      className={`rounded px-4 p-2 flex gap-2 bg-blue-500 hover:bg-blue-500/80  text-white ${
-        isStepValid ? "" : "opacity-50 cursor-not-allowed"
-      }`}
+      <button
+      className={`rounded px-4 py-2 flex gap-2 bg-blue-500 hover:bg-blue-500/80 text-white 
+        ${validationStatus[currentStep] ? "" : "opacity-50 cursor-not-allowed"}
+      `}
       onClick={nextStep}
-      disabled={!isStepValid}
-    >
+      disabled={!validationStatus[currentStep]}  
+      >
       Next <MoveRight />
-    </button>
+      </button>
   ) : (
     <div className="flex gap-5">
       <button
-        className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center bg-[#8b03c6] text-white hover:bg-[#8b03c6]/80 ${
-          isStepValid ? "" : "opacity-50 cursor-not-allowed"
-        }`}
-        disabled={!isStepValid}
-        onClick={() => {
-          setIsDialogOpen(true);
-          setSaveAsTemplate(true); // Open the "Save as Template" dialog
-        }}
-      >
-        <BookType size={18} /> Save As Template
+          className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center bg-[#8b03c6] text-white hover:bg-[#8b03c6]/80 ${
+            currentStep === steps.length - 1 && validationStatus[currentStep] ? "" : "opacity-50 cursor-not-allowed"
+          }`}
+          disabled={currentStep === steps.length - 1 ? !validationStatus[currentStep] : true}
+          onClick={() => {
+            setIsDialogOpen(true);
+            setSaveAsTemplate(true); 
+            handleSubmit()
+          }}
+        >
+          <BookType size={18} /> Save As Template
       </button>
     </div>
   )}
 
-  {/* Submit Button */}
+  {/* Submit Button 
   {currentStep === steps.length - 1 && (
     <button
       className={`px-4 py-2 rounded cursor-pointer flex gap-2 items-center ${
@@ -137,7 +167,7 @@ const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
     >
       <Send size={18} /> Prepare Campaign
     </button>
-  )}
+  )}*/}
 </div>
 
     </>

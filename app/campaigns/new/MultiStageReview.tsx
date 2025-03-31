@@ -1,26 +1,24 @@
 import React from "react";
 import MultiSelect from "@/components/MultiSelect";
-import { UseFormRegister, Control, FieldErrors, FieldErrorsImpl } from "react-hook-form";
+import { UseFormRegister, Control, FieldErrors, FieldErrorsImpl, FieldValues } from "react-hook-form";
 import { CircleMinus } from "lucide-react";
 import { asterisk, reviewersOptions } from "@/utils/utils";
 
 import { FieldError } from "react-hook-form";
 
 interface StageError {
-  reviewer?: FieldError | FieldErrorsImpl<any> | { message?: string } | undefined;
-  duration?: FieldError | FieldErrorsImpl<any> | { message?: string } | undefined;
+  reviewer?: FieldError | FieldErrorsImpl<Record<string, unknown>> | { message?: string } | undefined;
+  duration?: FieldError | FieldErrorsImpl<Record<string, unknown>> | { message?: string } | undefined;
 }
 
 interface MultiStageReviewProps {
   index: number;
-  totalStages: number;
-  control: Control<any>;
-  register: UseFormRegister<any>;
+  control: Control<FieldValues>; 
+  register: UseFormRegister<FieldValues>; 
   errors?: FieldErrors<{ stages: StageError[] }>;
   removeStage: () => void;
   children?: React.ReactNode; 
 }
-
 
 const MultiStageReview: React.FC<MultiStageReviewProps> = ({
   control,
@@ -28,14 +26,11 @@ const MultiStageReview: React.FC<MultiStageReviewProps> = ({
   errors,
   index,
   removeStage,
-  totalStages,
   children
 }) => {
-  
   return (
-      <div className={`stages w-full relative`}>
-      
-      {index != null && index > 0 &&
+    <div className={`stages w-full relative`}>
+      {index != null && index > 0 && (
         <button
           type="button"
           onClick={removeStage}
@@ -44,20 +39,21 @@ const MultiStageReview: React.FC<MultiStageReviewProps> = ({
         >
           <CircleMinus size={18} />
         </button>
-      }
+      )}
 
       <MultiStageReviewForm
-        className={`${index > 0 && 'bg-[#F4F5FA]/60 border-1 border-gray-300 p-2 rounded-md [&>div]:gap-0'}`}
+        className={`${
+          index > 0 && "bg-[#F4F5FA]/60 border-1 border-gray-300 p-2 rounded-md [&>div]:gap-0"
+        }`}
         control={control}
         register={register}
-        errors={errors?.stages?.[index] as undefined || {}} 
+        errors={errors?.stages?.[index] as undefined || {}}
         reviewer={`stages.${index}.reviewer`}
         duration={`stages.${index}.duration`}
-        index={index > 0 ? index+1 : null}
-        children={children}
-      />
-  
-     
+        index={index > 0 ? index + 1 : null}
+      >
+        {children}
+      </MultiStageReviewForm>
     </div>
   );
 };
@@ -66,15 +62,14 @@ export default MultiStageReview;
 
 interface MultiStageReviewFormProps {
   className?: string;
-  control: Control<any>;
-  register: UseFormRegister<any>;
-  errors?: FieldErrors<any>; 
+  control: Control<FieldValues>; 
+  register: UseFormRegister<FieldValues>; 
+  errors?: FieldErrors<Record<string, unknown>>; 
   reviewer: string;
   duration: string;
   index?: number | null;
   children?: React.ReactNode;
 }
-
 
 export const MultiStageReviewForm: React.FC<MultiStageReviewFormProps> = ({
   className,
@@ -92,34 +87,34 @@ export const MultiStageReviewForm: React.FC<MultiStageReviewFormProps> = ({
       <div className="grid grid-cols-[280px_1.5fr] items-start gap-2 mb-2">
         <label className={`h-10 items-center flex ${asterisk}`}>Stage {index} Reviewers</label>
         <div>
-        <MultiSelect
-          name={reviewer}
-          placeholder="Select Reviewer(s)"
-          control={control}
-          options={reviewersOptions}
-        />
-        {typeof errors.reviewer?.message === "string" && <p className="text-red-500">{errors.reviewer.message}</p>}
+          <MultiSelect
+            name={reviewer}
+            isMulti={false}
+            placeholder="Select Reviewer(s)"
+            control={control}
+            options={reviewersOptions}
+          />
+          {typeof errors.reviewer?.message === "string" && (
+            <p className="text-red-500">{errors.reviewer.message}</p>
+          )}
         </div>
       </div>
-
 
       <div className="grid grid-cols-[280px_1.5fr] items-start gap-2">
-        <label className={`h-10 items-center flex ${asterisk}`}>Stage {index} Duration (in days)</label>
-       <div>
-        <input
-          type="text"
-          className="form-input bg-white"
-          {...register(duration)}
-        />
-        {errors.duration?.message &&
-          typeof errors.duration?.message === "string" && (
-            <p className="text-red-500">{errors.duration.message}</p>
-          )}
-           {children}
+        <label className={`h-10 items-center flex ${asterisk}`}>Stage {index} Duration (days)</label>
+        <div>
+          <input
+            type="text"
+            className="form-input bg-white"
+            {...register(duration)}
+          />
+          {errors.duration?.message &&
+            typeof errors.duration?.message === "string" && (
+              <p className="text-red-500">{errors.duration.message}</p>
+            )}
+          {children}
         </div>
       </div>
-
-  
     </div>
   );
 };

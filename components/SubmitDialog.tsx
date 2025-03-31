@@ -1,15 +1,30 @@
-// components/SubmitDialog.tsx
 import Dialog from "@/components/Dialog";
 import { asterisk } from "@/utils/utils";
-
+import { useEffect, useState } from "react";
 interface SubmitDialogProps {
   isOpen: boolean;
   onClose: () => void;
   saveAsTemplate: boolean;
   setSaveAsTemplate: React.Dispatch<React.SetStateAction<boolean>>;
+  certificationTemplate: string;
+  setCertificationTemplate: (value: string) => void; 
 }
 
-const SubmitDialog: React.FC<SubmitDialogProps> = ({ isOpen, onClose, saveAsTemplate, setSaveAsTemplate }) => {
+const SubmitDialog: React.FC<SubmitDialogProps> = ({  
+  isOpen,
+  onClose,
+  saveAsTemplate,
+  setSaveAsTemplate,
+  certificationTemplate,
+  setCertificationTemplate, }) => {
+  
+    const [templateName, setTemplateName] = useState(certificationTemplate); 
+    useEffect(() => {
+      if (isOpen) {
+        setTemplateName(certificationTemplate);
+      }
+    }, [isOpen, certificationTemplate]);
+
   return (
     <Dialog
       isOpen={isOpen}
@@ -37,10 +52,15 @@ const SubmitDialog: React.FC<SubmitDialogProps> = ({ isOpen, onClose, saveAsTemp
         </p>
       </>}
       {saveAsTemplate && <div className="my-6">
-        <label className={` ${asterisk}`}>Template Name</label>
+        <label className={` ${asterisk}`}>Certification Template</label>
         <input
           type="text"
-          className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+          className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+          value={templateName}
+          onChange={(e) => {
+            setTemplateName(e.target.value);
+            setCertificationTemplate(e.target.value); // Update formData
+          }} />
       </div>}
     </Dialog>
   );

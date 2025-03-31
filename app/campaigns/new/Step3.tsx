@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useFieldArray, useForm, Resolver, Control, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import MultiSelect from "@/components/MultiSelect";
-import { asterisk, durationOptions, recurrenceOptions } from "@/utils/utils";
-import DateInput from "@/components/DatePicker";
+// import MultiSelect from "@/components/MultiSelect";
+// import { asterisk, durationOptions, recurrenceOptions } from "@/utils/utils";
+// import DateInput from "@/components/DatePicker";
 import MultiStageReview from "./MultiStageReview";
 import { Step3FormData, StepProps } from "@/types/StepTypes";
 
@@ -15,16 +15,17 @@ const validationSchema = yup.object().shape({
   .min(1, "At least one stage is required")
   .of(
     yup.object().shape({
-      reviewer: yup.array().min(1, "Each stage must have at least one reviewer").required(),
+      //reviewer: yup.string().min(1, "Each stage must have at least one reviewer").required(),
+      reviewer: yup.string().required(),
       duration: yup.string().required("Duration is required"),
       nextReviewerAction: yup.boolean(),
     })
   ).required("Stages are required"),
 
-  duration: yup.string().required("Duration is required"),
-  reviewRecurrence: yup.string().required("Review recurrence is required"),
-  startDate: yup.date().nullable().required("Start date is required"),
-  end: yup.string().required("End is required"),
+  // duration: yup.string().required("Duration is required"),
+  // reviewRecurrence: yup.string().required("Review recurrence is required"),
+  // startDate: yup.date().nullable().required("Start date is required"),
+  // end: yup.string().required("End is required"),
 });
 
 
@@ -37,7 +38,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     control,
     formState: { errors, isValid },
   } = useForm<Step3FormData>({
-     resolver: yupResolver(validationSchema) as Resolver<Step3FormData>,
+     resolver: yupResolver(validationSchema) as unknown as Resolver<Step3FormData>,
     mode: "onChange",
     defaultValues: {
       ...formData.step3,
@@ -61,7 +62,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   const multiStageReviewEnabled = watch("multiStageReview");
   useEffect(() => {
     if (fields.length === 0 || multiStageReviewEnabled ) {
-        append({ reviewer: [], duration: "", nextReviewerAction: false }) // enable default MultiStageReview
+        append({ reviewer: "", duration: "", nextReviewerAction: false }) // enable default MultiStageReview
     }
    
     if (!multiStageReviewEnabled && fields.length > 0 ) {
@@ -86,11 +87,9 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
       
        {
         fields.map((item, index) => {
-          const totalStages = watch("stages")?.length || 0;
           return (    
             <div key={item.id+1}>     
               <MultiStageReview
-                totalStages={totalStages} 
                 index={index}  
                 control={control as unknown as Control<FieldValues>}
                 register={register}
@@ -115,7 +114,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           <button
               type="button"
               onClick={() => {
-                append({ reviewer: [], duration: "", nextReviewerAction: false })                
+                append({ reviewer: "", duration: "", nextReviewerAction: false })                
               }}
               className="mt-4 flex gap-2 text-blue-500 cursor-pointer group "
             >
@@ -123,6 +122,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           Add a stage
           </button>
       }
+      {/*
     <h2 className="font-medium mb-6 mt-12">
       Specify recurrence of review
       {watch("multiStageReview") &&  <small className="flex gap-2 py-2"><InfoIcon className=" text-gray-500" size={16} /> Your sum duration of all review stages connot be longer than the recurrence period.</small>}
@@ -171,7 +171,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
               ))}
             </div>
         </div>
- 
+ */}
       </div>
     </div>
   );

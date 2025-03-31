@@ -1,15 +1,14 @@
-import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import { useEffect } from "react";
-import { Control, FieldValues, useForm } from "react-hook-form";
+import { Control, FieldValues, Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { loadUsers, customOption } from "@/components/MsAsyncData";
 import { asterisk, downArrow, template } from "@/utils/utils";
-import { Step1FormData, StepProps } from "@/types/StepTypes"; // Import the Step1FormData type
+import { Step1FormData, StepProps } from "@/types/StepTypes"; 
 
 const validationSchema = yup.object().shape({
-  certificationName: yup.string().required("Campaign Name is required"),
+  certificationTemplate: yup.string().required("Certification Template Name is required"),
   description: yup.string().required("Description is required"),
   template: yup.string(),
   duration: yup
@@ -39,7 +38,7 @@ const validationSchema = yup.object().shape({
       otherwise: (schema) => schema.notRequired(),
     }),
 
-  reviewer: yup.string().required("Reviewer is required"),
+  // reviewer: yup.string().required("Reviewer is required"),
 });
 
 
@@ -51,7 +50,7 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     watch,
     formState: { errors, isValid },
   } = useForm<Step1FormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as unknown as Resolver<Step1FormData>,
     mode: "onChange",
     defaultValues: {
       ...formData.step1, // Pre-fill data when returning to step
@@ -87,15 +86,15 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
 
       <div className="text-sm space-y-4 min-w-max lg:w-1/2">
         <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-          <label className={`pl-2 ${asterisk}`}>Certification Name</label>
+          <label className={`pl-2 ${asterisk}`}>Certification Template</label>
           <div>
             <input
               type="text"
               className="form-input"
-              {...register("certificationName")}
+              {...register("certificationTemplate")}
             />
-            {errors.certificationName?.message && typeof errors.certificationName.message === 'string' && (
-              <p className="text-red-500">{errors.certificationName.message}</p>
+            {errors.certificationTemplate?.message && typeof errors.certificationTemplate.message === 'string' && (
+              <p className="text-red-500">{errors.certificationTemplate.message}</p>
             )}
           </div>
         </div>
@@ -127,7 +126,7 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
         </div>
 
         <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-          <label className={`pl-2 ${asterisk}`}>Duration</label>
+          <label className={`pl-2 ${asterisk}`}>Duration (days)</label>
           <div>
             <input
               type="text"
@@ -175,7 +174,7 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
             )}
           </div>
         </div>
-
+{/*
         <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
           <label className={`pl-2 ${asterisk}`}>Reviewer</label>
           <div>
@@ -196,6 +195,8 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
             <p className="text-red-500">{errors.reviewer.message}</p>
           )}
         </div>
+*/}
+
       </div>
     </div>
   );

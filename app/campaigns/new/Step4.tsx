@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import MultiSelect from "@/components/MultiSelect";
-import { asterisk, beforeExpiryReminders, defaultExpression, enforceComments, everyDayReminders } from "@/utils/utils";
+import { asterisk, beforeExpiryReminders, defaultExpression, enforceComments, everyDayReminders, startOfCampaign } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
 import { Step4FormData, StepProps } from "@/types/StepTypes";
@@ -104,9 +104,9 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
            <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="h-10 flex gap-4 items-center">
-                Start of Campaign
+                During the Campaign
               </label>
-              <MultiSelect placeholder="Reminders..." defaultValue={[everyDayReminders[0]]} isSearchable={false}  control={control as unknown as Control<FieldValues>} options={everyDayReminders} {...register("socReminders")}/>
+              <MultiSelect placeholder="Reminders..." defaultValue={[startOfCampaign[0]]} isSearchable={false}  control={control as unknown as Control<FieldValues>} options={startOfCampaign} {...register("socReminders")}/>
               {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
                 <p className="text-red-500">{errors.socReminders.message}</p>
               )}

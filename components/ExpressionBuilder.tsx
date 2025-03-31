@@ -86,7 +86,7 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
                 name={`${fieldName}.${index}.logicalOp`}
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} options={logicalOperators} placeholder="AND/OR" />
+                  <Select {...field} options={logicalOperators}  isSearchable={false} placeholder="AND/OR" />
                 )}
               />
             )}
@@ -96,7 +96,7 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
               name={`${fieldName}.${index}.attribute`}
               control={control}
               render={({ field }) => (
-                <Select {...field} options={attributes} placeholder="Select Attribute" />
+                <Select {...field} options={attributes} isSearchable={false} placeholder="Select Attribute" />
               )}
             />
 
@@ -105,7 +105,7 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
               name={`${fieldName}.${index}.operator`}
               control={control}
               render={({ field }) => (
-                <Select {...field} options={operators} placeholder="Condition" />
+                <Select {...field} options={operators} isSearchable={false}  placeholder="Condition" />
               )}
             />
 

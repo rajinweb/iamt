@@ -3,7 +3,7 @@ import { useState } from "react";
 
 // Define types for form data (you could move this to a separate file)
 interface Step1 {
-  certificationName: string;
+  certificationTemplate: string;
   description: string;
   template: string;
   duration: string;
@@ -70,7 +70,7 @@ type FormData = {
 export function useFormData() {
   const [formData, setFormData] = useState<FormData>({
     step1: {
-      certificationName: "",
+      certificationTemplate: "",
       description: "",
       template: "",
       duration: "",

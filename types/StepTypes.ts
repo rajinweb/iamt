@@ -1,5 +1,3 @@
-// types/StepTypes.ts
-
 import { JSX } from "react";
 
 export interface StepComponentProps {
@@ -13,29 +11,20 @@ export interface StepComponentProps {
     component: (props: StepComponentProps) => JSX.Element; // The component to render for this step, taking formData, setFormData, and validation as props.
   }
 
+/***steps1****/
 
-
-  /***steps1****/
-
-  // Step1FormData Interface
+// Step1FormData Interface
 export interface Step1FormData {
     template?: string;
     ownerUser?: any[];
     ownerGroup?: any[];
-    certificationName: string;
+    certificationTemplate: string;
     description: string;
     duration: string;
     ownerType: string;
     reviewer: string;
   }
   
- /*
-  export interface Step1Props {
-    formData: FormData; // formData is now typed as FormData
-    setFormData: (data: FormData) => void; // setFormData should accept FormData
-    onValidationChange: (isValid: boolean) => void;
-  }
-*/
   export interface StepProps {
     formData: FormData;
     setFormData: (data: FormData) => void;
@@ -66,7 +55,7 @@ export interface Step1FormData {
   /***End of Step2 */
 
   export interface Stage {
-    reviewer: string[];
+    reviewer: string;
     duration: string;
     nextReviewerAction: boolean;
   }
