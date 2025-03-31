@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm} from "react-hook-form";
+import { useForm,Resolver, Control, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import MultiSelect from "@/components/MultiSelect";
 import { customOption, loadApps } from "@/components/MsAsyncData";
@@ -7,15 +7,11 @@ import FileDropzone from "@/components/FileDropzone";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { asterisk, userGroups, excludeUsers, downArrow, defaultExpression} from "@/utils/utils";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-
+import { Step2FormData, StepProps } from "@/types/StepTypes";
 import {validationSchema} from "./step2Validation";
-interface Step2Props {
-  formData: any;
-  setFormData: (data: any) => void;
-  onValidationChange: (isValid: boolean) => void;
-}
 
-const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange }) => {
+
+const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
     unregister,
@@ -24,14 +20,13 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
     watch,
     resetField,
     formState: { errors, isValid },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-    mode: "all", 
+  } = useForm<Step2FormData>({
+    resolver: yupResolver(validationSchema) as Resolver<Step2FormData>,
+    mode: "onChange", 
     defaultValues: {
       ...formData.step2,
-      //userType: "All users",
-      specificUserExpression: [defaultExpression],
-      genericExpression:[],
+      userType: formData.step2?.userType ?? "",
+      genericExpression:formData.step2?.genericExpression ?? [],
       expressionEntitlement:[defaultExpression],
       groupListIsChecked: false,
       customReviewerlist: null,
@@ -45,7 +40,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
   }, [isValid, onValidationChange]);
 
   useEffect(() => {
-    const subscription = watch((values) => setFormData({...formData, step2:values}));
+        const subscription = watch((values) => setFormData({ ...formData, step2: values as Step2FormData }));
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
@@ -143,7 +138,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
           ))}
 
        
-              {watch("userType") === "Specific users" &&  <ExpressionBuilder title="Build Expression" control={control} setValue={setValue} watch={watch} fieldName={"specificUserExpression"} /> }
+              {watch("userType") === "Specific users" &&  <ExpressionBuilder title="Build Expression" control={control as unknown as Control<FieldValues>} setValue={setValue} watch={watch} fieldName={"specificUserExpression"} /> }
 
               {watch("userType") === "Custom User Group" &&
       
@@ -163,10 +158,10 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
             
                 {watch("groupListIsChecked") && 
                   <div className="w-[450px]">
-                      <FileDropzone name="importNewUserGroup" control={control} />
+                      <FileDropzone name="importNewUserGroup" control={control as unknown as Control<FieldValues>} />
                   </div>}
                 {!watch("groupListIsChecked") && <>
-                  <MultiSelect  className="max-w-[420px]" isMulti={false} control={control} options={userGroups} {...register("userGroupList")}/>
+                  <MultiSelect  className="max-w-[420px]" isMulti={false} control={control as unknown as Control<FieldValues>} options={userGroups} {...register("userGroupList")}/>
                   
                   {errors.userGroupList?.message && typeof errors.userGroupList.message === 'string' && (
                   <p className="text-red-500">{errors.userGroupList.message}</p>
@@ -179,7 +174,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                   <input type="checkbox" {...register('excludeUsersIsChecked')} />  <span className={` ${watch('excludeUsersIsChecked') && asterisk}`}>exclude users from the certification campaign</span>
                 </div>
               
-                <MultiSelect isDisabled={!watch('excludeUsersIsChecked')} className="max-w-[420px]" isMulti={false} control={control} options={excludeUsers} {...register("excludeUsers")}/>
+                <MultiSelect isDisabled={!watch('excludeUsersIsChecked')} className="max-w-[420px]" isMulti={false} control={control as unknown as Control<FieldValues>} options={excludeUsers} {...register("excludeUsers")}/>
                   
                   {errors.excludeUsers?.message && typeof errors.excludeUsers.message === 'string' && (
                   <p className="text-red-500">{errors.excludeUsers.message}</p>
@@ -214,7 +209,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                 <MultiSelect
                 className=""
                 placeholder="Select Specific App(s)"
-                control={control}
+                control={control as unknown as Control<FieldValues>}
                 isAsync
                 loadOptions={loadApps}
                 components={{ Option: customOption }}
@@ -227,7 +222,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
                 <div className="min-w-[300px] bg-white">
                 <ExpressionBuilder
                  //title="Build Expression for Apps"
-                  control={control}
+                  control={control as unknown as Control<FieldValues>}
                   setValue={setValue}
                   watch={watch}
                   fieldName="expressionApps"
@@ -242,7 +237,7 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
               <>
               <ExpressionBuilder
                 title="Build Expression for Entitlement"
-                control={control}
+                control={control as unknown as Control<FieldValues>}
                 setValue={setValue}
                 watch={watch}
                 fieldName="expressionEntitlement"
@@ -293,14 +288,14 @@ const Step2: React.FC<Step2Props> = ({ formData, setFormData, onValidationChange
             
                 {watch("reviewerlistIsChecked") && 
                   <div className="w-[450px]">
-                    <FileDropzone name="customReviewerlist" control={control} />
+                    <FileDropzone name="customReviewerlist" control={control as unknown as Control<FieldValues>} />
                   </div>
                 }
                 {!watch("reviewerlistIsChecked") && 
                      <>
                      <ExpressionBuilder
                        //title="Build Generic Expression"
-                       control={control}
+                       control={control as unknown as Control<FieldValues>}
                        setValue={setValue}
                        watch={watch}
                        fieldName="genericExpression"

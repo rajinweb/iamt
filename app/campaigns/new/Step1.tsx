@@ -1,17 +1,12 @@
 import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Control, FieldValues, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { loadUsers, customOption } from "@/components/MsAsyncData";
 import { asterisk, downArrow, template } from "@/utils/utils";
-
-interface Step1Props {
-  formData: any;
-  setFormData: (data: any) => void;
-  onValidationChange: (isValid: boolean) => void;
-}
+import { Step1FormData, StepProps } from "@/types/StepTypes"; // Import the Step1FormData type
 
 const validationSchema = yup.object().shape({
   certificationName: yup.string().required("Campaign Name is required"),
@@ -48,14 +43,14 @@ const validationSchema = yup.object().shape({
 });
 
 
-const Step1: React.FC<Step1Props> = ({ formData, setFormData, onValidationChange }) => {
+const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
     setValue,
     control,
     watch,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<Step1FormData>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
@@ -69,7 +64,7 @@ const Step1: React.FC<Step1Props> = ({ formData, setFormData, onValidationChange
   }, [isValid, onValidationChange]);
 
   useEffect(() => {
-    const subscription = watch((values) => setFormData({...formData, step1:values}));
+    const subscription = watch((values) => setFormData({ ...formData, step1: values as Step1FormData }));
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
@@ -90,118 +85,119 @@ const Step1: React.FC<Step1Props> = ({ formData, setFormData, onValidationChange
         Name your new campaign and set its ownership and rules.
       </small>
 
-    <div className="text-sm space-y-4 min-w-max lg:w-1/2">
-      
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2 ${asterisk}`}>Certification Name</label>
-        <div>
-          <input
-            type="text"
-            className="form-input"
-            {...register("certificationName")}
-          />
-          {errors.certificationName?.message && typeof errors.certificationName.message === 'string' && (
-            <p className="text-red-500">{errors.certificationName.message}</p>
-          )}
-        
+      <div className="text-sm space-y-4 min-w-max lg:w-1/2">
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2 ${asterisk}`}>Certification Name</label>
+          <div>
+            <input
+              type="text"
+              className="form-input"
+              {...register("certificationName")}
+            />
+            {errors.certificationName?.message && typeof errors.certificationName.message === 'string' && (
+              <p className="text-red-500">{errors.certificationName.message}</p>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2 ${asterisk}`}>Description</label>
-        <div>
-        <textarea
-          className="form-input"
-          rows={3}
-          {...register("description")}
-        ></textarea>
-        {errors.description?.message && typeof errors.description.message === 'string' && (
-          <p className="text-red-500">{errors.description.message}</p>
-        )}
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2 ${asterisk}`}>Description</label>
+          <div>
+            <textarea
+              className="form-input"
+              rows={3}
+              {...register("description")}
+            ></textarea>
+            {errors.description?.message && typeof errors.description.message === 'string' && (
+              <p className="text-red-500">{errors.description.message}</p>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2`}>Copy from Template</label>
-         <div className="grid grid-cols-[1fr_.5fr] gap-2">
-          <MultiSelect isMulti={false} control={control} options={template} {...register("template")}/>
-          {errors.template?.message && typeof errors.template.message === 'string' && (
-            <p className="text-red-500">{errors.template.message}</p>
-          )}
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2`}>Copy from Template</label>
+          <div className="grid grid-cols-[1fr_.5fr] gap-2">
+            <MultiSelect isMulti={false} control={control as unknown as Control<FieldValues>} options={template} {...register("template")} />
+            {errors.template?.message && typeof errors.template.message === 'string' && (
+              <p className="text-red-500">{errors.template.message}</p>
+            )}
 
-          <button className="rounded  bg-blue-500 hover:bg-blue-500/80 text-white ">Apply</button>
+            <button className="rounded bg-blue-500 hover:bg-blue-500/80 text-white">Apply</button>
+          </div>
         </div>
-      </div>
 
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2 ${asterisk}`}>Duration</label>
-        <div>
-        <input
-            type="text"
-            className="form-input"
-            {...register("duration")}
-          />
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2 ${asterisk}`}>Duration</label>
+          <div>
+            <input
+              type="text"
+              className="form-input"
+              {...register("duration")}
+            />
             {errors.duration?.message && typeof errors.duration.message === 'string' && (
-            <p className="text-red-500">{errors.duration.message}</p>
+              <p className="text-red-500">{errors.duration.message}</p>
+            )}
+          </div>
+        </div>
+
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2 ${asterisk}`}>Owners</label>
+          <div>
+            {["User", "Group"].map((option, index, array) => (
+              <button
+                key={option}
+                type="button"
+                className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${watch("ownerType") === option && downArrow}  ${
+                  watch("ownerType") === option ? "bg-[#15274E] text-white" : ""
+                } ${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none"}`}
+                onClick={() => setValue("ownerType", option, { shouldValidate: true })}
+              >
+                {option}  
+              </button>
+            ))}
+
+            {watch("ownerType") === "User" && (
+              <>
+                <MultiSelect className="max-w-[420px]" control={control as unknown as Control<FieldValues>} isAsync loadOptions={loadUsers} components={{ Option: customOption }} {...register("ownerUser")} />
+                {errors.ownerUser?.message && typeof errors.ownerUser.message === 'string' && (
+                  <p className="text-red-500">{errors.ownerUser.message}</p>
+                )}
+              </>
+            )}
+
+            {watch("ownerType") === "Group" && (
+              <>
+                <MultiSelect className="max-w-[420px]" control={control as unknown as Control<FieldValues>} isAsync loadOptions={loadUsers} components={{ Option: customOption }} {...register("ownerGroup")} />
+                {errors.ownerGroup?.message && typeof errors.ownerGroup.message === 'string' && (
+                  <p className="text-red-500">{errors.ownerGroup.message}</p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
+          <label className={`pl-2 ${asterisk}`}>Reviewer</label>
+          <div>
+            {["User Manager", "Application Owner", "Custom Reviewer"].map((option, index) => (
+              <button
+                key={option}
+                type="button"
+                className={`px-4 py-2 rounded-md border border-gray-300 ${
+                  watch("reviewer") === option ? "bg-[#15274E] text-white" : ""
+                } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 w-37 !px-2.5" : "rounded-l-none"}`}
+                onClick={() => setValue("reviewer", option, { shouldValidate: true })}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          {errors.reviewer?.message && typeof errors.reviewer.message === 'string' && (
+            <p className="text-red-500">{errors.reviewer.message}</p>
           )}
         </div>
       </div>
-
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2 ${asterisk}`}>Owners</label>
-        <div>
-  
-          {["User", "Group"].map((option, index, array) => (
-            <button
-              key={option}
-              type="button"
-              className={`px-4 relative py-2 mb-3 min-w-16 rounded-md border border-gray-300 ${watch("ownerType") === option && downArrow}  ${
-                watch("ownerType") === option ? "bg-[#15274E] text-white" : ""
-              } ${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none"}`}
-              onClick={() => setValue("ownerType", option, { shouldValidate: true })}
-            >
-              {option}  
-            </button>
-          ))}
-
-          {watch("ownerType") === "User" && 
-          <><MultiSelect className="max-w-[420px]" control={control} isAsync loadOptions={loadUsers}  components={{ Option: customOption }} {...register("ownerUser")}/>
-            {errors.ownerUser?.message && typeof errors.ownerUser.message === 'string' && (
-            <p className="text-red-500">{errors.ownerUser.message}</p>
-            )}</>
-            }
-          {watch("ownerType") === "Group" && 
-          <><MultiSelect className="max-w-[420px]"  control={control} isAsync loadOptions={loadUsers}  components={{ Option: customOption }} {...register("ownerGroup")}/>
-            {errors.ownerGroup?.message && typeof errors.ownerGroup.message === 'string' && (
-            <p className="text-red-500">{errors.ownerGroup.message}</p>
-            )}</>
-            }
-        </div>
-      </div>
-
-      <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-        <label className={`pl-2 ${asterisk}`}>Reviewer</label>
-        <div>
-          {["User Manager", "Application Owner", "Custom Reviewer"].map((option, index) => (
-            <button
-              key={option}
-              type="button"
-              className={`px-4 py-2 rounded-md border border-gray-300 ${
-                watch("reviewer") === option ? "bg-[#15274E] text-white" : ""
-              } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 w-37 !px-2.5" : "rounded-l-none"}`}
-              onClick={() => setValue("reviewer", option, { shouldValidate: true })}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-        {errors.reviewer?.message && typeof errors.reviewer.message === 'string' && (
-          <p className="text-red-500">{errors.reviewer.message}</p>
-        )}
-      </div>
-
     </div>
-  </div>
   );
 };
 

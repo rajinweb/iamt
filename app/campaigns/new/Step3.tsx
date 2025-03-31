@@ -1,18 +1,13 @@
 import { CirclePlus, Info, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, Resolver, Control, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
-import { asterisk, durationOptions, recurrenceOptions, reviewersOptions } from "@/utils/utils";
+import { asterisk, durationOptions, recurrenceOptions } from "@/utils/utils";
 import DateInput from "@/components/DatePicker";
-import MultiStageReview, { MultiStageReviewForm } from "./MultiStageReview";
-
-interface Step3Props {
-  formData: any;
-  setFormData: (data: any) => void;
-  onValidationChange: (isValid: boolean) => void;
-}
+import MultiStageReview from "./MultiStageReview";
+import { Step3FormData, StepProps } from "@/types/StepTypes";
 
 const validationSchema = yup.object().shape({ 
   multiStageReview: yup.boolean().default(false), 
@@ -34,19 +29,19 @@ const validationSchema = yup.object().shape({
 
 
 
-const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange }) => {
+const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
     setValue,
     watch,
     control,
     formState: { errors, isValid },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
+  } = useForm<Step3FormData>({
+     resolver: yupResolver(validationSchema) as Resolver<Step3FormData>,
     mode: "onChange",
     defaultValues: {
       ...formData.step3,
-      stages: [],
+      stages: formData.step3?.stages ?? [],
     }
   });
   const { fields, append, remove } = useFieldArray({
@@ -59,24 +54,22 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
   }, [isValid, onValidationChange]);
 
   useEffect(() => {
-    const subscription = watch((values) => {
-      return setFormData({...formData, step3:values})
-    });
-    
+    const subscription = watch((values) => setFormData({ ...formData, step3: values as Step3FormData }));
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
+  const multiStageReviewEnabled = watch("multiStageReview");
   useEffect(() => {
-    if (fields.length === 0 ||  watch("multiStageReview")) {
-      append({ reviewer: [], duration: "", nextReviewerAction: false }) // enable default MultiStageReview
-    } 
-    if (!watch("multiStageReview") && fields.length > 0 ) {
+    if (fields.length === 0 || multiStageReviewEnabled ) {
+        append({ reviewer: [], duration: "", nextReviewerAction: false }) // enable default MultiStageReview
+    }
+   
+    if (!multiStageReviewEnabled && fields.length > 0 ) {
       fields.forEach((_, index) => {
         if (index > 0) remove(fields.length - index);
       });
-      
     }
-  }, [watch("multiStageReview")]);
+  },[multiStageReviewEnabled]);
 
   return (
     <div className="py-6">
@@ -99,7 +92,7 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
               <MultiStageReview
                 totalStages={totalStages} 
                 index={index}  
-                control={control}
+                control={control as unknown as Control<FieldValues>}
                 register={register}
                 errors={errors}
                 removeStage={() => remove(index)}  
@@ -130,9 +123,6 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
           Add a stage
           </button>
       }
-   
-  
-
     <h2 className="font-medium mb-6 mt-12">
       Specify recurrence of review
       {watch("multiStageReview") &&  <small className="flex gap-2 py-2"><InfoIcon className=" text-gray-500" size={16} /> Your sum duration of all review stages connot be longer than the recurrence period.</small>}
@@ -140,7 +130,7 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
       <div className="grid grid-cols-[280px_1.5fr] items-center gap-2 mb-2">
         <label className={`px-2 ${asterisk}`}>Duration</label>
         <div>        
-          <MultiSelect className="w-107" isSearchable={false} isMulti={false} control={control} options={durationOptions} {...register("duration")}/>
+          <MultiSelect className="w-107" isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={durationOptions} {...register("duration")}/>
         {errors.duration?.message && typeof errors.duration.message === 'string' && (
           <p className="text-red-500">{errors.duration.message}</p>
         )}
@@ -149,7 +139,7 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
       </div>
         <div className="grid grid-cols-[280px_1.5fr] items-center gap-2 mb-2">
             <label className={`px-2 ${asterisk}`}>Review Recurrence</label>
-            <MultiSelect className="w-107" isSearchable={false} isMulti={false} control={control} options={recurrenceOptions} {...register("reviewRecurrence")}/>
+            <MultiSelect className="w-107" isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={recurrenceOptions} {...register("reviewRecurrence")}/>
             {errors.reviewRecurrence?.message && typeof errors.reviewRecurrence.message === 'string' && (
               <p className="text-red-500">{errors.reviewRecurrence.message}</p>
             )}
@@ -158,7 +148,7 @@ const Step3: React.FC<Step3Props> = ({ formData, setFormData, onValidationChange
             <label className={`px-2 ${asterisk}`}>Start Date</label>
              
              <DateInput
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               name="startDate"
               className="w-107 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               

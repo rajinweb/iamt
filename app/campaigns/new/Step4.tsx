@@ -1,6 +1,6 @@
 import { BookTemplate, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Control, FieldValues, Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
@@ -8,13 +8,7 @@ import MultiSelect from "@/components/MultiSelect";
 import { asterisk, beforeExpiryReminders, defaultExpression, enforceComments, everyDayReminders } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-
-
-interface Step4Props {
-  formData: any;
-  setFormData: (data: any) => void;
-  onValidationChange: (isValid: boolean) => void;
-}
+import { Step4FormData, StepProps } from "@/types/StepTypes";
 
 
 const validationSchema = yup.object().shape({
@@ -64,34 +58,32 @@ const validationSchema = yup.object().shape({
 });
 
 
-const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange }) => {
+const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
     setValue,    
     watch,
     control,
-    unregister,
     formState: { errors, isValid },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-    shouldUnregister: true,
+  } = useForm<Step4FormData>({
+    resolver: yupResolver(validationSchema) as Resolver<Step4FormData>,
+    shouldUnregister: !formData.step4,
     mode: "onChange",
     defaultValues: {
       ...formData.step4,
-      genericExpression:[],
-      certifierUnavailableUsers: []
+      // genericExpression:[],
+      // certifierUnavailableUsers: []
     }
   });
   const enforComments = watch("enforceComments");
   const showGenericExpression = enforComments === "Custom Fields";
   
- 
     useEffect(() => {
       onValidationChange(isValid);
     }, [isValid, onValidationChange]);
 
   useEffect(() => {
-    const subscription = watch((values) => setFormData({...formData, step4:values}));
+    const subscription = watch((values) => setFormData({ ...formData, step4: values as Step4FormData }));
     return () => subscription.unsubscribe();
   }, [watch, setFormData]);
 
@@ -114,7 +106,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
               <label className="h-10 flex gap-4 items-center">
                 Start of Campaign
               </label>
-              <MultiSelect placeholder="Reminders..." defaultValue={[everyDayReminders[0]]} isSearchable={false}  control={control} options={everyDayReminders} {...register("socReminders")}/>
+              <MultiSelect placeholder="Reminders..." defaultValue={[everyDayReminders[0]]} isSearchable={false}  control={control as unknown as Control<FieldValues>} options={everyDayReminders} {...register("socReminders")}/>
               {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
                 <p className="text-red-500">{errors.socReminders.message}</p>
               )}
@@ -124,7 +116,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
                 End of Campaign
               </label>
             
-              <MultiSelect placeholder="Reminders..." defaultValue={[beforeExpiryReminders[0]]} isSearchable={false} control={control} options={beforeExpiryReminders} {...register("eocReminders")}/>
+              <MultiSelect placeholder="Reminders..." defaultValue={[beforeExpiryReminders[0]]} isSearchable={false} control={control as unknown as Control<FieldValues>} options={beforeExpiryReminders} {...register("eocReminders")}/>
               {errors.eocReminders?.message && typeof errors.eocReminders.message === 'string' && (
                 <p className="text-red-500">{errors.eocReminders.message}</p>
               )}
@@ -171,7 +163,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
           <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("disableBulkAction")} onChange={(checked) => setValue("disableBulkAction", checked)} />Yes </dd>
           <dt>Enforce Comments/Justification on </dt>
           <dd>
-            <MultiSelect isSearchable={false} isMulti={false} control={control} options={enforceComments} {...register("enforceComments")}/>
+            <MultiSelect isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={enforceComments} {...register("enforceComments")}/>
             {errors.enforceComments?.message && typeof errors.enforceComments.message === 'string' && (
               <p className="text-red-500">{errors.enforceComments.message}</p>
             )}
@@ -197,7 +189,7 @@ const Step4: React.FC<Step4Props> = ({ formData, setFormData, onValidationChange
       
           <dt> If Certifier is Unavailable, then select user</dt>
           <dd>
-           <MultiSelect placeholder="Select User(s)" control={control} isAsync loadOptions={loadUsers}  components={{ Option: customOption }}  {...register("certifierUnavailableUsers")}/>
+           <MultiSelect placeholder="Select User(s)" control={control as unknown as Control<FieldValues>} isAsync loadOptions={loadUsers}  components={{ Option: customOption }}  {...register("certifierUnavailableUsers")}/>
            {errors.certifierUnavailableUsers?.message && typeof errors.certifierUnavailableUsers.message === 'string' && (
            <p className="text-red-500">{errors.certifierUnavailableUsers.message}</p>
           )}

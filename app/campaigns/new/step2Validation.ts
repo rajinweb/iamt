@@ -14,8 +14,7 @@ export const validationSchema = yup.object().shape({
             value: yup.string().required("Value is required"),
           })
         )
-        .min(1, "At least one condition is required")
-        .default([]), // 👈 Ensures validation even if untouched
+        .min(1, "At least one condition is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
    groupListIsChecked:yup.boolean().default(false),
