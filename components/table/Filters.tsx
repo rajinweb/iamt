@@ -1,5 +1,5 @@
 'use client';
-import react, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Dropdown from '../Dropdown'
 import { CircleX, Filter, FilterX } from 'lucide-react';
 

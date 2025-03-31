@@ -1,6 +1,6 @@
 import { CirclePlus, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
-import { useFieldArray, useForm, Resolver, Control, FieldValues } from "react-hook-form";
+import { useFieldArray, useForm, Resolver, Control, FieldValues, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 // import MultiSelect from "@/components/MultiSelect";
@@ -92,7 +92,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
               <MultiStageReview
                 index={index}  
                 control={control as unknown as Control<FieldValues>}
-                register={register}
+                register={register as unknown as UseFormRegister<FieldValues>}
                 errors={errors}
                 removeStage={() => remove(index)}            
                 >

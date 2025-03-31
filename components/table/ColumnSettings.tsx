@@ -6,7 +6,7 @@ import SortableItem from "./SortableItem";
 import Dropdown from "../Dropdown";
 
 const ColumnSettings = ({ table }: { table: any }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [_, setIsOpen] = useState(false);
   const [tempColumnsOrder, setTempColumnsOrder] = useState(
     table.getAllColumns().map((col: { id: number; }) => col.id)
   );

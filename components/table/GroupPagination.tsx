@@ -10,7 +10,7 @@ interface GroupPaginationProps {
   onPageChange: (pageIndex: number, pageSize?: number) => void;
 }
 
-const GroupPagination: React.FC<GroupPaginationProps> = ({ table, totalCount, pageIndex, pageSize, onPageChange }) => {
+const GroupPagination: React.FC<GroupPaginationProps> = ({ totalCount, pageIndex, pageSize, onPageChange }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (

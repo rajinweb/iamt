@@ -3,13 +3,13 @@ import ActionButtons from "./ActionButtons";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import React from "react";
 import { ChevronDown, ChevronRight, MoveUp, User} from "lucide-react";
-
+import Image from 'next/image';
 export const columns: ColumnDef<any>[] = [
       {
       accessorKey: 'user',
       header: 'User', 
       size:150,
-      cell: ({ row, column, getValue, table }) => {
+      cell: ({ row, column, getValue }) => {
         const cellText = getValue();
         const headerText = column?.columnDef?.header;
         const rowDepth = row.depth; 
@@ -36,7 +36,14 @@ export const columns: ColumnDef<any>[] = [
           
             {rowDepth === 0 ? ( // Parent row
                 row.original.avatar ? (
-                  <img src={row.original.avatar} width={30} alt="User Avatar" className="rounded-full" />
+                  // <img src={row.original.avatar} width={30} alt="User Avatar" className="rounded-full" />
+                  <Image 
+                    src={row.original.avatar} 
+                    alt="User Avatar" 
+                    width={30} 
+                    height={30} // Height is needed along with width
+                    className="rounded-full" 
+                  />
                 ) : (
                   <MoveUp strokeWidth={1} />
                 )
@@ -70,7 +77,7 @@ export const columns: ColumnDef<any>[] = [
           Low: { icon: <div className="bg-green-500 w-3 h-3 rounded-full" />, color: "text-green-500" },
         };
     
-        const { icon, color } = riskConfig[cellText as keyof typeof riskConfig] || { icon: null, color: "text-gray-800" };
+        const { icon } = riskConfig[cellText as keyof typeof riskConfig] || { icon: null, color: "text-gray-800" };
     
         return (
           <div className="flex flex-col gap-0">

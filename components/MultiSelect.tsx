@@ -5,6 +5,7 @@ const Select = dynamic(() => import('react-select'), { ssr: false });
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 import { GroupBase, OptionProps, components as component } from "react-select";
+import Image from 'next/image';
 
 type MultiSelectProps<T extends FieldValues = FieldValues> = {
   control: Control<FieldValues>;
@@ -54,10 +55,17 @@ function MultiSelect<FormValues extends FieldValues>({
           style={{ marginRight: "8px" }}
         />
         {"image" in (props.data as Record<string, unknown>) && (
-          <img
+          // <img
+          //   src={(props.data as { image: string }).image}
+          //   alt={props.label}
+          //   className="w-8 h-8 rounded-full mr-2"
+          // />
+          <Image
             src={(props.data as { image: string }).image}
             alt={props.label}
-            className="w-8 h-8 rounded-full mr-2"
+            width={32} // Equivalent to w-8 (8 * 4 pixels)
+            height={32} // Equivalent to h-8
+            className="rounded-full mr-2"
           />
         )}
         <label>{props.label}</label>

@@ -32,7 +32,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, filerColumns }) =>
     search: "",
     group: "",
   });
-  const [appliedFilter, setAppliedFilter]=useState('');
+  const [_, setAppliedFilter]=useState('');
 
   const filterRows = (row: any, groupFilter: string): boolean => {
     if (!groupFilter) return true; 

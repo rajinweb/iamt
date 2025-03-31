@@ -1,4 +1,4 @@
-import { CircleCheck, CircleOff, Combine, MoreVertical } from "lucide-react";
+import { CircleCheck, CircleOff, MoreVertical } from "lucide-react";
 import Dropdown from '@/components/Dropdown';
 interface ActionButtonsProps {
   table: any;
@@ -6,7 +6,7 @@ interface ActionButtonsProps {
   setData: (updateFn: (oldData: any[]) => any[]) => void; //Update Function for React Table
 }
 
-const ActionButtons = ({ table, selectedRows, setData }: ActionButtonsProps) => {
+const ActionButtons = ({selectedRows, setData }: ActionButtonsProps) => {
 
   //Bulk Approve
   const handleApprove = (e: React.MouseEvent) => {

@@ -1,5 +1,6 @@
-import { RefreshCcw, Wand2, Bell } from 'lucide-react';
+import { RefreshCcw, Wand2 } from 'lucide-react';
 import Dropdown from './Dropdown';
+import Image from 'next/image';
 
 
 const HeaderContent = () => {
@@ -30,10 +31,15 @@ const HeaderContent = () => {
         </div>
 
         <div className="h-full flex items-center w-32 justify-end border-l-2 gap-6  border-l-white">
-        <Bell strokeWidth='1'/>
-            <Dropdown Icon={()=><img src='https://avatar.iran.liara.run/public/1' alt="User Avatar"
-            className=" w-7 h-7 object-cover cursor-pointer" />} className="!rounded-full border border-gray-500" title="User profile">
-      
+              <Dropdown Icon={() => (
+                <Image 
+                  src="https://avatar.iran.liara.run/public/1" 
+                  alt="User Avatar" 
+                  width={28} 
+                  height={28} 
+                  className="object-cover cursor-pointer" 
+                />
+              )} className="!rounded-full border border-gray-500" title="User profile">
               <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                 Profile
               </a>
