@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm,Resolver, Control, FieldValues } from "react-hook-form";
+import { useForm,Resolver, Control, FieldValues, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import MultiSelect from "@/components/MultiSelect";
 import { customOption, loadApps } from "@/components/MsAsyncData";
@@ -138,7 +138,15 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           ))}
 
        
-              {watch("userType") === "Specific users" &&  <ExpressionBuilder title="Build Expression" control={control as unknown as Control<FieldValues>} setValue={setValue} watch={watch} fieldName={"specificUserExpression"} /> }
+              {watch("userType") === "Specific users" && (
+                <ExpressionBuilder
+                  title="Build Expression"
+                  control={control as unknown as Control<FieldValues>}
+                  setValue={setValue as unknown as UseFormSetValue<FieldValues>}
+                  watch={watch as unknown as UseFormWatch<FieldValues>}
+                  fieldName="specificUserExpression"
+                />
+              )}
 
               {watch("userType") === "Custom User Group" &&
       
@@ -146,7 +154,6 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 <div className="flex items-center gap-1 mb-2">
                   <span className={`flex items-center ${!watch("groupListIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Select from List</span>
                   <ToggleSwitch
-                      iconEnable
                       checked={watch("groupListIsChecked")}
                       onChange={(checked) => {
                         setValue("groupListIsChecked", checked, { shouldValidate: true });
@@ -223,8 +230,8 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 <ExpressionBuilder
                  //title="Build Expression for Apps"
                   control={control as unknown as Control<FieldValues>}
-                  setValue={setValue}
-                  watch={watch}
+                  setValue={setValue as unknown as UseFormSetValue<FieldValues>}
+                  watch={watch as unknown as UseFormWatch<FieldValues>}
                   fieldName="expressionApps"
                 />
                 {errors.expressionApps?.message && typeof errors.expressionApps.message === 'string' && (
@@ -238,8 +245,8 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
               <ExpressionBuilder
                 title="Build Expression for Entitlement"
                 control={control as unknown as Control<FieldValues>}
-                setValue={setValue}
-                watch={watch}
+                setValue={setValue as unknown as UseFormSetValue<FieldValues>}
+                watch={watch as unknown as UseFormWatch<FieldValues>}
                 fieldName="expressionEntitlement"
               />
               {errors.expressionEntitlement?.message && typeof errors.expressionEntitlement.message === 'string' && (
@@ -251,9 +258,9 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
         </div>
 
         <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-          <label className={`pl-2 ${asterisk}`}>Reviewer</label>
+          <label className={`pl-2 ${asterisk}`}>Campaign Type</label>
             <div>
-              {["User Manager", "Application Owner", "Custom Reviewer"].map((option, index, array) => (
+              {["User Manager", "Application Owner", "Entitlement Owner"].map((option, index, array) => (
                 <button
                   key={option}
                   type="button"
@@ -276,7 +283,6 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 <div className="flex items-center gap-1 my-2">
                   <span className={`flex items-center ${!watch("reviewerlistIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Write a generic Expression</span>
                   <ToggleSwitch
-                      iconEnable
                       checked={watch("reviewerlistIsChecked")}
                       onChange={(checked) => {
                         setValue("reviewerlistIsChecked", checked, { shouldValidate: true });
@@ -296,8 +302,8 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                      <ExpressionBuilder
                        //title="Build Generic Expression"
                        control={control as unknown as Control<FieldValues>}
-                       setValue={setValue}
-                       watch={watch}
+                       setValue={setValue as unknown as UseFormSetValue<FieldValues>}
+                       watch={watch as unknown as UseFormWatch<FieldValues>}
                        fieldName="genericExpression"
                      />
                      {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (

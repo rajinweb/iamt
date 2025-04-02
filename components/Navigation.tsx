@@ -23,7 +23,9 @@ export function Navigation({ isOpen }: NavigationProps) {
         <button
           onClick={() => {
             setIsCollapsed(!isCollapsed)
-            isOpen && isOpen(isCollapsed)
+            if (isOpen) {
+              isOpen(!isCollapsed); 
+            }
           }}
           className={`absolute -right-2.5 top-[46px] p-2 cursor-pointer ${
             isCollapsed ? '-right-5' : ''

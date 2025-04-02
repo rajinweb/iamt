@@ -1,3 +1,4 @@
+import Image from 'next/image';
 type User = {
   id: number;
   firstName: string;
@@ -38,18 +39,20 @@ export const loadApps = async (inputValue: string): Promise<App[]> => {
 };
 type OptionData = {
   label: string;
-  image: string; // Image URL
+  image: string; 
 };
 
-export const customOption = (props: { data: OptionData; innerRef: any; innerProps: any }) => {
+export const customOption = (props: { data: OptionData; innerRef: React.Ref<HTMLDivElement>; innerProps: React.HTMLAttributes<HTMLDivElement> }) => {
   const { data, innerRef, innerProps } = props;
   return (
     <div ref={innerRef} {...innerProps} className="flex items-center p-2 hover:bg-[#DEEBFF]">
-      <img
-        src={data.image}
-        alt={data.label}
-        className="w-8 h-8 rounded-full mr-2"
-      />
+        <Image
+          src={data.image as string}
+          alt={data.label}
+          width={32}
+          height={32}
+          className="rounded-full mr-2"
+        />
       {data.label}
     </div>
   );

@@ -32,4 +32,6 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> =React.memo( ({ checked, onChang
   );
 });
 
+// Set display name for debugging
+ToggleSwitch.displayName = "ToggleSwitch";
 export default ToggleSwitch;

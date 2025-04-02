@@ -10,6 +10,8 @@ declare module "@tanstack/react-table" {
 }
 import { Calendar, ChevronDown, ChevronRight, ClipboardList, ListOrdered, RectangleEllipsis, User } from "lucide-react";
 type Campaign = {
+  id: string; // Add this property
+  status: string; // Add this property
   campaignName: string;
   description: string;
   instances: number;
@@ -150,7 +152,16 @@ export const CampaignColumns: ColumnDef<Campaign>[] = [
         <ActionButtons 
           selectedRows={[row.original]} 
           table={table} 
-          setData={(updateFn) => table.options.meta?.updateData?.(updateFn(table.getRowModel().rows.map(row => row.original)))} 
+          setData={(updateFn) => {
+            const updatedRows = updateFn(
+              table.getRowModel().rows.map((row) => row.original as Campaign)
+            ) as Campaign[]; // Ensure the result is cast to Campaign[]
+            if (table.options.meta?.updateData) {
+              table.options.meta.updateData(updatedRows);
+            } else {
+              console.warn("updateData is not defined in table meta");
+            }
+          }}
         />
       ),
     },

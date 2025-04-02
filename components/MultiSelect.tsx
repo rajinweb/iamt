@@ -55,16 +55,11 @@ function MultiSelect<FormValues extends FieldValues>({
           style={{ marginRight: "8px" }}
         />
         {"image" in (props.data as Record<string, unknown>) && (
-          // <img
-          //   src={(props.data as { image: string }).image}
-          //   alt={props.label}
-          //   className="w-8 h-8 rounded-full mr-2"
-          // />
           <Image
             src={(props.data as { image: string }).image}
             alt={props.label}
-            width={32} // Equivalent to w-8 (8 * 4 pixels)
-            height={32} // Equivalent to h-8
+            width={32} 
+            height={32}
             className="rounded-full mr-2"
           />
         )}
@@ -78,8 +73,14 @@ function MultiSelect<FormValues extends FieldValues>({
       name={name as Path<FormValues>}
       control={control}
       render={({ field }) => {
-        const handleChange = (selected: any) =>
-          isMulti ? field.onChange(selected || []) : field.onChange(selected ? selected.value : "");
+        const handleChange = (newValue: unknown) => {
+          if (isMulti) {
+            field.onChange(newValue || []);
+          } else {
+            const selected = newValue as { value: string; label: string } | null;
+            field.onChange(selected ? selected.value : "");
+          }
+        };
 
         const selectedValue = isMulti
           ? field.value || []

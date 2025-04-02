@@ -1,14 +1,22 @@
 import { CircleCheck, CircleOff, MoreVertical } from "lucide-react";
 import Dropdown from '@/components/Dropdown';
-interface ActionButtonsProps {
-  table: any;
-  selectedRows: any[];
-  setData: (updateFn: (oldData: any[]) => any[]) => void; //Update Function for React Table
+
+interface TableRow {
+  id: string; // Assuming `id` is a string based on its usage
+  status: string; // Assuming `status` is a string based on the `Approved` and `Revoked` values
+  name?: string; // Example of a possible additional property
+  age?: number; // Example of another possible additional property
+  // Add other known properties here
 }
 
-const ActionButtons = ({selectedRows, setData }: ActionButtonsProps) => {
+interface ActionButtonsProps {
+  table: unknown; // Replace `unknown` with the specific type of the table if available
+  selectedRows: TableRow[];
+  setData: (updateFn: (oldData: TableRow[]) => TableRow[]) => void; // Update function for React Table
+}
 
-  //Bulk Approve
+const ActionButtons = ({ selectedRows, setData }: ActionButtonsProps) => {
+  // Bulk Approve
   const handleApprove = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedRows.length === 0) return;
@@ -20,7 +28,7 @@ const ActionButtons = ({selectedRows, setData }: ActionButtonsProps) => {
     );
   };
 
-  //Bulk Revoke
+  // Bulk Revoke
   const handleRevoke = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedRows.length === 0) return;
@@ -32,7 +40,7 @@ const ActionButtons = ({selectedRows, setData }: ActionButtonsProps) => {
     );
   };
 
-  //Bulk Comment
+  // Bulk Comment
   const handleComment = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedRows.length === 0) return;

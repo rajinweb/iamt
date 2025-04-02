@@ -1,6 +1,7 @@
 'use client';
+import { Control, FieldValues, UseFormSetValue, UseFormWatch, useWatch } from "react-hook-form";
 import { CircleX, Plus } from "lucide-react";
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
@@ -28,28 +29,34 @@ const logicalOperators = [
   { label: "OR", value: "OR" }
 ];
 
+interface Condition {
+  id: string;
+  attribute: { label: string; value: string } | null;
+  operator: { label: string; value: string } | null;
+  value: string;
+  logicalOp: string;
+}
+
 interface ExpressionBuilderProps {
   title?: string;
-  control: any;
-  setValue: any;
-  watch: any;
+  control: Control<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
+  watch: UseFormWatch<FieldValues>;
   fieldName: string;
 }
 
-const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, setValue, watch, fieldName }) => {
-  
-  const conditions = useMemo(() => watch(fieldName) || [], [watch(fieldName)]);
+const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, setValue, fieldName }) => {
 
-  
+  const conditions: Condition[] = useWatch({ control, name: fieldName }) || [];
+
   useEffect(() => {
-    if (!conditions || !Array.isArray(conditions)) {
-      setValue(fieldName, []);
+    if (!Array.isArray(conditions)) {
+      setValue(fieldName, [], { shouldDirty: true });
     }
   }, [conditions, setValue, fieldName]);
 
-  
   const addCondition = () => {
-    const newCondition = {
+    const newCondition: Condition = {
       id: uuidv4(),
       attribute: null,
       operator: null,
@@ -57,16 +64,14 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
       logicalOp: "AND"
     };
 
-    setValue(fieldName, [...conditions, newCondition], { shouldValidate: true });
+    setValue(fieldName, [...conditions, newCondition], { shouldDirty: true, shouldValidate: true });
   };
 
-  
   const removeCondition = (id: string) => {
-    setValue(fieldName, conditions.filter((cond: { id: string }) => cond.id !== id), { shouldValidate: true });
+    setValue(fieldName, conditions.filter((cond) => cond.id !== id), { shouldDirty: true, shouldValidate: true });
   };
 
-  
-  const formattedExpression = conditions.map((cond: any) => ({
+  const formattedExpression = conditions.map((cond) => ({
     attribute: cond.attribute?.value || "",
     operator: cond.operator?.value || "",
     value: cond.value || "",
@@ -78,8 +83,8 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
       {title && <h3 className="font-bold">{title}</h3>}
       <div className="p-4 border rounded-md w-full max-w-2xl border-gray-300 relative">
         
-        {conditions.map((condition: { id: string }, index: number) => (
-          <div key={condition.id || index} className="flex space-x-2 items-center mb-2 justify-end">
+        {conditions.map((condition, index) => (
+          <div key={condition.id} className="flex space-x-2 items-center mb-2 justify-end">
             {/* Logical Operator Dropdown (Not shown for first condition) */}
             {index > 0 && (
               <Controller

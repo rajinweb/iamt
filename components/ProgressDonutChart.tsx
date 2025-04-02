@@ -1,5 +1,5 @@
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartData } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 // Register Chart.js components
@@ -32,7 +32,8 @@ const ProgressSummaryChart = () => {
       datalabels: {
         color: "#000",
         font: { weight: "bold" as const },
-        formatter: (value: any, context: any) => `${context.chart.data.labels[context.dataIndex]} \n ${value}%`,
+        formatter: (value: number, context: { chart: { data: ChartData }; dataIndex: number }) =>
+          `${context.chart.data.labels?.[context.dataIndex]} \n ${value}%`,
         anchor: "end" as const,
         align: "end" as const,
         offset: 0,

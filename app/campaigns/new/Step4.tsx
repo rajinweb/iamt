@@ -1,6 +1,6 @@
 import { BookTemplate, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
-import { Control, FieldValues, Resolver, useForm } from "react-hook-form";
+import { Control, FieldValues, Resolver, useForm, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
@@ -132,13 +132,13 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
         <dd className="grid grid-cols-2">
           <span>Integrate with Microsoft Teams for notification(s)</span>
           <span className="flex gap-2 items-center">
-            No<ToggleSwitch iconEnable checked={watch("msTeamsNotification")} onChange={(checked) => setValue("msTeamsNotification", checked)} />Yes
+            No<ToggleSwitch checked={watch("msTeamsNotification")} onChange={(checked) => setValue("msTeamsNotification", checked)} />Yes
           </span>
         </dd>
         <dd className="grid grid-cols-2">
           <span>Integrate with Ticketing tool for Remediation</span>
           <span className="flex gap-2 items-center">
-            No<ToggleSwitch iconEnable checked={watch("remediationTicketing")} onChange={(checked) => setValue("remediationTicketing", checked)} />Yes
+            No<ToggleSwitch checked={watch("remediationTicketing")} onChange={(checked) => setValue("remediationTicketing", checked)} />Yes
           </span>
         </dd>
         <dd className="grid grid-cols-2">
@@ -156,9 +156,9 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     </h2>
     <dl className="px-4 py-8 border-b border-gray-300 space-y-4 mb-8 grid grid-cols-2 text-sm">
           <dt> Mark all undecided access as Revoke</dt> 
-          <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("markUndecidedRevoke")} onChange={(checked) => setValue("markUndecidedRevoke", checked)} />Yes </dd>
+          <dd className="flex gap-2 items-center"> No<ToggleSwitch checked={watch("markUndecidedRevoke")} onChange={(checked) => setValue("markUndecidedRevoke", checked)} />Yes </dd>
           <dt> Disable Bulk Action</dt> 
-          <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("disableBulkAction")} onChange={(checked) => setValue("disableBulkAction", checked)} />Yes </dd>
+          <dd className="flex gap-2 items-center"> No<ToggleSwitch checked={watch("disableBulkAction")} onChange={(checked) => setValue("disableBulkAction", checked)} />Yes </dd>
           <dt>Enforce Comments/Justification on </dt>
           <dd>
             <MultiSelect isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={enforceComments} {...register("enforceComments")}/>
@@ -168,7 +168,11 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           {
          showGenericExpression && 
            <div className="mt-4"> 
-            <ExpressionBuilder title="Build Expressions" control={control} setValue={setValue} watch={watch} fieldName={"genericExpression"}/>
+            <ExpressionBuilder title="Build Expressions" 
+             control={control as unknown as Control<FieldValues>}
+             setValue={setValue as unknown as UseFormSetValue<FieldValues>}
+             watch={watch as unknown as UseFormWatch<FieldValues>} 
+            fieldName={"genericExpression"}/>
             {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (
               <p className="text-red-500">{errors.genericExpression.message}</p>
             )}
@@ -193,10 +197,10 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           )}
           </dd>
           <dt>Open ticket for Conditional Approval tasks with future termination date</dt>
-          <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("ticketConditionalApproval")} onChange={(checked) => setValue("ticketConditionalApproval", checked)} />Yes </dd>
+          <dd className="flex gap-2 items-center"> No<ToggleSwitch checked={watch("ticketConditionalApproval")} onChange={(checked) => setValue("ticketConditionalApproval", checked)} />Yes </dd>
           <dt>Enable additional Authentication for certification sign off </dt>
           <dd> 
-          <div className="flex gap-2 items-center">No<ToggleSwitch iconEnable checked={watch("authenticationSignOff")} onChange={(checked) => setValue("authenticationSignOff", checked)} />Yes </div>
+          <div className="flex gap-2 items-center">No<ToggleSwitch checked={watch("authenticationSignOff")} onChange={(checked) => setValue("authenticationSignOff", checked)} />Yes </div>
             
           {watch("authenticationSignOff") &&
             <div className="grid grid-cols-2 gap-2 mt-6">
@@ -222,15 +226,22 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
       <dt>Application Scope </dt>
       <dd className="flex gap-2 items-center">
       <span className={`flex items-center ${!watch("applicationScope") ? ` text-black` : 'text-black/50'}`}> All Active Accounts</span>
-       <ToggleSwitch checked={watch("applicationScope")} iconEnable onChange={(checked) => setValue("applicationScope", checked)} />
+       <ToggleSwitch checked={watch("applicationScope")} onChange={(checked) => setValue("applicationScope", checked)} />
         <span className={`flex items-center ${watch("applicationScope") ? ` text-black` : 'text-black/50'}`}>All User Accounts</span>
       </dd>
 
-      <dt>Do you want to allow pre-delegate for users</dt>
-      <dd className="flex gap-2 items-center"> No<ToggleSwitch iconEnable checked={watch("preDelegate")} onChange={(checked) => setValue("preDelegate", checked)} />Yes </dd>
+      <dt>Do you want to allow pre-delegate to sign off</dt>
+      <dd className="flex gap-2 items-center"> No<ToggleSwitch checked={watch("preDelegate")} onChange={(checked) => setValue("preDelegate", checked)} />Yes </dd>
 
     </dl> 
+    <h2 className="font-medium">
+    Campaign Scheduling
+    </h2>
+    <dl className="px-4 py-8 space-y-4 mb-8 grid grid-cols-2 text-sm">
+    <dt> 
 
+    </dt>
+    </dl>
     </>
   );
 };
