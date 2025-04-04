@@ -21,7 +21,7 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     resetField,
     formState: { errors, isValid },
   } = useForm<Step2FormData>({
-    resolver: yupResolver(validationSchema) as Resolver<Step2FormData>,
+    resolver: yupResolver(validationSchema) as unknown as Resolver<Step2FormData>,
     mode: "onChange", 
     defaultValues: {
       ...formData.step2,
@@ -29,11 +29,10 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
       genericExpression:formData.step2?.genericExpression ?? [],
       expressionEntitlement:[defaultExpression],
       groupListIsChecked: false,
-      customReviewerlist: null,
-      reviewerlistIsChecked: false,
+    
     }
   });
-  const customReviewerlist = watch("customReviewerlist");
+  
 
   useEffect(() => {
     onValidationChange(isValid);
@@ -92,26 +91,7 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
   }, [selectData, setValue]); 
 
   const reviewer = watch("reviewer");
-  const reviewerlistIsChecked = watch("reviewerlistIsChecked");
-
-  useEffect(() => {
-    if (reviewer !== "Custom Reviewer") {
-      setValue("customReviewerlist", null, { shouldValidate: false });
-      resetField("customReviewerlist");
-      setValue("reviewerlistIsChecked", false, { shouldValidate: false });
-      
-    } 
-    if (!reviewerlistIsChecked) {
-      setValue("customReviewerlist", null, { shouldValidate: false });
-    
-    }
-    if (reviewerlistIsChecked) {
-      unregister("genericExpression");
-      setValue("genericExpression", [], { shouldValidate: false });
-    }
-  }, [reviewer, reviewerlistIsChecked, customReviewerlist, unregister, resetField, setValue]);
   
-
   return (
     <div className="py-6">
         <h2 className="text-lg font-bold">Campaign Scope</h2>
@@ -277,43 +257,7 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 <p className="text-red-500">{errors.reviewer.message}</p>
               )}
            
-              { watch("reviewer") === "Custom Reviewer" &&
-      
-              <div className="">
-                <div className="flex items-center gap-1 my-2">
-                  <span className={`flex items-center ${!watch("reviewerlistIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Write a generic Expression</span>
-                  <ToggleSwitch
-                      checked={watch("reviewerlistIsChecked")}
-                      onChange={(checked) => {
-                        setValue("reviewerlistIsChecked", checked, { shouldValidate: true });
-                      }}
-                      className="scale-80"
-                    />
-                  <span className={`flex items-center ${watch("reviewerlistIsChecked") ? `${asterisk} !pr-0 text-black` : 'text-black/50'}`}>Upload a custom reviewer list</span>
-                </div>
-            
-                {watch("reviewerlistIsChecked") && 
-                  <div className="w-[450px]">
-                    <FileDropzone name="customReviewerlist" control={control as unknown as Control<FieldValues>} />
-                  </div>
-                }
-                {!watch("reviewerlistIsChecked") && 
-                     <>
-                     <ExpressionBuilder
-                       //title="Build Generic Expression"
-                       control={control as unknown as Control<FieldValues>}
-                       setValue={setValue as unknown as UseFormSetValue<FieldValues>}
-                       watch={watch as unknown as UseFormWatch<FieldValues>}
-                       fieldName="genericExpression"
-                     />
-                     {errors.genericExpression?.message && typeof errors.genericExpression.message === 'string' && (
-                       <p className="text-red-500">{errors.genericExpression.message}</p>
-                     )}
-                   </>
-                  }
-              </div>
-
-              }
+              
         </div>
         </div>
       

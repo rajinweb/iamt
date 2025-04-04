@@ -93,47 +93,6 @@ export const validationSchema = yup.object().shape({
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  reviewer: yup.string().required(),
-  reviewerlistIsChecked: yup.boolean().default(false),
-  genericExpression: yup.array().when("reviewer", {
-    is: (reviewer: string, reviewerlistIsChecked: boolean) => reviewer === "Custom Reviewer" && !reviewerlistIsChecked,
-    // is:'Custom Reviewer',
-    then: (schema) =>
-      schema
-        .of(
-          yup.object().shape({
-            attribute: yup.object().nullable().required("Attribute is required"),
-            operator: yup.object().nullable().required("Operator is required"),
-            value: yup.string().required("Value is required"),
-          })
-        )
-        .min(1, "At least one condition is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  customReviewerlist: yup
-  .mixed<File>()
-  .nullable()
-  .default(null)
-  .when(["reviewer", "reviewerlistIsChecked"], {
-    is: (reviewer: string, reviewerlistIsChecked: boolean) =>
-        reviewer === "Custom Reviewer" && reviewerlistIsChecked,
-    then: (schema) =>
-      schema
-        .test("fileRequired", "A file must be uploaded", (value) => {
-        return !!(value instanceof File || (Array.isArray(value) && (value as unknown[]).length > 0));
-        })
-        .test("fileType", "Only CSV or Excel files are allowed", (value) => {
-          if (!value) return false; // Ensure a file is selected
-          const allowedTypes = [
-            "text/csv",
-            "application/vnd.ms-excel", // .xls
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-          ];
-          return value instanceof File && allowedTypes.includes(value.type);
-        })
-        .required("A file must be uploaded"),
-    otherwise: (schema) => schema.nullable().notRequired().default(null),
-  }),
-
+  reviewer: yup.string().required()
 
 });

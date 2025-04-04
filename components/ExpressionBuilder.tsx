@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
+import Accordion from "./Accordion";
 
 const attributes = [
   { label: "User Role", value: "user_role" },
@@ -151,8 +152,12 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
         </button>
 
         {/* Live Preview of IAM Expression */}
-        <div className="mt-4 p-3 border border-gray-300 rounded bg-gray-100 max-h-40 overflow-auto">
-          <pre className="text-sm">{JSON.stringify(formattedExpression, null, 2)}</pre>
+        <div className="mt-4 border border-gray-300 rounded bg-gray-100">
+          <Accordion iconClass='absolute -top-2 right-5 bg-white rounded-full text-gray-400' iconSize={16} title='Expand/Collapse'>
+            <div className="py-3 overflow-auto max-h-40">
+              <pre className="text-sm  px-3">{JSON.stringify(formattedExpression, null, 2)}</pre>
+            </div>
+          </Accordion>
         </div>
       </div>
     </>
