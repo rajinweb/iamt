@@ -1,6 +1,6 @@
 import { CirclePlus, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
-import { useFieldArray, useForm, Resolver, Control, FieldValues, UseFormRegister, UseFormWatch, UseFormUnregister, UseFormResetField, UseFormSetValue } from "react-hook-form";
+import { useFieldArray, useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import MultiStageReview from "./MultiStageReview";
@@ -17,7 +17,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     resetField,
     unregister
   } = useForm<Step3FormData>({
-     resolver: yupResolver(validationSchema) as unknown as Resolver<Step3FormData>,
+     resolver: yupResolver(validationSchema) as Resolver<Step3FormData>,
     mode: "onChange",
     shouldUnregister: false,
     defaultValues: {
@@ -50,7 +50,7 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           reviewerlistIsChecked: false,
           genericExpression: [],
           customReviewerlist: null
-        }) // enable default MultiStageReview
+        });
     }
    
     if (!multiStageReviewEnabled && fields.length > 0 ) {
@@ -79,15 +79,15 @@ const Step3: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
           return (    
             <div key={item.id+1}>     
               <MultiStageReview
-                index={index}  
-                control={control as unknown as Control<FieldValues>}
-                register={register as unknown as UseFormRegister<FieldValues>}
-                errors={errors}
-                removeStage={() => remove(index)}   
-                watch={watch as unknown as UseFormWatch<FieldValues>}
-                setValue={setValue as unknown as UseFormSetValue<FieldValues>} 
-                resetField={resetField as unknown as UseFormResetField<FieldValues>}
-                unregister={unregister  as unknown as UseFormUnregister<FieldValues>}        
+                index={index}
+                control={control}
+                register={register}
+                errors={errors?.stages}
+                removeStage={() => remove(index)}
+                watch={watch}
+                setValue={setValue}
+                resetField={resetField}
+                unregister={unregister}      
                 >
                 {
                    index < fields.length - 1 && ( 

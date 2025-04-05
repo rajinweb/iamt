@@ -1,5 +1,13 @@
 import { JSX } from "react";
-
+import {
+  UseFormRegister,
+  Control,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+  UseFormUnregister,
+  UseFormResetField
+} from "react-hook-form";
 export interface StepComponentProps {
     formData: any; // You can replace 'any' with a more specific type if you have a more structured form data type.
     setFormData: React.Dispatch<React.SetStateAction<any>>; // This is the state setter for formData.
@@ -52,20 +60,52 @@ export interface Step1FormData {
   }
   /***End of Step2 */
 
-  export interface Stage {
-    reviewer: string;
-    duration: string;
-    nextReviewerAction: boolean;
-    reviewerlistIsChecked?: boolean;
-    genericExpression?: GenericExpression[];
-    customReviewerlist?: File | null;
-  }
-  
   export interface Step3FormData {
     multiStageReview: boolean;
-    stages: Stage[];
+    stages: StageFormValues[];
   }
-  
+  // Define your stage schema type
+export interface StageFormValues {
+  reviewer: string;
+  duration: string;
+  reviewerlistIsChecked?: boolean;
+  genericExpression?: GenericExpression[]; // or any other shape if it's more complex
+  customReviewerlist?: File | null;
+  nextReviewerAction: boolean;
+}
+
+// Form structure example: { stages: StageFormValues[] }
+export interface MultiStageReviewProps {
+  index: number;
+  control: Control<Step3FormData>;
+  register: UseFormRegister<Step3FormData>;
+  errors?: FieldErrors<Step3FormData>["stages"];
+  removeStage: () => void;
+  watch: UseFormWatch<Step3FormData>;
+  setValue: UseFormSetValue<Step3FormData>;
+  resetField: UseFormResetField<Step3FormData>;
+  unregister: UseFormUnregister<Step3FormData>;
+  children?: React.ReactNode;
+}
+// -----------------------------------------------
+// Nested Component: MultiStageReviewForm
+// -----------------------------------------------
+
+export interface MultiStageReviewFormProps {
+  className?: string;
+  control: Control<Step3FormData>;
+  register: UseFormRegister<Step3FormData>;
+  errors?: FieldErrors<StageFormValues>;
+  index: number;
+  watch: UseFormWatch<Step3FormData>;
+  setValue: UseFormSetValue<Step3FormData>;
+  resetField: UseFormResetField<Step3FormData>;
+  unregister: UseFormUnregister<Step3FormData>;
+  reviewer: string;
+  duration: string;
+  children?: React.ReactNode;
+}
+
   /***End of Step3 */
 
   export interface Step4FormData {
