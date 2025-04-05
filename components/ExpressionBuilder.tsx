@@ -85,7 +85,7 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
       <div className="p-4 border rounded-md w-full max-w-2xl border-gray-300 relative">
         
         {conditions.map((condition, index) => (
-          <div key={condition.id} className="flex space-x-2 items-center mb-2 justify-end">
+          <div key={ uuidv4()} className="flex space-x-2 items-center mb-2 justify-end">
             {/* Logical Operator Dropdown (Not shown for first condition) */}
             {index > 0 && (
               <Controller

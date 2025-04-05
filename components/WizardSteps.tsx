@@ -16,7 +16,7 @@ const WizardSteps: React.FC<WizardStepsProps> = ({ currentStep, steps, onStepCha
       {steps.map((step, index) => {
        
         const isClickable = validationStatus.slice(0, index).every(Boolean); 
-        console.log( step, 'tes', isClickable)
+       
         return (
             <div key={index} className="flex flex-col items-center relative">
               <button

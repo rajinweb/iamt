@@ -17,7 +17,7 @@ export const validationSchema = yup.object().shape({
         .min(1, "At least one condition is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
-   groupListIsChecked:yup.boolean().default(false),
+  groupListIsChecked:yup.boolean().default(false),
   userGroupList: yup.string().nullable().default("").when(["userType", "groupListIsChecked"], {
     is: (userType: string, groupListIsChecked: boolean) => userType === "Custom User Group" && !groupListIsChecked,
     then: (schema) => schema.required(),
@@ -93,6 +93,6 @@ export const validationSchema = yup.object().shape({
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  reviewer: yup.string().required()
+  campaignType: yup.string().required()
 
 });

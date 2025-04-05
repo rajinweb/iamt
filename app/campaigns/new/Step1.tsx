@@ -38,7 +38,6 @@ const validationSchema = yup.object().shape({
       otherwise: (schema) => schema.notRequired(),
     }),
 
-  // reviewer: yup.string().required("Reviewer is required"),
 });
 
 
@@ -53,7 +52,7 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     resolver: yupResolver(validationSchema) as unknown as Resolver<Step1FormData>,
     mode: "onChange",
     defaultValues: {
-      ...formData.step1, // Pre-fill data when returning to step
+      ...formData.step1, 
       ownerType: "User",
     }
   });
@@ -174,29 +173,6 @@ const Step1: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
             )}
           </div>
         </div>
-{/*
-        <div className={`grid grid-cols-[280px_1.5fr] gap-2`}>
-          <label className={`pl-2 ${asterisk}`}>Reviewer</label>
-          <div>
-            {["User Manager", "Application Owner", "Custom Reviewer"].map((option, index) => (
-              <button
-                key={option}
-                type="button"
-                className={`px-4 py-2 rounded-md border border-gray-300 ${
-                  watch("reviewer") === option ? "bg-[#15274E] text-white" : ""
-                } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 w-37 !px-2.5" : "rounded-l-none"}`}
-                onClick={() => setValue("reviewer", option, { shouldValidate: true })}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          {errors.reviewer?.message && typeof errors.reviewer.message === 'string' && (
-            <p className="text-red-500">{errors.reviewer.message}</p>
-          )}
-        </div>
-*/}
-
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ import {validationSchema} from "./step2Validation";
 const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange }) => {
   const {
     register,
-    unregister,
     setValue,
     control,
     watch,
@@ -26,7 +25,6 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     defaultValues: {
       ...formData.step2,
       userType: formData.step2?.userType ?? "",
-      genericExpression:formData.step2?.genericExpression ?? [],
       expressionEntitlement:[defaultExpression],
       groupListIsChecked: false,
     
@@ -90,7 +88,6 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     }
   }, [selectData, setValue]); 
 
-  const reviewer = watch("reviewer");
   
   return (
     <div className="py-6">
@@ -245,16 +242,16 @@ const Step2: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                   key={option}
                   type="button"
                   className={`px-4 py-2 min-w-16 rounded-md border border-gray-300 ${
-                    watch("reviewer") === option ? "bg-[#15274E] text-white " : ""
+                    watch("campaignType") === option ? "bg-[#15274E] text-white " : ""
                   }${index === 0 && "rounded-r-none"} ${array.length > 2 && index === 1 && "rounded-none border-r-0  border-l-0 "} ${index === array.length-1 && "rounded-l-none !px-[16px]"} `}
-                  onClick={() => setValue("reviewer", option, { shouldValidate: true })}
+                  onClick={() => setValue("campaignType", option, { shouldValidate: true })}
                 >
                   {option}
                 </button>
               ))}
          
-              {errors.reviewer?.message && typeof errors.reviewer.message === 'string' && (
-                <p className="text-red-500">{errors.reviewer.message}</p>
+              {errors.campaignType?.message && typeof errors.campaignType.message === 'string' && (
+                <p className="text-red-500">{errors.campaignType.message}</p>
               )}
            
               

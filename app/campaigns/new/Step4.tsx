@@ -5,10 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import MultiSelect from "@/components/MultiSelect";
-import { asterisk, beforeExpiryReminders, enforceComments, startOfCampaign } from "@/utils/utils";
+import { asterisk, beforeExpiryReminders, durationOptions, enforceComments, recurrenceOptions, startOfCampaign } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
 import { Step4FormData, StepProps } from "@/types/StepTypes";
+import DateInput from "@/components/DatePicker";
 
 
 const validationSchema = yup.object().shape({
@@ -55,6 +56,11 @@ const validationSchema = yup.object().shape({
   }),
   applicationScope: yup.boolean(),
   preDelegate: yup.boolean(),
+  
+  duration: yup.string().required("Duration is required"),
+  reviewRecurrence: yup.string().required("Review recurrence is required"),
+  startDate: yup.date().nullable().required("Start date is required"),
+  end: yup.string().required("End is required"),
 });
 
 
@@ -66,7 +72,7 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     control,
     formState: { errors, isValid },
   } = useForm<Step4FormData>({
-    resolver: yupResolver(validationSchema) as Resolver<Step4FormData>,
+    resolver: yupResolver(validationSchema) as unknown as Resolver<Step4FormData>,
     shouldUnregister: !formData.step4,
     mode: "onChange",
     defaultValues: {
@@ -238,9 +244,44 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
     Campaign Scheduling
     </h2>
     <dl className="px-4 py-8 space-y-4 mb-8 grid grid-cols-2 text-sm">
-    <dt> 
-
-    </dt>
+          <div className="w-108">
+            <label className={`h-10 ${asterisk}`}>Duration</label>
+                
+              <MultiSelect className="mb-4" isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={durationOptions} {...register("duration")}/>
+            {errors.duration?.message && typeof errors.duration.message === 'string' && (
+              <p className="text-red-500">{errors.duration.message}</p>
+            )}
+        
+            <label className={`h-10 ${asterisk}`}>Start Date</label>             
+              <DateInput
+              control={control as unknown as Control<FieldValues>}
+              name="startDate"
+              className="w-108 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div className="w-108">
+              <label className={`h-10 ${asterisk}`}>Review Recurrence</label>
+              <MultiSelect className="mb-4" isSearchable={false} isMulti={false} control={control as unknown as Control<FieldValues>} options={recurrenceOptions} {...register("reviewRecurrence")}/>
+              {errors.reviewRecurrence?.message && typeof errors.reviewRecurrence.message === 'string' && (
+                <p className="text-red-500">{errors.reviewRecurrence.message}</p>
+              )}
+  
+              <label className={`h-10 ${asterisk}`}>End</label>
+              <div className="w-110">
+                {["Never", "On specific date", "After number of occurences"].map((option, index) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`px-4 py-2 rounded-md border border-gray-300 ${
+                      watch("end") === option ? "bg-[#15274E] text-white" : ""
+                    } ${index === 0 ? "rounded-r-none" : index === 1 ? "rounded-none border-r-0  border-l-0 px-4.5" : "rounded-l-none"}`}
+                    onClick={() => setValue("end", option, { shouldValidate: true })}
+                  >
+                    {option}
+                  </button> 
+                ))}
+              </div>
+          </div>
     </dl>
     </>
   );
