@@ -110,7 +110,7 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
               <label className="h-10 flex gap-4 items-center">
                 During the Campaign
               </label>
-              <MultiSelect placeholder="Reminders..." defaultValue={[startOfCampaign[0]]} isSearchable={false}  control={control as unknown as Control<FieldValues>} options={startOfCampaign} {...register("socReminders")}/>
+              <MultiSelect placeholder="Select reminders or add custom value" defaultValue={[startOfCampaign[0]]} isCreatable={true}  control={control as unknown as Control<FieldValues>} options={startOfCampaign} {...register("socReminders")}/>
               {errors.socReminders?.message && typeof errors.socReminders.message === 'string' && (
                 <p className="text-red-500">{errors.socReminders.message}</p>
               )}
@@ -120,7 +120,7 @@ const Step4: React.FC<StepProps> = ({ formData, setFormData, onValidationChange 
                 End of Campaign
               </label>
             
-              <MultiSelect placeholder="Reminders..." defaultValue={[beforeExpiryReminders[0]]} isSearchable={false} control={control as unknown as Control<FieldValues>} options={beforeExpiryReminders} {...register("eocReminders")}/>
+              <MultiSelect placeholder="Select reminders or add custom value" defaultValue={[beforeExpiryReminders[0]]} isCreatable={true}   control={control as unknown as Control<FieldValues>} options={beforeExpiryReminders} {...register("eocReminders")}/>
               {errors.eocReminders?.message && typeof errors.eocReminders.message === 'string' && (
                 <p className="text-red-500">{errors.eocReminders.message}</p>
               )}

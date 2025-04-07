@@ -6,6 +6,8 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 import { GroupBase, OptionProps, components as component } from "react-select";
 import Image from 'next/image';
+import Creatable from 'react-select/creatable'; 
+import AsyncCreatable from 'react-select/async-creatable'; 
 
 type MultiSelectProps<T extends FieldValues = FieldValues> = {
   control: Control<FieldValues>;
@@ -21,6 +23,7 @@ type MultiSelectProps<T extends FieldValues = FieldValues> = {
   defaultValue?: { value: string; label: string; image?: string }[];
   isDisabled?: boolean;
   optionCheck?: boolean;
+  isCreatable?: boolean;  // Add this prop to enable creatable functionality
 }
 function MultiSelect<FormValues extends FieldValues>({  
   name,
@@ -36,6 +39,7 @@ function MultiSelect<FormValues extends FieldValues>({
   defaultValue,
   isDisabled = false,
   optionCheck = false,
+  isCreatable = false,  // Default to false
 }: MultiSelectProps<FormValues>) {
   // Fix SSR hydration issues by ensuring it's a client-only component
   const [isClient, setIsClient] = useState(false);
@@ -68,6 +72,13 @@ function MultiSelect<FormValues extends FieldValues>({
     );
   };
 
+  // Handle custom value creation when using Creatable
+  const handleCreate = (inputValue: string) => {
+    const newOption = { value: inputValue, label: inputValue };
+    options.push(newOption);  // Optionally, you can also update the options state or pass it to a parent component
+    return newOption;
+  };
+
   return (
     <Controller
       name={name as Path<FormValues>}
@@ -86,6 +97,52 @@ function MultiSelect<FormValues extends FieldValues>({
           ? field.value || []
           : options.find((opt) => opt.value === field.value) || null;
 
+        // Use Creatable if isCreatable is true
+        if (isCreatable) {
+          return isAsync ? (
+            <AsyncCreatable
+              {...field}
+              instanceId={name}
+              isMulti={isMulti}
+              cacheOptions
+              defaultOptions
+              isSearchable={isSearchable}
+              loadOptions={loadOptions}
+              placeholder={placeholder}
+              onChange={handleChange}
+              value={selectedValue ? selectedValue : defaultValue}
+              components={optionCheck && isMulti ? { ...components, Option } : components}
+              className={className}
+              isDisabled={isDisabled}
+              hideSelectedOptions={false}
+              closeMenuOnSelect={isMulti ? false : true}
+              menuPlacement="auto"
+              onCreateOption={handleCreate}  
+              formatCreateLabel={(inputValue) => `custom value: "${inputValue}"`} 
+            />
+          ) : (
+            <Creatable
+              {...field}
+              isMulti={isMulti}
+              instanceId={name}
+              isSearchable={isSearchable}
+              options={options}
+              placeholder={placeholder}
+              onChange={handleChange}
+              value={selectedValue ? selectedValue : defaultValue}
+              components={optionCheck && isMulti ? { ...components, Option } : components}
+              className={className}
+              isDisabled={isDisabled}
+              hideSelectedOptions={false}
+              closeMenuOnSelect={isMulti ? false : true}
+              menuPlacement="auto"
+              onCreateOption={handleCreate}  
+              formatCreateLabel={(inputValue) => `custom value: "${inputValue}"`} 
+            />
+          );
+        }
+
+        // Default behavior: Standard select or AsyncSelect
         return isAsync ? (
           <AsyncSelect
             {...field}

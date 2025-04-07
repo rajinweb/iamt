@@ -54,9 +54,9 @@ export const everyDayReminders=[
 ]
 export const startOfCampaign=[
   { value: "Start Of Campaign", label: "Start Of Campaign" },
+  { value: "every 5 Days", label: "every 5 Days" },
   { value: "every 7 Days", label: "every 7 Days" },
-  { value: "every 15 Days", label: "every 15 Days" },
-  { value: "every 30 Days", label: "every 30 Days" },
+  { value: "every 310 Days", label: "every 10 Days" },
 ]
 export const beforeExpiryReminders=[
   { value: "before 2 Days expiry", label: "Before 2 Days Expiry" },
