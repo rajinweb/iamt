@@ -72,12 +72,6 @@ function MultiSelect<FormValues extends FieldValues>({
     );
   };
 
-  // Handle custom value creation when using Creatable
-  const handleCreate = (inputValue: string) => {
-    const newOption = { value: inputValue, label: inputValue };
-    options.push(newOption);  // Optionally, you can also update the options state or pass it to a parent component
-    return newOption;
-  };
 
   return (
     <Controller
@@ -91,6 +85,40 @@ function MultiSelect<FormValues extends FieldValues>({
             const selected = newValue as { value: string; label: string } | null;
             field.onChange(selected ? selected.value : "");
           }
+        };
+/*
+        // Handle custom value creation when using Creatable
+        const handleCreate = (inputValue: string) => {
+          const newOption = { value: inputValue, label: inputValue };
+          // Update the field value by adding the new option, creating a new array
+          const updatedValue = [...field.value, newOption];  // If isMulti is true
+          // For single selection, return the new option
+          if (!isMulti) { return newOption;}
+          // Otherwise, update the field with the new array of selected options
+          field.onChange(updatedValue);
+          // Optionally, you could also update the options array if needed:
+          // options.push(newOption); // if you're adding it to the options list
+          return updatedValue;
+        };
+        */
+        
+       // Handle custom value creation when using Creatable
+        const handleCreate = (inputValue: string) => {
+          const newOption = { value: inputValue, label: inputValue };
+
+          // Check if there is already a custom value added
+          if (field.value && field.value.length > 0) {
+            // If there is already a custom value, prevent adding another one
+            // Or you can replace the old custom value with the new one if desired:
+            const updatedValue = [{ value: inputValue, label: inputValue }]; // Replace the existing value with the new one
+            field.onChange(updatedValue); // Update the form state
+            return updatedValue;
+          }
+
+          // If no custom value exists, just add the new custom value
+          const updatedValue = [{ value: inputValue, label: inputValue }];
+          field.onChange(updatedValue); // Update the form state
+          return updatedValue;
         };
 
         const selectedValue = isMulti
