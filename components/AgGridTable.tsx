@@ -115,7 +115,7 @@ const AgGridTable = forwardRef<GridApi | undefined, AgGridTableProps>(
           onRowClicked={props.onRowClicked}
           animateRows
           rowSelection="multiple"
-          he
+          
         />
   
     );

@@ -73,8 +73,8 @@ const SelectCertification: React.FC<SelectCertificationProps> = ({
         options={certificationList}
         onChange={handleChange}
         defaultValue={certificationList[0]}  // Set default value as the first option
-        getOptionLabel={(e) => e.label}
-        getOptionValue={(e) => e.value}
+        getOptionLabel={(e:any) => e.label}
+        getOptionValue={(e:any) => e.value}
         placeholder="Select Certification"
         isSearchable={true}  // Enable search functionality in the dropdown
         styles={{

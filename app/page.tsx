@@ -17,10 +17,10 @@ import './globals.css';
 import AgGridTable from '@/components/AgGridTable';
 import { getCertifications } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { SetStateAction, useEffect, useRef, useState } from 'react';
-import SelectAll from '@/components/table//SelectAll';
-// import CustomPagination from '@/components/table/CustomPagination';
-import ColumnSettings from '@/components/table//ColumnSettings';
+import { RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
+import SelectAll from '@/components/agTable/SelectAll';
+import CustomPagination from '@/components/agTable/CustomPagination';
+import ColumnSettings from '@/components/agTable//ColumnSettings';
 import { GridApi, RowClickedEvent } from 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';
 
@@ -100,12 +100,12 @@ export default function Home() {
    
       <div className="ag-theme-quartz w-full h-[600px] p-6">
       <div className="flex items-center justify-between mb-4 relative z-10">
-        {/* <SelectAll gridApi={gridApiRef.current}  /> */}
+        <SelectAll gridApi={gridApiRef.current || null}  />
         <div className="flex items-center">
-          {/* <CustomPagination gridApi={gridApiRef.current}  />
+          <CustomPagination gridApi={gridApiRef.current}  />
           <ColumnSettings
             columnDefs={columnDefs}
-            gridRef={gridRef}
+            gridRef={gridRef as RefObject<GridApi<any> | null>}
             visibleColumns={() => {
               const visibleCols: string[] = [];
               columnDefs.forEach((colDef) => {
@@ -115,7 +115,7 @@ export default function Home() {
               });
               return visibleCols;
             }}
-          /> */}
+          />
         </div>
       </div>
       <div className="h-1/2">
