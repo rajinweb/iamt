@@ -2,8 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
-
-
+import QueryProvider from './QueryProvider';
 
 export const metadata: Metadata = {
   title: 'IAM Tool',
@@ -25,7 +24,7 @@ export default function RootLayout({
           <div className="flex flex-col flex-1">
             <Header />
             <div className='overflow-auto h-screen'>
-              <main className="flex-1 p-6 mb-12">{children}</main>
+              <main className="flex-1 p-6 mb-12"><QueryProvider>{children}</QueryProvider></main>
             </div>
           </div>
         </div>

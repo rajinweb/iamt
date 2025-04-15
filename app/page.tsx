@@ -15,14 +15,14 @@ const ChartComponent = dynamic(() => import('@/components/ChartComponent'), { ss
 import { columnDefs, defaultColDef } from '@/components/dashboard/columnDefs';
 import './globals.css';
 import AgGridTable from '@/components/AgGridTable';
-import { getCertifications } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
+import { RefObject, useRef, useState } from 'react';
 import SelectAll from '@/components/agTable/SelectAll';
 import CustomPagination from '@/components/agTable/CustomPagination';
 import ColumnSettings from '@/components/agTable//ColumnSettings';
 import { GridApi, RowClickedEvent } from 'ag-grid-enterprise';
-import { AgGridReact } from 'ag-grid-react';
+import { AgGridReact } from 'ag-grid-react';  
+import { useCertifications } from '@/hooks/useApi';
 
 const reviewerId = 'S276692'; // You can make this dynamic later if needed
 
@@ -53,37 +53,9 @@ export default function Home() {
 
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
-  const [certifications, setCertifications] = useState<CertificationRow[]>([]);
+  const { data } = useCertifications(reviewerId);
+  const certifications: CertificationRow[] = data ?? [];
   const router = useRouter();
-
-  useEffect(() => { 
-    (async () => {
-      const res = await getCertifications(reviewerId);
-
-      const data = res.items.map((item: any) => {
-        const certInfo = item.reviewerCertificationInfo?.[0] || {};
-        const actionInfo = item.reviewerCertificateActionInfo?.[0] || {};
-
-        return {
-          reviewerId: item.reviewerId,
-          certificationId: item.certificationId,
-          campaignId: item.campaignId,
-          certificationName: certInfo.certificationName,
-          certificationType: certInfo.certificationType,
-          certificationCreatedOn: certInfo.certificationCreatedOn,
-          certificationExpiration: certInfo.certificationExpiration,
-          status: certInfo.status,
-          certificationSignedOff: certInfo.certificationSignedOff,
-          certificateRequester: certInfo.certificateRequester,
-          percentageCompleted: actionInfo.percentageCompleted,
-          totalActions: actionInfo.totalActions,
-          totalActionsCompleted: actionInfo.totalActionsCompleted,
-        };
-      });
-
-      setCertifications(data);
-    })(); 
-  }, []);
 
   const handleRowClick = (e: RowClickedEvent<CertificationRow>) => {
     const clickedReviewerId = e.data?.reviewerId;

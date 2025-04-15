@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "@/lib/ag-grid-setup";
 import { ColDef, GridApi } from "ag-grid-community";
-import { getCertificationDetails, getAccessDetails} from "@/lib/api";
 import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
 import ActionButtons from "@/components/agTable/ActionButtons";
+import { useCertificationDetails, fetchAccessDetails } from "@/hooks/useApi";
 
 interface TreeClientProps {
   reviewerId: string;
@@ -19,47 +19,33 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
 
   const [rowData, setRowData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useCertificationDetails(reviewerId, certId);
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      setLoading(true);
-      try {
-        const response = await getCertificationDetails(reviewerId, certId);
-        const details = response.items || [];
+    if (!data) return;
+    const details = data.items || [];
 
-        const mappedDetails = details.map((task: any) => {
-          const userInfo = task.userInfo?.[0] || {};
-          const access = task.access?.[0] || {};
-          const deltaChanges = task.DeltaChanges?.[0] || {};
+    const mappedDetails = details.map((task: any) => {
+      const userInfo = task.userInfo?.[0] || {};
+      const access = task.access?.[0] || {};
+      const deltaChanges = task.DeltaChanges?.[0] || {};
 
-          return {
-            ...userInfo,
-            certificationId: certId,
-            taskId: task.taskId,
-            numOfApplicationsCertified: access.numOfApplicationsCertified,
-            numOfRolesCertified: access.numOfRolesCertified,
-            numOfEntitlementsCertified: access.numOfEntitlementsCertified,
-            profileChange: deltaChanges.profileChange,
-            SoDConflicts: deltaChanges.SoDConflicts,
-            addedAccounts: deltaChanges.addedAccounts,
-            addedEntitlements: deltaChanges.addedEntitlements,
-          };
-        });
+      return {
+        ...userInfo,
+        certificationId: certId,
+        taskId: task.taskId,
+        numOfApplicationsCertified: access.numOfApplicationsCertified,
+        numOfRolesCertified: access.numOfRolesCertified,
+        numOfEntitlementsCertified: access.numOfEntitlementsCertified,
+        profileChange: deltaChanges.profileChange,
+        SoDConflicts: deltaChanges.SoDConflicts,
+        addedAccounts: deltaChanges.addedAccounts,
+        addedEntitlements: deltaChanges.addedEntitlements,
+      };
+    });
 
-        setRowData(mappedDetails);
-        setError(null);
-      } catch (err) {
-        setError("Failed to fetch certification details.");
-        setRowData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDetails();
-  }, [reviewerId, certId]);
+    setRowData(mappedDetails);
+  }, [data, certId]);
 
   const columnDefs = useMemo<ColDef[]>(() => [
       {
@@ -76,8 +62,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     },
    
   },  
-    //{ field: "UserName", headerName: "User Name", cellRenderer: "agGroupCellRenderer" },
-   // { field: "Email", headerName: "Email" },
     { field: "Risk", headerName: "Risk",
       cellRenderer: (params: any) => {
         const userName = params.value;
@@ -92,15 +76,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     },
     { field: "UserID", headerName: "ID" },
     { field: "JobTitle", headerName: "Job Title" },
-    // { field: "UserType", header  Name: "User Type" },
-    // { field: "Department", headerName: "Department" },
-    // { field: "numOfApplicationsCertified", headerName: "Apps Certified" },
-    // { field: "numOfRolesCertified", headerName: "Roles Certified" },
-    // { field: "numOfEntitlementsCertified", headerName: "Entitlements Certified" },
-    // { field: "profileChange", headerName: "Profile Change" },
-    // { field: "SoDConflicts", headerName: "SoD Conflicts" },
-    // { field: "addedAccounts", headerName: "Added Accounts" },
-    // { field: "addedEntitlements", headerName: "Added Entitlements" },
     {
       colId: "actionColumn",
       headerName: "Action",
@@ -186,9 +161,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             );
            }
          },
-        // { field: "itemType", headerName: "Type " },
-        // { field: "action", headerName: "Action" },
-        // { field: "oldComments", headerName: "Old Comments" },
         {
           colId: "actionColumn",
           headerName: "Action",
@@ -220,52 +192,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     },
     getDetailRowData: async (params: any) => {
       const taskId = params.data.taskId;
-
-      const response = await getAccessDetails(reviewerId, certId, taskId);
-      const items = response.items?.[0]?.accessDetails ?? [];
-      const flattened: any[] = [];
-
-      items.forEach((access: any) => {
-        access.entityRole?.forEach((role: any) => {
-          flattened.push({
-            itemType: "Role",
-            user: role.roleInfo?.[0]?.roleOwner +'\n'+ role.roleInfo?.[0]?.roleName,
-            risk: role.itemRisk,
-            description: role.roleInfo?.[0]?.roleDescription,
-            action: role.action,
-            oldComments: role.oldComments,
-            recommendation: "",
-          });
-        });
-
-        access.entityAppinstance?.forEach((app: any) => {
-          app.entityEntitlements?.forEach((ent: any) => {
-            const ai = ent.AIAssist?.[0] ?? {};
-            flattened.push({
-              itemType: "Entitlement",
-              user: ent.entitlementInfo?.[0]?.entitlementName,
-              risk: ent.itemRisk,
-              description: ent.entitlementInfo?.[0]?.entitlementDescription,
-              applicationName:app.applicationInfo?.[0]?.applicationName,
-              lastLogin: app.applicationInfo?.[0]?.lastLogin, 
-              recommendation: ai.Recommendation,
-              action: ent.action,
-              oldComments: ent.oldComments,
-              
-            });
-          });
-        });
-      });
-
-      params.successCallback(flattened);
+      const accessRows = await fetchAccessDetails(reviewerId, certId, taskId);
+      params.successCallback(accessRows);
     },
-    
-  }), [reviewerId, certId]);
+  }), [certId, reviewerId]);
 
   return (
     <div style={{ height: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
       {/* {loading && <div style={{ padding: 10 }}>🔄 Loading...</div>} */}
-      {error && <div style={{ color: "red", padding: 10 }}>{error}</div>}
+      {error && <div style={{ color: "red", padding: 10 }}>{error as any}</div>}
 
     <div className="ag-theme-alpine" style={{ flexGrow: 1 }}>
       <div className="flex items-center justify-between mb-4 relative z-10">
@@ -299,7 +234,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             gridApiRef.current = params.api;
           }}
           overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
-          overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">Loading....</span>`}
+          overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
         />
       </div>
     </div>
