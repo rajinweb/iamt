@@ -20,7 +20,7 @@ export default function Home() {
   const gridRef = useRef<AgGridReact | null>(null);
   const gridApiRef = useRef<GridApi | undefined>(undefined);
 
-  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+  const [, setGridApi] = useState<GridApi | null>(null);
 
   const { data } = useCertifications(reviewerId);
   const certifications: CertificationRow[] = data ?? [];
@@ -41,7 +41,7 @@ export default function Home() {
           <CustomPagination gridApi={gridApiRef.current}  />
           <ColumnSettings
             columnDefs={columnDefs}
-            gridRef={gridRef as RefObject<GridApi<any> | null>}
+            gridRef={gridRef as RefObject<GridApi | null>}
             visibleColumns={() => {
               const visibleCols: string[] = [];
               columnDefs.forEach((colDef) => {
@@ -55,7 +55,7 @@ export default function Home() {
         </div>
       </div>
       <div className="h-1/2">
-      {/* <AgGridTable
+      <AgGridTable
         ref={gridApiRef} 
         rowData={certifications}   
         columnDefs={columnDefs}
@@ -63,17 +63,7 @@ export default function Home() {
         rowModelType="clientSide" 
         getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
         onRowClicked={handleRowClick}
-        setGridApi={setGridApi} 
-      /> */}
-
-      <AgGridReact  
-        ref={gridRef} 
-        rowData={certifications}   
-        columnDefs={columnDefs}
-        treeData={false}
-        rowModelType="clientSide" 
-        getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
-        onRowClicked={handleRowClick}
+        //getDataPath={(data: { reviewerId: any; certificationId: any; }) => [data?.reviewerId, data?.certificationId]}
         setGridApi={setGridApi} 
         />
       </div>

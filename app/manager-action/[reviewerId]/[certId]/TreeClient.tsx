@@ -3,7 +3,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "@/lib/ag-grid-setup";
-import { ColDef, GridApi, GetRowIdParams } from "ag-grid-community";
+import Image from 'next/image';
+import {ColDef, GridApi, ICellRendererParams, GetRowIdParams } from "ag-grid-community";
 import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
@@ -11,6 +12,7 @@ import ActionButtons from "@/components/agTable/ActionButtons";
 import { useCertificationDetails, fetchAccessDetails} from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
 import { EntitlementInfo } from "@/types/lineItem";
+import {UserRowData} from "@/types/certification"
 
 interface TreeClientProps {
   reviewerId: string;
@@ -19,7 +21,7 @@ interface TreeClientProps {
 
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
-  const [rowData, setRowData] = useState<any[]>([])
+  const [rowData, setRowData] = useState<UserRowData[]>([]);
   const { data: certificationData, error } = useCertificationDetails(reviewerId, certId);
   
 
@@ -53,18 +55,28 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     headerCheckboxSelection: true,
     checkboxSelection: true,
     headerComponent:()=> "Users",
-   field: "UserName", headerName: "Users", 
-   cellRenderer: "agGroupCellRenderer",
+    field: "UserName",
+    headerName: "Users", 
+    cellRenderer: "agGroupCellRenderer",
     cellRendererParams: {
       suppressCount: true,
-      innerRenderer: (params: any) => {
-        return <div className="flex items-center gap-4"><img src="https://avatar.iran.liara.run/public/9" alt="User Avatar" className="w-8 h-8 rounded-full" />{params.value}</div>
+      innerRenderer: (params: ICellRendererParams) => {
+        return <div className="flex items-center gap-4">
+          <Image
+            src="https://avatar.iran.liara.run/public/9"
+            alt="User Avatar"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full"
+          />
+          {params.value}
+          </div>
       },
     },
    
   },  
     { field: "Risk", headerName: "Risk",
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams) => {
         const userName = params.value;
         const risk = params.data?.Risk;
         const riskColor = risk === "High" ? "red" : risk === "Medium" ? "orange" : "green";
@@ -81,7 +93,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       colId: "actionColumn",
       headerName: "Action",
       headerComponent:()=> null,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams) => {
       
         const api = gridApiRef.current;
         if (!api) return null;
@@ -116,9 +128,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
        cellRenderer: "agGroupCellRenderer",
         cellRendererParams: {
           suppressCount: true,
-          innerRenderer: (params: any) => {
+          innerRenderer: (params: ICellRendererParams) => {
             return <div className="flex items-center gap-4">
-              <img src="https://avatar.iran.liara.run/public/9" alt="User Avatar" className="w-8 h-8 rounded-full" />
+               <Image
+                  src="https://avatar.iran.liara.run/public/9"
+                  alt="User Avatar"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full"
+                />
               <small className="leading-4">{params.value.split('\n')[0]}<br/>{params.value.split('\n')[1]}</small>
               </div>
           },
@@ -126,7 +144,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
        
       },  
       { field: "risk", headerName: "Risk",
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams) => {
         const userName = params.value;
         const risk = params.data?.Risk;
         const riskColor = risk === "High" ? "red" : risk === "Medium" ? "orange" : "green";
@@ -141,7 +159,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         { field: "description", headerName: "Description" },
         { field: "lastLogin", headerName: "Last Login " },
         { field: "recommendation", headerName: "AI Assist Confidence",
-          cellRenderer: (params: any) => {
+          cellRenderer: (params: ICellRendererParams) => {
             const cellText = params.value;
             return (
               <div className="leading-3.5 flex items-center justify-center h-full">
@@ -166,7 +184,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           colId: "actionColumn",
           headerName: "Action",
           headerComponent:()=> null,
-          cellRenderer: (params: any) => {
+          cellRenderer: (params: ICellRendererParams) => {
           
             const api = gridApiRef.current;
             if (!api) return null;
@@ -190,7 +208,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       },
       rowSelection: "multiple",
       masterDetail: true,
-      isRowMaster: (data: any) => data.itemType === "Entitlement",
+      isRowMaster: () => true,
       detailCellRendererParams: {
         detailGridOptions: {
           columnDefs: [
@@ -202,14 +220,22 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
              cellRenderer: "agGroupCellRenderer",
               cellRendererParams: {
                 suppressCount: true,
-                innerRenderer: (params: any) => {
-                  return <div className="flex items-center gap-4"><img src="https://avatar.iran.liara.run/public/9" alt="User Avatar" className="w-8 h-8 rounded-full" />{params.value}</div>
+                innerRenderer: (params: ICellRendererParams) => {
+                  return <div className="flex items-center gap-4">
+                     <Image
+                        src="https://avatar.iran.liara.run/public/9"
+                        alt="User Avatar"
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full"
+                      />
+                    {params.value}</div>
                 },
               },
              
             },  
               { field: "itemRisk", headerName: "Risk",
-                cellRenderer: (params: any) => {
+                cellRenderer: (params: ICellRendererParams) => {
                   const userName = params.value;
                   const risk = params.data?.Risk;
                   const riskColor = risk === "High" ? "red" : risk === "Medium" ? "orange" : "green";
@@ -224,12 +250,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
              { field: "entitlementDescription", headerName: "Description" },  
             { field: "accessedWithinAMonth", headerName: "Access History" },
             { field: "recommendation", headerName: "AI Assist Confidence",
-              cellRenderer: (params: any) => {
+              cellRenderer: (params: ICellRendererParams) => {
                 const cellText = params.value;
                 return (
                   <div className="leading-3.5 flex items-center justify-center h-full">
                     <span>
-                   {/* <span className="font-semibold text-[#175AE4] text-[12px]">{cellText as string}</span> */}
+                  
                    {
                     cellText=="Certify" ?
                     <svg width="21" height="18" viewBox="0 0 21 18" className="m-auto" >
@@ -249,11 +275,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
               colId: "actionColumn",
               headerName: "Action",
               headerComponent:()=> null,
-              cellRenderer: (params: any) => {
-              
+              cellRenderer: (params: ICellRendererParams) => {
                 const api = gridApiRef.current;
                 if (!api) return null;
-            
                 return (
                   <ActionButtons
                     api={api}
@@ -309,9 +333,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     getDetailRowData: async (params: any) => {
       const taskId = params.data.taskId;
       if (!taskId) return;
-    
       console.log('1st level');
-    
       try {
         const data = await fetchAccessDetails(reviewerId, certId, taskId);
         params.successCallback(data ?? []);
@@ -325,8 +347,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
 
   return (
     <div style={{ height: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
-      {/* {loading && <div style={{ padding: 10 }}>🔄 Loading...</div>} */}
-      {error && <div style={{ color: "red", padding: 10 }}>{error as any}</div>}
+      {error && <div style={{ color: "red", padding: 10 }}>{String(error)}</div>}
 
     <div className="ag-theme-alpine" style={{ flexGrow: 1 }}>
       <div className="flex items-center justify-between mb-4 relative z-10">

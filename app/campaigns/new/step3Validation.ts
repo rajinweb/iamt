@@ -26,7 +26,7 @@ export const stageSchema = yup.object().shape({
 
   customReviewerlist: yup.mixed().when(["reviewer", "reviewerlistIsChecked"], {
     is: (reviewer: string, isChecked: boolean) => reviewer === "custom-reviewer" && isChecked,
-    then: (schema) =>
+    then: () =>
       yup
         .mixed()
         .required("Custom reviewer list is required")

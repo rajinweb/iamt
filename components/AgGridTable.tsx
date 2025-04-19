@@ -38,7 +38,7 @@ ModuleRegistry.registerModules([
 
 type AgGridTableProps = {
   columnDefs: ColDef[];
-  rowData?: any[]; // for client-side
+  rowData?: []; // for client-side
   autoGroupColumnDef?: ColDef;
   getRowId?: GridOptions["getRowId"];
   isServerSideGroup?: GridOptions["isServerSideGroup"];
@@ -56,7 +56,7 @@ type AgGridTableProps = {
 
 const AgGridTable = forwardRef<GridApi | undefined, AgGridTableProps>(
   (props, ref) => {
-    const gridRef = useRef<AgGridReact<any>>(null);
+    const gridRef = useRef<AgGridReact>(null);
     const gridApiRef = useRef<ServerSideGridApi | null>(null);
 
     useImperativeHandle(ref, () => gridApiRef.current!, []);
@@ -101,7 +101,7 @@ const AgGridTable = forwardRef<GridApi | undefined, AgGridTableProps>(
           getDataPath={   
             props.getDataPath ??
             (typeof props.dataPathFromData === "string"
-              ? (data: Record<string, any>) => {
+              ? (data: Record<string, string>) => {
                   const path = data[props.dataPathFromData!];
                   return Array.isArray(path) ? path : [];
                 }

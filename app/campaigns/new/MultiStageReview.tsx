@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import MultiSelect from "@/components/MultiSelect";
 import { Path, FieldValues, Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { CircleMinus } from "lucide-react";
@@ -83,7 +83,7 @@ const MultiStageReviewForm: React.FC<MultiStageReviewFormProps> = ({
   const selectedReviewer = watch(reviewer as Path<Step3FormData>);
   const reviewerlistIsChecked = watch(checkedReviewerlist);
 
-  useEffect(() => {
+  const handleReviewerLogic = useCallback(() => {
     if (selectedReviewer !== "custom-reviewer") {
       resetField(custRevList);
       unregister(custRevList);
@@ -98,7 +98,21 @@ const MultiStageReviewForm: React.FC<MultiStageReviewFormProps> = ({
         setValue(custRevList, null);
       }
     }
-  }, [selectedReviewer, reviewerlistIsChecked]);
+  }, [
+    selectedReviewer,
+    reviewerlistIsChecked,
+    custRevList,
+    genericExp,
+    checkedReviewerlist,
+    resetField,
+    setValue,
+    unregister
+  ]);
+  
+  useEffect(() => {
+    handleReviewerLogic();
+  }, [handleReviewerLogic]);
+  
 
   return (
     <div className={className}>

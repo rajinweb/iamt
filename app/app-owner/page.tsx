@@ -1,9 +1,10 @@
 'use client';
-import { useState } from "react";
-import dynamic from "next/dynamic";
-// const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
-// import {rowData} from '@/components/data';
-// import {columns} from '@/components/table/columns'
+import { useRef, useState } from "react";
+import { AgGridReact } from "ag-grid-react";
+import "@/lib/ag-grid-setup";
+
+import { rowData } from '@/components/data';
+import { appOwnerColumns } from "./appOwnerColumns";
 
 type DataItem = {
   label: string;
@@ -42,6 +43,7 @@ const data: {
 
 export default function AppOwner() {
   const [selected, setSelected] = useState<{ [key: string]: number | null }>({});
+  const gridRef = useRef<AgGridReact>(null);
 
   const handleSelect = (category: string, index: number) => {
     setSelected((prev) => ({
@@ -84,9 +86,27 @@ export default function AppOwner() {
       ))}   
     </div>
     <button className="bg-[#15274E] text-white p-2 rounded-sm text-sm mt-4 cursor-pointer " onClick={clearFilters}> Clear Filter </button>
-      {/* {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
-                <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
-                } */}
+    
+    <div className="ag-theme-alpine mt-6 h-72">
+      {rowData && rowData.length > 0 ? (
+        <AgGridReact
+          ref={gridRef}
+          rowData={rowData}
+          columnDefs={appOwnerColumns}
+          rowSelection="multiple"
+          animateRows={true}
+          context={{ gridRef }}
+          rowModelType="clientSide"
+          defaultColDef={{
+            sortable: true,
+            filter: true,
+            resizable: true,
+          }}
+        />
+      ) : (
+        <div className="mt-4">Loading...</div>
+      )}
+    </div>
     </>
   );
 }

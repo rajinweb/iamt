@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { getCertifications } from "@/lib/api";
-import dynamic from "next/dynamic";
-const Select = dynamic(() => import('react-select'), {
-  ssr: false,
-});
+import React, { useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import { useCertifications } from '@/hooks/useApi';
+import type { Props as SelectProps, SingleValue } from 'react-select';
 
 interface CertOption {
   value: string;
@@ -18,72 +16,65 @@ interface SelectCertificationProps {
   onSelectCert: (cert: CertOption) => void;
 }
 
+const Select = dynamic<SelectProps<CertOption>>(
+  () => import('react-select'),
+  { ssr: false }
+);
+
 const SelectCertification: React.FC<SelectCertificationProps> = ({
   reviewerId,
   certIdFromURL,
   onSelectCert,
 }) => {
-  const [certificationList, setCertificationList] = useState<CertOption[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data: certifications, isLoading, isError } = useCertifications(reviewerId);
+
+  // ✅ Memoize certificationOptions to avoid useEffect warning
+  const certificationOptions: CertOption[] = useMemo(() => {
+    if (!certifications) return [];
+
+    return [
+      { value: 'ALL', label: 'All Certifications' },
+      ...certifications.map((cert) => ({
+        value: cert.certificationId,
+        label: cert.certificationName,
+      })),
+    ];
+  }, [certifications]);
 
   useEffect(() => {
-    const fetchCerts = async () => {
-      setLoading(true);
-      try {
-        const response = await getCertifications(reviewerId);
-        const certs = response.items || [];
+    if (!certificationOptions.length) return;
 
-        const mapped = certs.map((cert: any) => {
-          const info = cert.reviewerCertificationInfo[0] || {};
-          return {
-            value: cert.certificationId,
-            label: info.certificationName,
-          };
-        });
+    const preselected =
+      certificationOptions.find((c) => c.value === certIdFromURL) ||
+      certificationOptions[0];
 
-        const allOption = { value: "ALL", label: "All Certifications" };
-        const finalList = [allOption, ...mapped];
+    onSelectCert(preselected);
+  }, [certificationOptions, certIdFromURL, onSelectCert]);
 
-        setCertificationList(finalList);
-
-        const preselected = finalList.find((c) => c.value === certIdFromURL);
-        onSelectCert(preselected || allOption);
-      } catch (err) {
-        setError("Failed to fetch certifications.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCerts();
-  }, [certIdFromURL, reviewerId, onSelectCert]);
-
-  const handleChange = (selectedOption: any) => {
-    onSelectCert(selectedOption || certificationList[0]);
+  const handleChange = (selectedOption: SingleValue<CertOption>) => {
+    onSelectCert(selectedOption || certificationOptions[0]);
   };
 
   return (
     <div>
-      {loading && <div>Loading...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      
-      {/* React-Select dropdown */}
-      <Select
-        options={certificationList}
-        onChange={handleChange}
-        defaultValue={certificationList[0]}  // Set default value as the first option
-        getOptionLabel={(e:any) => e.label}
-        getOptionValue={(e:any) => e.value}
-        placeholder="Select Certification"
-        isSearchable={true}  // Enable search functionality in the dropdown
-        styles={{
-          control: (styles) => ({
-            ...styles,
-            width: '300px',
-          }),
-        }}
-      />
+      {isLoading && <div>Loading certifications...</div>}
+      {isError && <div style={{ color: 'red' }}>Failed to load certifications.</div>}
+
+      {!isLoading && !isError && (
+        <Select
+          options={certificationOptions}
+          onChange={()=>handleChange}
+          defaultValue={certificationOptions[0]}
+          placeholder="Select Certification"
+          isSearchable
+          styles={{
+            control: (styles) => ({
+              ...styles,
+              width: '300px',
+            }),
+          }}
+        />
+      )}
     </div>
   );
 };

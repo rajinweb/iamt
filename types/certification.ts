@@ -42,3 +42,19 @@ export interface CertificationRow {
     totalActionsCompleted: number;
   }
   
+  export interface UserRowData {
+    id: string;
+    certificationId: string;
+    taskId: string;
+    UserName?: string;
+    UserID?: string;
+    JobTitle?: string;
+    Risk?: string;
+    numOfApplicationsCertified?: number;
+    numOfRolesCertified?: number;
+    numOfEntitlementsCertified?: number;
+    profileChange?: boolean;
+    SoDConflicts?: boolean;
+    addedAccounts?: boolean;
+    addedEntitlements?: boolean;
+}

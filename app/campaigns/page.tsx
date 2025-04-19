@@ -1,22 +1,41 @@
 'use client';
-import React from "react";
+
+import React, { useRef } from "react";
 import Tabs from "@/components/tabs";
-import {campData} from '@/components/data';
-import dynamic from "next/dynamic";
+import { campData } from "@/components/data";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { AgGridReact } from "ag-grid-react";
+import { AgGridReact as AgGridReactType } from "ag-grid-react";
+import "@/lib/ag-grid-setup";
 import { CampaignColumns } from "./new/CampaignColumns";
-// const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
 
 export default function Campaigns() {
+  const gridRef = useRef<AgGridReactType>(null);
   const tabsData = [
     { label: "Active", icon: ChevronDown, iconOff: ChevronRight, component: () => {
-            return !campData || campData.length === 0 ? <div>Loading...</div> : <>dasdf </>
-            //<DataTable data={campData} columns={CampaignColumns} filerColumns={['campaignName']} />;
-          }
+        if (!campData || campData.length === 0) return <div>Loading...</div>;
+        return (<div className="ag-theme-alpine h-72">
+                  <AgGridReact
+                  ref={gridRef}
+                  rowData={campData}
+                  columnDefs={CampaignColumns}
+                  rowSelection="multiple"
+                  context={{ gridRef }}               
+                  rowModelType="clientSide"
+                  animateRows={true}
+                  defaultColDef={{
+                    sortable: true,
+                    filter: true,
+                    resizable: true,
+                  }}
+                />
+            </div>
+        );
       },
-    { label: "Completed", icon: ChevronDown, iconOff: ChevronRight, component: () => <p> Coming Soon...</p> },
-    { label: "Template",  icon: ChevronDown, iconOff: ChevronRight, component: () => <p > Coming Soon...</p> }
+    },
+    { label: "Completed", icon: ChevronDown, iconOff: ChevronRight, component: () => <p>Coming Soon...</p> },
+    { label: "Template", icon: ChevronDown, iconOff: ChevronRight, component: () => <p>Coming Soon...</p> },
   ];
   
   return (
