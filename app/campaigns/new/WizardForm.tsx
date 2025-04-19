@@ -10,7 +10,7 @@ interface WizardFormProps {
 }
 
 const WizardForm: React.FC<WizardFormProps> = ({ steps }) => {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useFormData();
   const [validationStatus, setValidationStatus] = useState<boolean[]>(Array(steps.length).fill(false));
   

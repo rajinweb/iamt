@@ -8,12 +8,9 @@ import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
 import ActionButtons from "@/components/agTable/ActionButtons";
-import {
-  useCertificationDetails,
-  useAccessDetails,
-  useLineItemDetails,
-} from "@/hooks/useApi";
+import { useCertificationDetails, useAccessDetails} from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
+import { EntitlementInfo } from "@/types/lineItem";
 
 interface TreeClientProps {
   reviewerId: string;
@@ -24,16 +21,10 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-  const [currentLineItemId, setCurrentLineItemId] = useState<string | null>(null);
+
 
   const { data: certificationData, error } = useCertificationDetails(reviewerId, certId);
   const { data: accessDetails = [] } = useAccessDetails(reviewerId, certId, currentTaskId ?? undefined);
-  const { data: lineItemDetails = [] } = useLineItemDetails(
-    reviewerId,
-    certId,
-    currentTaskId ?? '',
-    currentLineItemId ?? ''
-  );
 
   useEffect(() => {
     if (!certificationData) return;
@@ -291,9 +282,11 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             const data = await getLineItemDetails(reviewerId, certId, taskId, lineItemId);
       
             const mapped = data.map((item) => {
-              const info = item.entitlementInfo?.[0] ?? {};
+              const info: EntitlementInfo = item.entitlementInfo?.[0] ?? {
+                entitlementName: '',
+                entitlementDescription: '',
+              };
               const ai = item.AIAssist?.[0] ?? {};
-              debugger
               return {
                 entitlementName: info.entitlementName ?? '',
                 entitlementDescription: info.entitlementDescription ?? '',

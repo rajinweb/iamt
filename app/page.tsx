@@ -1,10 +1,4 @@
 'use client';
-import { Eye, EyeOff } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import Tabs from '@/components/tabs';
-import Accordion from '@/components/Accordion';
-const ChartComponent = dynamic(() => import('@/components/ChartComponent'), { ssr: false });
-
 // import {rowData} from '@/components/data';
 // import { columns } from '@/components/table/columns';
 // const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
@@ -12,7 +6,7 @@ const ChartComponent = dynamic(() => import('@/components/ChartComponent'), { ss
       <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
       } */}
 
-import { columnDefs, defaultColDef } from '@/components/dashboard/columnDefs';
+import { columnDefs } from '@/components/dashboard/columnDefs';
 import './globals.css';
 import AgGridTable from '@/components/AgGridTable';
 import { useRouter } from 'next/navigation';
@@ -29,10 +23,7 @@ const reviewerId = 'S276692'; // You can make this dynamic later if needed
 
 export default function Home() {
 
-  const tabsData = [
-    { label: "Summary Dashboard", icon: Eye, iconOff: EyeOff, component:  ChartComponent },
-    { label: "Reports Dashboard", icon: Eye, iconOff: EyeOff, component: () => <p className='p-8'>View reports and analytics Dashboard <br/> Coming Soon...</p> },
-  ];
+
   const gridRef = useRef<AgGridReact | null>(null);
   const gridApiRef = useRef<GridApi | undefined>(undefined);
 
@@ -49,13 +40,8 @@ export default function Home() {
       router.push(`/manager-action/${clickedReviewerId}/${clickedCertificationId}`);
     }
   };
-  return (  
-    <>
-       <Accordion iconClass='absolute top-1 right-0 rounded-full text-white bg-purple-800' title='Expand/Collapse'>
-       <Tabs tabs={tabsData} className="border-b border-b-gray-300" />
-      </Accordion>
-   
-      <div className="ag-theme-quartz w-full h-[600px] p-6">
+  return ( 
+    <div className="ag-theme-quartz w-full h-[600px]">
       <div className="flex items-center justify-between mb-4 relative z-10">
         <SelectAll gridApi={gridApiRef.current || null}  />
         <div className="flex items-center">
@@ -89,6 +75,6 @@ export default function Home() {
       />
       </div>
     </div>
-    </>
+
   );
 }

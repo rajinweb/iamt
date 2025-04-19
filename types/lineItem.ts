@@ -4,9 +4,10 @@ export interface EntitlementInfo {
   }
   
   export interface LineItemDetail {
+    AIAssist?: any;
     ID: string;
     entitlementInfo?: EntitlementInfo[];
-    Recommendation?: string;
+    recommendation?: string;
     accessedWithinAMonth?: string;
     entityRisk?: string;
     itemRisk?:string;
