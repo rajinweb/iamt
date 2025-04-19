@@ -41,7 +41,7 @@ useEffect(() => {
     gridApi.removeEventListener("selectionChanged", updateSelectedRows);
   };
  
-}, [gridApi]);
+}, [gridApi, updateSelectedRows]);
 return (
   <div className="flex items-center text-sm">
     <div className='divide-x-1 divide-gray-300 h-9 flex items-center'>

@@ -12,7 +12,7 @@ function IndeterminateCheckbox({
       if (typeof indeterminate === 'boolean') {
         ref.current!.indeterminate = !rest.checked && indeterminate;
       }
-    }, [ref, indeterminate]);
+    }, [rest.checked, ref, indeterminate]);
   
     return <input type="checkbox" ref={ref} className={`transform scale-[1.3] ${className} cursor-pointer`} {...rest} />;
   }

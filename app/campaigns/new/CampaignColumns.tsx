@@ -1,5 +1,5 @@
 import ActionButtons from "@/components/agTable/ActionButtons";
-import { ICellRendererParams, ColDef, GridApi } from 'ag-grid-community';
+import { ICellRendererParams, ColDef } from 'ag-grid-community';
 
 import { Calendar, ClipboardList, ListOrdered, RectangleEllipsis, User } from "lucide-react";
 

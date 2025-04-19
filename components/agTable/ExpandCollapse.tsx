@@ -50,7 +50,7 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
       gridApi.removeEventListener('rowGroupOpened', updateState);
       gridApi.removeEventListener('rowDataUpdated', updateState);
     };
-  }, [gridApi]);
+  }, [areAllRowsExpanded, gridApi]);
 
   // Handle button click
   const toggleExpandCollapse = () => {

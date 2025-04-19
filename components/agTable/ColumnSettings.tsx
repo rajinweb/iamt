@@ -10,7 +10,7 @@ import { ColDef, GridApi } from "ag-grid-enterprise"
 interface ColumnSettingsProps {
   columnDefs: ColDef[];
   visibleColumns: () => string[];
-  gridRef: React.RefObject<GridApi | null>;
+  gridRef: RefObject<GridApi | null>;
 }
 
 const ColumnSettings = ({ columnDefs, gridRef, visibleColumns }: ColumnSettingsProps) => {

@@ -104,7 +104,7 @@ function MultiSelect<FormValues extends FieldValues>({
         
        // Handle custom value creation when using Creatable
         const handleCreate = (inputValue: string) => {
-          const newOption = { value: inputValue, label: inputValue };
+         // const newOption = { value: inputValue, label: inputValue };
 
           // Check if there is already a custom value added
           if (field.value && field.value.length > 0) {

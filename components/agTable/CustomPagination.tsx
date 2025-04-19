@@ -1,9 +1,7 @@
 'use client';
-
-import { useState, useEffect, useRef } from 'react';
-import { AgGridReact } from '@ag-grid-community/react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { GridApi } from '@ag-grid-community/core';
+import { GridApi } from 'ag-grid-enterprise';
 
 const CustomPagination = ({ gridApi }: { gridApi: GridApi | null }) => {
   const [currentPage, setCurrentPage] = useState(1);
