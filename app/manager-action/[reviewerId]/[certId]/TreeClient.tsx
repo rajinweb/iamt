@@ -3,12 +3,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "@/lib/ag-grid-setup";
-import { ColDef, GridApi } from "ag-grid-community";
+import { ColDef, GridApi, GetRowIdParams } from "ag-grid-community";
 import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
 import ActionButtons from "@/components/agTable/ActionButtons";
-import { useCertificationDetails, useAccessDetails} from "@/hooks/useApi";
+import { useCertificationDetails, useAccessDetails, fetchAccessDetails} from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
 import { EntitlementInfo } from "@/types/lineItem";
 
@@ -19,12 +19,9 @@ interface TreeClientProps {
 
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
-  const [rowData, setRowData] = useState<any[]>([]);
-  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-
-
+  const [rowData, setRowData] = useState<any[]>([])
   const { data: certificationData, error } = useCertificationDetails(reviewerId, certId);
-  const { data: accessDetails = [] } = useAccessDetails(reviewerId, certId, currentTaskId ?? undefined);
+  
 
   useEffect(() => {
     if (!certificationData) return;
@@ -34,6 +31,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       const delta = task.DeltaChanges?.[0] || {};
 
       return {
+        id: task.taskId, 
         ...userInfo,
         certificationId: certId,
         taskId: task.taskId,
@@ -308,17 +306,21 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         },
       },
     },
-    getDetailRowData: (params: any) => {
+    getDetailRowData: async (params: any) => {
       const taskId = params.data.taskId;
       if (!taskId) return;
-  
-      setCurrentTaskId(taskId);
-  
-      setTimeout(() => {
-        params.successCallback(accessDetails ?? []);
-      }, 0);
-    },
-  }), [accessDetails, certId, reviewerId]);
+    
+      console.log('1st level');
+    
+      try {
+        const data = await fetchAccessDetails(reviewerId, certId, taskId);
+        params.successCallback(data ?? []);
+      } catch (err) {
+        console.error("Error loading accessDetails", err);
+        params.successCallback([]);
+      }
+    }
+  }),[certId, reviewerId]);
   
 
   return (
@@ -349,12 +351,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
 
         <AgGridReact
           rowData={rowData}
+          //deltaRowDataMode={true}
+          getRowId={(params:GetRowIdParams) => params.data.id}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           masterDetail={true}
           rowSelection="multiple"
           detailCellRendererParams={detailCellRendererParams}
           isRowMaster={() => true}
+         // reactUi={true}
           onGridReady={(params) => {
             gridApiRef.current = params.api;
             params.api.sizeColumnsToFit();
