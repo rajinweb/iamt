@@ -55,19 +55,17 @@ export default function Home() {
         </div>
       </div>
       <div className="h-1/2">
-      <AgGridTable
-        ref={gridApiRef} 
+     <AgGridReact  
+        ref={gridRef} 
         rowData={certifications}   
         columnDefs={columnDefs}
         treeData={false}
         rowModelType="clientSide" 
         getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
         onRowClicked={handleRowClick}
-        //getDataPath={(data: { reviewerId: any; certificationId: any; }) => [data?.reviewerId, data?.certificationId]}
         setGridApi={setGridApi} 
         />
       </div>
     </div>
-
   );
 }
