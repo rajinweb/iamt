@@ -1,35 +1,40 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import {
   getCertifications,
   getCertificationDetails,
   getAccessDetails,
+  getLineItemDetails
 } from '@/lib/api';
 
-// Types
-import type { CertificationRow } from '@/app/page';
+import type {
+  CertificationRow,
+  CertificationResponse,
+  RawCertification,
+} from '@/types/certification';
+import { LineItemDetail } from '@/types/lineItem';
 
-export const useCertifications = (reviewerId: string, enabled = true) => {
+export const useCertifications = (reviewerId: string, enabled = true): UseQueryResult<CertificationRow[]> => {
   return useQuery({
     queryKey: ['certifications', reviewerId],
     queryFn: async () => {
-      const res = await getCertifications<{ items: any[] }>(reviewerId);
-      return res.items.map((item: any): CertificationRow => {
-        const certInfo = item.reviewerCertificationInfo?.[0] || {};
-        const actionInfo = item.reviewerCertificateActionInfo?.[0] || {};
+      const res = await getCertifications<CertificationResponse>(reviewerId);
+      return res.items.map((item: RawCertification): CertificationRow => {
+        const certInfo = item.reviewerCertificationInfo?.[0];
+        const actionInfo = item.reviewerCertificateActionInfo?.[0];
         return {
           reviewerId: item.reviewerId,
           certificationId: item.certificationId,
           campaignId: item.campaignId,
-          certificationName: certInfo.certificationName,
-          certificationType: certInfo.certificationType,
-          certificationCreatedOn: certInfo.certificationCreatedOn,
-          certificationExpiration: certInfo.certificationExpiration,
-          status: certInfo.status,
-          certificationSignedOff: certInfo.certificationSignedOff,
-          certificateRequester: certInfo.certificateRequester,
-          percentageCompleted: actionInfo.percentageCompleted,
-          totalActions: actionInfo.totalActions,
-          totalActionsCompleted: actionInfo.totalActionsCompleted,
+          certificationName: certInfo?.certificationName ?? '',
+          certificationType: certInfo?.certificationType ?? '',
+          certificationCreatedOn: certInfo?.certificationCreatedOn ?? '',
+          certificationExpiration: certInfo?.certificationExpiration ?? '',
+          status: certInfo?.status ?? '',
+          certificationSignedOff: certInfo?.certificationSignedOff ?? false,
+          certificateRequester: certInfo?.certificateRequester ?? '',
+          percentageCompleted: actionInfo?.percentageCompleted ?? 0,
+          totalActions: actionInfo?.totalActions ?? 0,
+          totalActionsCompleted: actionInfo?.totalActionsCompleted ?? 0,
         };
       });
     },
@@ -42,7 +47,7 @@ export const useCertificationDetails = (
   reviewerId: string,
   certId: string,
   enabled = true
-) => {
+): UseQueryResult<any> => {
   return useQuery({
     queryKey: ['certificationDetails', reviewerId, certId],
     queryFn: () => getCertificationDetails<any>(reviewerId, certId),
@@ -63,6 +68,7 @@ export const fetchAccessDetails = async (
   const flattened: any[] = [];
 
   items.forEach((access: any) => {
+  /*
     access.entityRole?.forEach((role: any) => {
       flattened.push({
         itemType: "Role",
@@ -74,10 +80,14 @@ export const fetchAccessDetails = async (
         recommendation: "",
       });
     });
+    */
 
     access.entityAppinstance?.forEach((app: any) => {
+      debugger;
       app.entityEntitlements?.forEach((ent: any) => {
         const ai = ent.AIAssist?.[0] ?? {};
+        const info = ent.entitlementInfo?.[0] ?? {};
+        debugger;
         flattened.push({
           itemType: "Entitlement",
           user: ent.entitlementInfo?.[0]?.entitlementName,
@@ -88,10 +98,43 @@ export const fetchAccessDetails = async (
           recommendation: ai.Recommendation,
           action: ent.action,
           oldComments: ent.oldComments,
+          lineItemId: app.lineItemId,
+          taskId,
+          entitlementName: info.entitlementName ?? '',
+          entitlementDescription: info.entitlementDescription ?? '',
         });
       });
     });
   });
 
   return flattened;
+};
+
+export const useAccessDetails = (
+  reviewerId: string,
+  certId: string,
+  taskId?: string,
+  all?: string,
+  enabled = true
+): UseQueryResult<any[]> => {
+  return useQuery({
+    queryKey: ['accessDetails', reviewerId, certId, taskId, all],
+    queryFn: () => fetchAccessDetails(reviewerId, certId, taskId, all),
+    enabled,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useLineItemDetails = (
+  reviewerId: string,
+  certId: string,
+  taskId: string,
+  lineItemId: string
+) => {
+  return useQuery<LineItemDetail[]>({
+    queryKey: ['lineItemDetails', reviewerId, certId, taskId, lineItemId],
+    queryFn: () => getLineItemDetails(reviewerId, certId, taskId, lineItemId),
+    enabled: !!reviewerId && !!certId && !!taskId && !!lineItemId,
+    staleTime: 1000 * 60 * 5,
+  });
 };

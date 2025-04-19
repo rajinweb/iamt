@@ -23,24 +23,9 @@ import ColumnSettings from '@/components/agTable//ColumnSettings';
 import { GridApi, RowClickedEvent } from 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';  
 import { useCertifications } from '@/hooks/useApi';
+import { CertificationRow } from '@/types/certification';
 
 const reviewerId = 'S276692'; // You can make this dynamic later if needed
-
-export interface CertificationRow {
-  reviewerId: string;
-  certificationId: string;
-  campaignId: string;
-  certificationName: string;
-  certificationType: string;
-  certificationCreatedOn: string;
-  certificationExpiration: string;
-  status: string;
-  certificationSignedOff: boolean;
-  certificateRequester: string;
-  percentageCompleted: number;
-  totalActions: number;
-  totalActionsCompleted: number;
-}
 
 export default function Home() {
 

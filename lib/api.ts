@@ -1,3 +1,6 @@
+import { LineItemDetail } from "@/types/lineItem";
+
+const BASE_URL = 'https://lab.kapitalai.io/certification/api/v1/ASRODEV';
 // Generic fetch function with optional pagination
 export async function fetchApi<T>(
   endpoint: string,
@@ -17,7 +20,8 @@ export async function fetchApi<T>(
   const res = await fetch(url.toString());
 
   if (!res.ok) {
-    throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
+    const errorBody = await res.text(); 
+    throw new Error(`Fetch failed: ${res.status} ${res.statusText}\n${errorBody}`);
   }
 
   return res.json();
@@ -29,7 +33,7 @@ export async function getCertifications<T>(
   pageSize?: number,
   pageNumber?: number
 ): Promise<T> {
-  const endpoint = `https://lab.kapitalai.io/certification/api/v1/ASRODEV/getCertificationList/${reviewerId}`;
+  const endpoint = `${BASE_URL}/getCertificationList/${reviewerId}`;
   return fetchApi<T>(endpoint, pageSize, pageNumber);
 }
 
@@ -40,7 +44,7 @@ export async function getCertificationDetails<T>(
   pageSize?: number,
   pageNumber?: number
 ): Promise<T> {
-  const endpoint = `https://lab.kapitalai.io/certification/api/v1/ASRODEV/getCertificationDetails/${reviewerId}/${certId}`;
+  const endpoint = `${BASE_URL}/getCertificationDetails/${reviewerId}/${certId}`;
   return fetchApi<T>(endpoint, pageSize, pageNumber);
 }
 
@@ -52,6 +56,28 @@ export async function getAccessDetails<T>(
   all?: string
 ): Promise<T> {
   const finalPart = all ? 'All' : taskId ?? '';
-  const endpoint = `https://lab.kapitalai.io/certification/api/v1/ASRODEV/getAccessDetails/${reviewerId}/${certId}/${finalPart}`;
+  const endpoint = `${BASE_URL}/getAccessDetails/${reviewerId}/${certId}/${finalPart}`;
   return fetchApi<T>(endpoint);
 }
+
+// Get all entitlements of an applicatio
+export async function getLineItemDetails(
+  reviewerId: string,
+  certId: string,
+  taskId: string,
+  lineItemId: string
+): Promise<LineItemDetail[]> {
+  const endpoint = `${BASE_URL}/getLineItemDetails/${reviewerId}/${certId}/${taskId}/${lineItemId}`;
+  const response = await fetchApi<any>(endpoint);
+
+  if (Array.isArray(response?.items)) {
+    return response.items as LineItemDetail[];
+  }
+
+  if (Array.isArray(response)) {
+    return response as LineItemDetail[];
+  }
+
+  return [];
+}
+
