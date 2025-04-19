@@ -8,7 +8,7 @@ import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
 import ActionButtons from "@/components/agTable/ActionButtons";
-import { useCertificationDetails, useAccessDetails, fetchAccessDetails} from "@/hooks/useApi";
+import { useCertificationDetails, fetchAccessDetails} from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
 import { EntitlementInfo } from "@/types/lineItem";
 
@@ -351,7 +351,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
 
         <AgGridReact
           rowData={rowData}
-          //deltaRowDataMode={true}
           getRowId={(params:GetRowIdParams) => params.data.id}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -359,7 +358,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           rowSelection="multiple"
           detailCellRendererParams={detailCellRendererParams}
           isRowMaster={() => true}
-         // reactUi={true}
           onGridReady={(params) => {
             gridApiRef.current = params.api;
             params.api.sizeColumnsToFit();

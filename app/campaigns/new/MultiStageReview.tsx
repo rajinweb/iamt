@@ -6,7 +6,7 @@ import { asterisk, reviewersOptions } from "@/utils/utils";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import FileDropzone from "@/components/FileDropzone";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-import { MultiStageReviewFormProps, MultiStageReviewProps, Step3FormData } from "@/types/StepTypes";
+import { MultiStageReviewFormProps, MultiStageReviewProps, Step3FormData } from "@/types/stepTypes";
 
 const MultiStageReview: React.FC<MultiStageReviewProps> = ({
   control,

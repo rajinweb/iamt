@@ -1,4 +1,3 @@
-// hooks/useFormData.ts
 import { useState } from "react";
 
 // Define types for form data (you could move this to a separate file)

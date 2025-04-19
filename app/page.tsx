@@ -1,28 +1,21 @@
 'use client';
-// import {rowData} from '@/components/data';
-// import { columns } from '@/components/table/columns';
-// const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
-   {/* {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
-      <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
-      } */}
-
-import { columnDefs } from '@/components/dashboard/columnDefs';
-import './globals.css';
-import AgGridTable from '@/components/AgGridTable';
-import { useRouter } from 'next/navigation';
 import { RefObject, useRef, useState } from 'react';
+import { AgGridReact } from 'ag-grid-react';  
+import "@/lib/ag-grid-setup";
+import { useRouter } from 'next/navigation';
+import { columnDefs } from '@/components/dashboard/columnDefs';
 import SelectAll from '@/components/agTable/SelectAll';
 import CustomPagination from '@/components/agTable/CustomPagination';
 import ColumnSettings from '@/components/agTable//ColumnSettings';
 import { GridApi, RowClickedEvent } from 'ag-grid-enterprise';
-import { AgGridReact } from 'ag-grid-react';  
+
 import { useCertifications } from '@/hooks/useApi';
 import { CertificationRow } from '@/types/certification';
+import './globals.css';
 
-const reviewerId = 'S276692'; // You can make this dynamic later if needed
+const reviewerId = 'S276692'; // You can make this dynamic later
 
 export default function Home() {
-
 
   const gridRef = useRef<AgGridReact | null>(null);
   const gridApiRef = useRef<GridApi | undefined>(undefined);
@@ -62,7 +55,7 @@ export default function Home() {
         </div>
       </div>
       <div className="h-1/2">
-      <AgGridTable
+      {/* <AgGridTable
         ref={gridApiRef} 
         rowData={certifications}   
         columnDefs={columnDefs}
@@ -70,9 +63,19 @@ export default function Home() {
         rowModelType="clientSide" 
         getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
         onRowClicked={handleRowClick}
-        //getDataPath={(data: { reviewerId: any; certificationId: any; }) => [data?.reviewerId, data?.certificationId]}
         setGridApi={setGridApi} 
-      />
+      /> */}
+
+      <AgGridReact  
+        ref={gridRef} 
+        rowData={certifications}   
+        columnDefs={columnDefs}
+        treeData={false}
+        rowModelType="clientSide" 
+        getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
+        onRowClicked={handleRowClick}
+        setGridApi={setGridApi} 
+        />
       </div>
     </div>
 

@@ -5,7 +5,7 @@ import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { loadUsers, customOption } from "@/components/MsAsyncData";
 import { asterisk, downArrow, template } from "@/utils/utils";
-import { Step1FormData, StepProps } from "@/types/StepTypes"; 
+import { Step1FormData, StepProps } from "@/types/stepTypes"; 
 
 const validationSchema = yup.object().shape({
   certificationTemplate: yup.string().required("Certification Template Name is required"),

@@ -1,7 +1,8 @@
 'use client';
 
 import { ColDef } from "ag-grid-enterprise";
-import ActionButtons from "../table/ActionButtons";
+import ActionButtons from "../agTable/ActionButtons";
+
 
 export const defaultColDef = {
   sortable: true,

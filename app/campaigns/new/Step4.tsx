@@ -8,7 +8,7 @@ import MultiSelect from "@/components/MultiSelect";
 import { asterisk, beforeExpiryReminders, durationOptions, enforceComments, recurrenceOptions, startOfCampaign } from "@/utils/utils";
 import { customOption, loadUsers } from "@/components/MsAsyncData";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-import { Step4FormData, StepProps } from "@/types/StepTypes";
+import { Step4FormData, StepProps } from "@/types/stepTypes";
 import DateInput from "@/components/DatePicker";
 
 

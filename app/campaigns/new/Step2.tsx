@@ -7,7 +7,7 @@ import FileDropzone from "@/components/FileDropzone";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { asterisk, userGroups, excludeUsers, downArrow, defaultExpression} from "@/utils/utils";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-import { Step2FormData, StepProps } from "@/types/StepTypes";
+import { Step2FormData, StepProps } from "@/types/stepTypes";
 import {validationSchema} from "./step2Validation";
 
 

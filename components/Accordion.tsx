@@ -18,7 +18,7 @@ const Accordion = ({ headerText, children, iconSize, title, iconClass }: Accordi
     setIsOpen((prev) => !prev);
   };
   return (
-    <div className="transition-all duration-150 ease-in-out transform min-h-8">
+    <div className="transition-all duration-150 ease-in-out transform min-h-8"> 
       <button
         className={`flex cursor-pointer items-center ${iconClass}`}
         onClick={handleToggle}

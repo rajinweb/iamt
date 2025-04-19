@@ -6,12 +6,13 @@ import dynamic from "next/dynamic";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { CampaignColumns } from "./new/CampaignColumns";
-const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
+// const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
 
 export default function Campaigns() {
   const tabsData = [
     { label: "Active", icon: ChevronDown, iconOff: ChevronRight, component: () => {
-            return !campData || campData.length === 0 ? <div>Loading...</div> : <DataTable data={campData} columns={CampaignColumns} filerColumns={['campaignName']} />;
+            return !campData || campData.length === 0 ? <div>Loading...</div> : <>dasdf </>
+            //<DataTable data={campData} columns={CampaignColumns} filerColumns={['campaignName']} />;
           }
       },
     { label: "Completed", icon: ChevronDown, iconOff: ChevronRight, component: () => <p> Coming Soon...</p> },

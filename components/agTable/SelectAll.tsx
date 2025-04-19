@@ -1,6 +1,6 @@
 
 import { GridApi } from 'ag-grid-enterprise';
-import { RefObject, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ActionButtons from './ActionButtons';
 import ExpandCollapse from './ExpandCollapse';
 

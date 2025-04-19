@@ -83,7 +83,7 @@ export interface MultiStageReviewProps {
   removeStage: () => void;
   watch: UseFormWatch<Step3FormData>;
   setValue: UseFormSetValue<Step3FormData>;
-  resetField: UseFormResetField<Step3FormData>;
+  resetField: UseFormResetField<Step3FormData>; 
   unregister: UseFormUnregister<Step3FormData>;
   children?: React.ReactNode;
 }

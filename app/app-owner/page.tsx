@@ -1,9 +1,9 @@
 'use client';
 import { useState } from "react";
 import dynamic from "next/dynamic";
-const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
-import {rowData} from '@/components/data';
-import {columns} from '@/components/table/columns'
+// const DataTable = dynamic(() => import('@/components/table/DataTable'), { ssr: false });
+// import {rowData} from '@/components/data';
+// import {columns} from '@/components/table/columns'
 
 type DataItem = {
   label: string;
@@ -84,9 +84,9 @@ export default function AppOwner() {
       ))}   
     </div>
     <button className="bg-[#15274E] text-white p-2 rounded-sm text-sm mt-4 cursor-pointer " onClick={clearFilters}> Clear Filter </button>
-      {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
+      {/* {!rowData || rowData.length === 0 ?  <div>Loading...</div> :
                 <DataTable data={rowData} columns={columns} filerColumns={['risk']} />
-                }
+                } */}
     </>
   );
 }
