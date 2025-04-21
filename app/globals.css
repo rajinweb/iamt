@@ -74,19 +74,26 @@ html, body{
   @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500
 }
 
-.ag-details-row{  
-  @apply !p-0 
-} 
-.ag-details-row .ag-root-wrapper{
-  @apply !rounded-none !border-none !shadow-none
-}   
+.ag-details-row{ @apply !pr-0 }
 
-.ag-details-row .ag-column-first{
-  @apply !pl-11
+.ag-row:hover{
+  @apply !bg-[#E5EEFC]
 }
-.ag-details-row .ag-column-first .ag-row-group-leaf-indent{
-  @apply !ml-0
+.ag-checked{ @apply !bg-[#0275ff]}
+.ag-row-group-expanded { @apply border-b-0; }
+.ag-header-cell-comp-wrapper{ @apply font-bold text-[#1759e4] }
+.ag-header, div[role='row']{ @apply !bg-[#fff] !border-0 }
+
+.account-table-detail, .entitlement-table-detail{
+  .ag-root-wrapper{
+    @apply !border-2 border-white !border-r-0 rounded-tr-none  rounded-br-none 
+  }
+  .ag-details-row, .ag-root, .ag-header, div[role='row']{
+    @apply !bg-[#F4F5FA] !border-0
+  }
 }
-.ag-details-row .ag-column-first .ag-cell-value .ag-row-group-leaf-indent::before{
-  @apply content-['↑'] pr-1 text-[20px] text-gray-600
+.entitlement-table-detail{
+  .ag-details-row, .ag-root, .ag-header, div[role='row']{
+    @apply !bg-[#ECEEF8]
+  }
 }

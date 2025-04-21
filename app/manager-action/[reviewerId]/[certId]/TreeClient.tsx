@@ -57,6 +57,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     headerComponent:()=> "Users",
     field: "UserName",
     headerName: "Users", 
+    width:130,
     cellRenderer: "agGroupCellRenderer",
     cellRendererParams: {
       suppressCount: true,
@@ -75,7 +76,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     },
    
   },  
-    { field: "Risk", headerName: "Risk",
+    { field: "Risk", headerName: "Risk",   width:130,
       cellRenderer: (params: ICellRendererParams) => {
         const userName = params.value;
         const risk = params.data?.Risk;
@@ -124,7 +125,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         headerComponent:()=> "Account",
-       field: "user", headerName: "Account", 
+       field: "user", 
+       headerName: "Account", 
+       width:130,
        cellRenderer: "agGroupCellRenderer",
         cellRendererParams: {
           suppressCount: true,
@@ -206,6 +209,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         flex: 1,
         resizable: true,
       },
+      className: 'account-table-detail',
       rowSelection: "multiple",
       masterDetail: true,
       isRowMaster: () => true,
@@ -295,6 +299,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             flex: 1,
             resizable: true,
           },
+          className: 'entitlement-table-detail', // entitlement-details-grid css
         },
         getDetailRowData: async (params: any) => {
           const { taskId, lineItemId } = params.data;
@@ -346,10 +351,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   
 
   return (
-    <div style={{ height: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
+    <>
       {error && <div style={{ color: "red", padding: 10 }}>{String(error)}</div>}
-
-    <div className="ag-theme-alpine" style={{ flexGrow: 1 }}>
       <div className="flex items-center justify-between mb-4 relative z-10">
       <SelectAll gridApi={gridApiRef.current || null} />
         <div className="flex items-center">
@@ -369,7 +372,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           />
         </div>
       </div>
-
         <AgGridReact
           rowData={rowData}
           getRowId={(params:GetRowIdParams) => params.data.id}
@@ -385,9 +387,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           }}
           overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
           overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
+          className="ag-theme-quartz"
         />
-      </div>
-    </div>
+    </>
   );
 };
 

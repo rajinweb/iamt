@@ -83,11 +83,11 @@ export const fetchAccessDetails = async (
     */
 
     access.entityAppinstance?.forEach((app: any) => {
-      debugger;
+  
       app.entityEntitlements?.forEach((ent: any) => {
         const ai = ent.AIAssist?.[0] ?? {};
         const info = ent.entitlementInfo?.[0] ?? {};
-        debugger;
+       
         flattened.push({
           itemType: "Entitlement",
           user: ent.entitlementInfo?.[0]?.entitlementName,

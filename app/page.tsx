@@ -54,7 +54,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="h-1/2">
+  
      <AgGridReact  
         ref={gridRef} 
         rowData={certifications}   
@@ -64,8 +64,8 @@ export default function Home() {
         getDataPath={(data) => [data?.reviewerId, data?.certificationId]}
         onRowClicked={handleRowClick}
         setGridApi={setGridApi} 
+          className="ag-theme-quartz"
         />
-      </div>
     </div>
   );
 }
