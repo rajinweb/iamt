@@ -210,7 +210,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         resizable: true,
       },
       className: 'account-table-detail',
-      rowSelection: "multiple",
+      pagination: true,
+      paginationPageSize: 5,
       masterDetail: true,
       isRowMaster: () => true,
       detailCellRendererParams: {
@@ -300,6 +301,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             resizable: true,
           },
           className: 'entitlement-table-detail', // entitlement-details-grid css
+          pagination: true,
+          paginationPageSize: 5,
         },
         getDetailRowData: async (params: any) => {
           const { taskId, lineItemId } = params.data;

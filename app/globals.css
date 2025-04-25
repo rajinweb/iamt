@@ -74,11 +74,15 @@ html, body{
   @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500
 }
 
-.ag-details-row{ @apply !pr-0 }
+.ag-details-row{ @apply !pr-0 !pt-0 !pb-0  }
 
 .ag-row:hover{
   @apply !bg-[#E5EEFC]
 }
+.ag-cell-focus {
+  @apply !border-0
+}
+
 .ag-checked{ @apply !bg-[#0275ff]}
 .ag-row-group-expanded { @apply border-b-0; }
 .ag-header-cell-comp-wrapper{ @apply font-bold text-[#1759e4] }
@@ -91,9 +95,17 @@ html, body{
   .ag-details-row, .ag-root, .ag-header, div[role='row']{
     @apply !bg-[#F4F5FA] !border-0
   }
+  .ag-paging-panel{
+    @apply !border-t-0
+  }
+}
+.account-table-detail{
+  .ag-root-wrapper{
+    @apply !bg-[#F4F5FA] border-0
+  }
 }
 .entitlement-table-detail{
-  .ag-details-row, .ag-root, .ag-header, div[role='row']{
+  .ag-details-row, .ag-root, .ag-header, div[role='row'], .ag-root-wrapper{
     @apply !bg-[#ECEEF8]
   }
 }
