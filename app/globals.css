@@ -75,7 +75,7 @@ html, body{
 }
 
 .ag-details-row{ @apply !pr-0 !pt-0 !pb-0  }
-
+.ag-selection-checkbox{@apply !mr-0 }
 .ag-row:hover{
   @apply !bg-[#E5EEFC]
 }
