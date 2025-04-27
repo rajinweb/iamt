@@ -57,11 +57,10 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     setRowData(mapped);
   }, [certificationData, certId]);
 
+  // Top level
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
         headerComponent: () => "Users",
         field: "UserName",
         headerName: "Users",
@@ -125,14 +124,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     }),
     []
   );
-
+  // Top level > Detail level 2 (Account)
   const detailCellRendererParams = useMemo(
     () => ({
       detailGridOptions: {
         columnDefs: [
           {
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
             headerComponent: () => "Account",
             field: "user",
             headerName: "Account",
@@ -238,17 +235,21 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           flex: 1,
           resizable: true,
         },
+        rowSelection: {
+          mode: "multiRow",
+          masterSelects: "detail",
+        },
         className: "account-table-detail",
         pagination: true,
         paginationPageSize: 5,
         masterDetail: true,
         isRowMaster: () => true,
+
+        // Top level > Detail level 2 >  Detail level 3 (Entitlement)
         detailCellRendererParams: {
           detailGridOptions: {
             columnDefs: [
               {
-                headerCheckboxSelection: true,
-                checkboxSelection: true,
                 headerComponent: () => "Entitlement",
                 field: "entitlementName",
                 headerName: "Entitlement",
@@ -347,6 +348,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
               flex: 1,
               resizable: true,
             },
+            rowSelection: {
+              mode: "multiRow",
+            },
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
             paginationPageSize: 5,
@@ -437,9 +441,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         masterDetail={true}
-        rowSelection="multiple"
-        detailCellRendererParams={detailCellRendererParams}
         isRowMaster={() => true}
+        rowSelection={{
+          mode: "multiRow",
+          masterSelects: "detail",
+        }}
+        detailCellRendererParams={detailCellRendererParams}
         onGridReady={(params) => {
           gridApiRef.current = params.api;
           params.api.sizeColumnsToFit();
