@@ -31,7 +31,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     reviewerId,
     certId
   );
-
+  let pageSizeSelector = [5, 10, 20, 50, 100];
   useEffect(() => {
     if (!certificationData) return;
     const mapped = certificationData.items.map((task: any) => {
@@ -241,7 +241,10 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         },
         className: "account-table-detail",
         pagination: true,
-        paginationPageSize: 5,
+        onFirstDataRendered: (params: { api: GridApi }) => {
+          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]);
+        },
+        paginationPageSizeSelector: pageSizeSelector,
         masterDetail: true,
         isRowMaster: () => true,
 
@@ -353,7 +356,10 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             },
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
-            paginationPageSize: 5,
+            onFirstDataRendered: (params: { api: GridApi }) => {
+              params.api.setGridOption("paginationPageSize", 5);
+            },
+            paginationPageSizeSelector: pageSizeSelector[0],
           },
           getDetailRowData: async (params: any) => {
             const { taskId, lineItemId } = params.data;
@@ -449,8 +455,13 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         detailCellRendererParams={detailCellRendererParams}
         onGridReady={(params) => {
           gridApiRef.current = params.api;
+          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]);
           params.api.sizeColumnsToFit();
         }}
+        pagination={true}
+        paginationPageSizeSelector={pageSizeSelector}
+        cacheBlockSize={5}
+        //rowModelType={"serverSide"}
         overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
         overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
         className="ag-theme-quartz"
