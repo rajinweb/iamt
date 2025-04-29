@@ -357,9 +357,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
             onFirstDataRendered: (params: { api: GridApi }) => {
-              params.api.setGridOption("paginationPageSize", 5);
+              params.api.setGridOption(
+                "paginationPageSize",
+                pageSizeSelector[0]
+              );
             },
-            paginationPageSizeSelector: pageSizeSelector[0],
+            paginationPageSizeSelector: pageSizeSelector,
           },
           getDetailRowData: async (params: any) => {
             const { taskId, lineItemId } = params.data;
@@ -399,6 +402,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
               params.successCallback([]);
             }
           },
+          detailRowAutoHeight: true,
         },
       },
       getDetailRowData: async (params: any) => {
@@ -413,6 +417,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           params.successCallback([]);
         }
       },
+      detailRowAutoHeight: true,
     }),
     [certId, reviewerId]
   );
@@ -446,6 +451,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         getRowId={(params: GetRowIdParams) => params.data.id}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
+        domLayout="autoHeight"
+        detailRowAutoHeight={true}
         masterDetail={true}
         isRowMaster={() => true}
         rowSelection={{
@@ -455,16 +462,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         detailCellRendererParams={detailCellRendererParams}
         onGridReady={(params) => {
           gridApiRef.current = params.api;
-          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]);
+          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]); // top level pagination
           params.api.sizeColumnsToFit();
         }}
         pagination={true}
         paginationPageSizeSelector={pageSizeSelector}
         cacheBlockSize={5}
-        //rowModelType={"serverSide"}
-        overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
-        overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
-        className="ag-theme-quartz"
+        // overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
+        // overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
+        className="ag-theme-quartz ag-main"
       />
     </>
   );
