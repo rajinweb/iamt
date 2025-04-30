@@ -64,7 +64,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         headerComponent: () => "Users",
         field: "UserName",
         headerName: "Users",
-        width: 130,
+        width:450,
         cellRenderer: "agGroupCellRenderer",
         cellRendererParams: {
           suppressCount: true,
@@ -87,7 +87,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       {
         field: "Risk",
         headerName: "Risk",
-        width: 130,
+        width:450,
         cellRenderer: (params: ICellRendererParams) => {
           const userName = params.value;
           const risk = params.data?.Risk;
@@ -96,11 +96,13 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           return <span style={{ color: riskColor }}>{userName}</span>;
         },
       },
-      { field: "UserID", headerName: "ID" },
-      { field: "JobTitle", headerName: "Job Title" },
+      { field: "UserID", headerName: "ID", width:450 },
+      { field: "JobTitle", headerName: "Job Title" ,width:450},
       {
         colId: "actionColumn",
         headerName: "Action",
+        width:315,
+        // pinned:"right",
         headerComponent: () => null,
         cellRenderer: (params: ICellRendererParams) => {
           const api = gridApiRef.current;
@@ -162,7 +164,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             headerName: "Risk",
             cellRenderer: (params: ICellRendererParams) => {
               const userName = params.value;
-              const risk = params.data?.Risk;
+              const risk = params.data?.risk;
               const riskColor =
                 risk === "High"
                   ? "red"
@@ -218,6 +220,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           {
             colId: "actionColumn",
             headerName: "Action",
+            // pinned:"right",
             headerComponent: () => null,
             cellRenderer: (params: ICellRendererParams) => {
               const api = gridApiRef.current;
@@ -280,7 +283,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 headerName: "Risk",
                 cellRenderer: (params: ICellRendererParams) => {
                   const userName = params.value;
-                  const risk = params.data?.Risk;
+                  const risk = params.data?.itemRisk;
                   const riskColor =
                     risk === "High"
                       ? "red"
@@ -335,6 +338,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
               {
                 colId: "actionColumn",
                 headerName: "Action",
+                // pinned:"right",
+                width:290,
                 headerComponent: () => null,
                 cellRenderer: (params: ICellRendererParams) => {
                   const api = gridApiRef.current;
