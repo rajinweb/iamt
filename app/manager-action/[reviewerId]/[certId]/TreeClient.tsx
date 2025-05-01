@@ -27,11 +27,17 @@ interface TreeClientProps {
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
   const [rowData, setRowData] = useState<UserRowData[]>([]);
+
+  const [pageSize, setPageSize] = useState(3);
+  const [pageNumber, setPageNumber] = useState(2);
+
   const { data: certificationData, error } = useCertificationDetails(
     reviewerId,
-    certId
+    certId,
+    pageSize,
+    pageNumber
   );
-  let pageSizeSelector = [5, 10, 20, 50, 100];
+  let pageSizeSelector =     [5, 10, 20, 50, 100];
   useEffect(() => {
     if (!certificationData) return;
     const mapped = certificationData.items.map((task: any) => {
@@ -64,7 +70,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         headerComponent: () => "Users",
         field: "UserName",
         headerName: "Users",
-        width:450,
+        width: 450,
         cellRenderer: "agGroupCellRenderer",
         cellRendererParams: {
           suppressCount: true,
@@ -87,7 +93,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       {
         field: "Risk",
         headerName: "Risk",
-        width:450,
+        width: 450,
         cellRenderer: (params: ICellRendererParams) => {
           const userName = params.value;
           const risk = params.data?.Risk;
@@ -96,12 +102,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           return <span style={{ color: riskColor }}>{userName}</span>;
         },
       },
-      { field: "UserID", headerName: "ID", width:450 },
-      { field: "JobTitle", headerName: "Job Title" ,width:450},
+      { field: "UserID", headerName: "ID", width: 450 },
+      { field: "JobTitle", headerName: "Job Title", width: 450 },
       {
         colId: "actionColumn",
         headerName: "Action",
-        width:315,
+        width: 315,
         // pinned:"right",
         headerComponent: () => null,
         cellRenderer: (params: ICellRendererParams) => {
@@ -339,7 +345,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 colId: "actionColumn",
                 headerName: "Action",
                 // pinned:"right",
-                width:290,
+                width: 290,
                 headerComponent: () => null,
                 cellRenderer: (params: ICellRendererParams) => {
                   const api = gridApiRef.current;

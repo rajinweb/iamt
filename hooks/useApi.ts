@@ -1,23 +1,32 @@
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   getCertifications,
   getCertificationDetails,
   getAccessDetails,
-  getLineItemDetails
-} from '@/lib/api';
+  getLineItemDetails,
+} from "@/lib/api";
 
 import type {
   CertificationRow,
   CertificationResponse,
   RawCertification,
-} from '@/types/certification';
-import { LineItemDetail } from '@/types/lineItem';
+} from "@/types/certification";
+import { LineItemDetail } from "@/types/lineItem";
 
-export const useCertifications = (reviewerId: string, enabled = true): UseQueryResult<CertificationRow[]> => {
+export const useCertifications = (
+  reviewerId: string,
+  pageSize?: number,
+  pageNumber?: number,
+  enabled = true
+): UseQueryResult<CertificationRow[]> => {
   return useQuery({
-    queryKey: ['certifications', reviewerId],
+    queryKey: ["certifications", reviewerId],
     queryFn: async () => {
-      const res = await getCertifications<CertificationResponse>(reviewerId);
+      const res = await getCertifications<CertificationResponse>(
+        reviewerId,
+        pageSize,
+        pageNumber
+      );
       return res.items.map((item: RawCertification): CertificationRow => {
         const certInfo = item.reviewerCertificationInfo?.[0];
         const actionInfo = item.reviewerCertificateActionInfo?.[0];
@@ -25,13 +34,13 @@ export const useCertifications = (reviewerId: string, enabled = true): UseQueryR
           reviewerId: item.reviewerId,
           certificationId: item.certificationId,
           campaignId: item.campaignId,
-          certificationName: certInfo?.certificationName ?? '',
-          certificationType: certInfo?.certificationType ?? '',
-          certificationCreatedOn: certInfo?.certificationCreatedOn ?? '',
-          certificationExpiration: certInfo?.certificationExpiration ?? '',
-          status: certInfo?.status ?? '',
+          certificationName: certInfo?.certificationName ?? "",
+          certificationType: certInfo?.certificationType ?? "",
+          certificationCreatedOn: certInfo?.certificationCreatedOn ?? "",
+          certificationExpiration: certInfo?.certificationExpiration ?? "",
+          status: certInfo?.status ?? "",
           certificationSignedOff: certInfo?.certificationSignedOff ?? false,
-          certificateRequester: certInfo?.certificateRequester ?? '',
+          certificateRequester: certInfo?.certificateRequester ?? "",
           percentageCompleted: actionInfo?.percentageCompleted ?? 0,
           totalActions: actionInfo?.totalActions ?? 0,
           totalActionsCompleted: actionInfo?.totalActionsCompleted ?? 0,
@@ -46,11 +55,19 @@ export const useCertifications = (reviewerId: string, enabled = true): UseQueryR
 export const useCertificationDetails = (
   reviewerId: string,
   certId: string,
+  pageSize?: number,
+  pageNumber?: number,
   enabled = true
 ): UseQueryResult<any> => {
   return useQuery({
-    queryKey: ['certificationDetails', reviewerId, certId],
-    queryFn: () => getCertificationDetails<any>(reviewerId, certId),
+    queryKey: ["certificationDetails", reviewerId, certId],
+    queryFn: async () =>
+      await getCertificationDetails<any>(
+        reviewerId,
+        certId,
+        pageSize,
+        pageNumber
+      ),
     enabled,
     staleTime: 1000 * 60 * 5,
   });
@@ -60,15 +77,24 @@ export const fetchAccessDetails = async (
   reviewerId: string,
   certId: string,
   taskId?: string,
-  all?: string
+  all?: string,
+  pageSize?: number,
+  pageNumber?: number
 ) => {
-  const response = await getAccessDetails<any>(reviewerId, certId, taskId, all);
+  const response = await getAccessDetails<any>(
+    reviewerId,
+    certId,
+    taskId,
+    all,
+    pageSize,
+    pageNumber
+  );
   const items = response.items?.[0]?.accessDetails ?? [];
 
   const flattened: any[] = [];
 
   items.forEach((access: any) => {
-  /*
+    /*
     access.entityRole?.forEach((role: any) => {
       flattened.push({
         itemType: "Role",
@@ -83,11 +109,10 @@ export const fetchAccessDetails = async (
     */
 
     access.entityAppinstance?.forEach((app: any) => {
-  
       app.entityEntitlements?.forEach((ent: any) => {
         const ai = ent.AIAssist?.[0] ?? {};
         const info = ent.entitlementInfo?.[0] ?? {};
-       
+
         flattened.push({
           itemType: "Entitlement",
           user: ent.entitlementInfo?.[0]?.entitlementName,
@@ -100,8 +125,8 @@ export const fetchAccessDetails = async (
           oldComments: ent.oldComments,
           lineItemId: app.lineItemId,
           taskId,
-          entitlementName: info.entitlementName ?? '',
-          entitlementDescription: info.entitlementDescription ?? '',
+          entitlementName: info.entitlementName ?? "",
+          entitlementDescription: info.entitlementDescription ?? "",
         });
       });
     });
@@ -109,7 +134,7 @@ export const fetchAccessDetails = async (
 
   return flattened;
 };
-
+/*
 export const useAccessDetails = (
   reviewerId: string,
   certId: string,
@@ -118,7 +143,7 @@ export const useAccessDetails = (
   enabled = true
 ): UseQueryResult<any[]> => {
   return useQuery({
-    queryKey: ['accessDetails', reviewerId, certId, taskId, all],
+    queryKey: ["accessDetails", reviewerId, certId, taskId, all],
     queryFn: () => fetchAccessDetails(reviewerId, certId, taskId, all),
     enabled,
     staleTime: 1000 * 60 * 5,
@@ -132,9 +157,10 @@ export const useLineItemDetails = (
   lineItemId: string
 ) => {
   return useQuery<LineItemDetail[]>({
-    queryKey: ['lineItemDetails', reviewerId, certId, taskId, lineItemId],
+    queryKey: ["lineItemDetails", reviewerId, certId, taskId, lineItemId],
     queryFn: () => getLineItemDetails(reviewerId, certId, taskId, lineItemId),
     enabled: !!reviewerId && !!certId && !!taskId && !!lineItemId,
     staleTime: 1000 * 60 * 5,
   });
 };
+*/
