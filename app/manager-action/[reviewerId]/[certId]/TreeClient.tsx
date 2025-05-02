@@ -37,7 +37,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     pageSize,
     pageNumber
   );
-  let pageSizeSelector =     [5, 10, 20, 50, 100];
+  const pageSizeSelector = [5, 10, 20, 50, 100];
+  const defaultPageSize = pageSizeSelector[0];
   useEffect(() => {
     if (!certificationData) return;
     const mapped = certificationData.items.map((task: any) => {
@@ -122,7 +123,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         resizable: false,
       },
     ],
-    []
+    [certId]
   );
 
   const defaultColDef = useMemo<ColDef>(
@@ -251,7 +252,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         className: "account-table-detail",
         pagination: true,
         onFirstDataRendered: (params: { api: GridApi }) => {
-          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]);
+          params.api.setGridOption("paginationPageSize", defaultPageSize);
         },
         paginationPageSizeSelector: pageSizeSelector,
         masterDetail: true,
@@ -368,10 +369,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
             onFirstDataRendered: (params: { api: GridApi }) => {
-              params.api.setGridOption(
-                "paginationPageSize",
-                pageSizeSelector[0]
-              );
+              params.api.setGridOption("paginationPageSize", defaultPageSize);
             },
             paginationPageSizeSelector: pageSizeSelector,
           },
@@ -473,14 +471,14 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         detailCellRendererParams={detailCellRendererParams}
         onGridReady={(params) => {
           gridApiRef.current = params.api;
-          params.api.setGridOption("paginationPageSize", pageSizeSelector[0]); // top level pagination
+          params.api.setGridOption("paginationPageSize", defaultPageSize); // top level pagination
           params.api.sizeColumnsToFit();
         }}
         pagination={true}
         paginationPageSizeSelector={pageSizeSelector}
         cacheBlockSize={5}
-        // overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
-        // overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
+        overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
+        overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
         className="ag-theme-quartz ag-main"
       />
     </>
