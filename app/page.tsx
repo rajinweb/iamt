@@ -37,7 +37,11 @@ export default function Home() {
   return (
     <div className="ag-theme-quartz w-full h-[600px]">
       <div className="flex items-center justify-between mb-4 relative z-10">
-        <SelectAll gridApi={gridApiRef.current || null} />
+        <SelectAll
+          gridApi={gridApiRef.current || null}
+          detailGridApis={new Map<string, GridApi>()}
+          clearDetailGridApis={() => {}}
+        />
         <div className="flex items-center">
           <CustomPagination gridApi={gridApiRef.current || null} />
           <ColumnSettings
