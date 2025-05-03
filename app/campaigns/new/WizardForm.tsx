@@ -2,7 +2,7 @@ import { useState } from "react";
 import WizardSteps from "@/components/WizardSteps";
 import SubmitDialog from "@/components/SubmitDialog";
 import { useFormData } from "@/hooks/useFormData";
-import { Step } from "@/types/StepTypes";
+import { Step } from "@/types/stepTypes";
 import { BookType, MoveLeft, MoveRight } from "lucide-react";
 
 interface WizardFormProps {

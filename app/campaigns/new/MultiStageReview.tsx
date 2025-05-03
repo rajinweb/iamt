@@ -16,7 +16,7 @@ import {
   MultiStageReviewFormProps,
   MultiStageReviewProps,
   Step3FormData,
-} from "@/types/StepTypes";
+} from "@/types/stepTypes";
 
 const MultiStageReview: React.FC<MultiStageReviewProps> = ({
   control,
