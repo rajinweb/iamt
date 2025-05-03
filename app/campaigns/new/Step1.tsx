@@ -5,7 +5,7 @@ import * as yup from "yup";
 import MultiSelect from "@/components/MultiSelect";
 import { loadUsers, customOption } from "@/components/MsAsyncData";
 import { asterisk, downArrow, template } from "@/utils/utils";
-import { Step1FormData, StepProps } from "@/types/stepTypes";
+import { Step1FormData, StepProps } from "@/types/StepTypes";
 
 const validationSchema = yup.object().shape({
   certificationTemplate: yup

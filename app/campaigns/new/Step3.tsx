@@ -4,7 +4,7 @@ import { useFieldArray, useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import MultiStageReview from "./MultiStageReview";
-import { Step3FormData, StepProps } from "@/types/stepTypes";
+import { Step3FormData, StepProps } from "@/types/StepTypes";
 import validationSchema from "./step3Validation";
 
 const Step3: React.FC<StepProps> = ({

@@ -20,7 +20,7 @@ import {
   defaultExpression,
 } from "@/utils/utils";
 import ExpressionBuilder from "@/components/ExpressionBuilder";
-import { Step2FormData, StepProps } from "@/types/stepTypes";
+import { Step2FormData, StepProps } from "@/types/StepTypes";
 import { validationSchema } from "./step2Validation";
 
 const Step2: React.FC<StepProps> = ({
