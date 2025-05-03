@@ -1,16 +1,30 @@
-import ActionButtons from '@/components/agTable/ActionButtons';
-import { ColDef, ICellRendererParams } from 'ag-grid-community';
-import { MoveUp, User } from 'lucide-react';
-import Image from 'next/image';
-import React, { JSX } from 'react';
+import ActionButtons from "@/components/agTable/ActionButtons";
+import { ColDef, ICellRendererParams } from "ag-grid-community";
+import { MoveUp, User } from "lucide-react";
+import Image from "next/image";
+import React, { JSX } from "react";
 
-type RiskLevel = 'Critical' | 'High' | 'Medium' | 'Low';
+type RiskLevel = "Critical" | "High" | "Medium" | "Low";
+
+interface UserData {
+  user: string;
+  avatar?: string;
+  risk: RiskLevel;
+  id: string;
+  jobTitle: string;
+  changeSinceLastReview: string;
+  aIAssistConfidence: "thumbs-up" | "thumbs-down";
+}
+
+interface UserCellRendererParams extends ICellRendererParams {
+  data: UserData;
+}
 
 export const appOwnerColumns: ColDef[] = [
   {
-    field: 'user',
-    headerName: 'User',
-    cellRenderer: (params: { data: any; node: any; }) => {
+    field: "user",
+    headerName: "User",
+    cellRenderer: (params: UserCellRendererParams) => {
       const { data, node } = params;
       const depth = node.level;
 
@@ -21,7 +35,7 @@ export const appOwnerColumns: ColDef[] = [
             type="checkbox"
             checked={node.isSelected()}
             onChange={() => node.setSelected(!node.isSelected())}
-            className={`${depth > 1 ? 'ml-1' : ''}`}
+            className={`${depth > 1 ? "ml-1" : ""}`}
           />
 
           {/* Avatar or Icons */}
@@ -45,24 +59,28 @@ export const appOwnerColumns: ColDef[] = [
 
           {/* Text */}
           <div className="flex flex-col gap-0">
-            <span className="font-semibold text-[#175AE4] text-[12px]">User</span>
-            <span className="text-gray-800 font-bold text-[12px]">{data.user}</span>
+            <span className="font-semibold text-[#175AE4] text-[12px]">
+              User
+            </span>
+            <span className="text-gray-800 font-bold text-[12px]">
+              {data.user}
+            </span>
           </div>
         </div>
       );
     },
   },
   {
-    field: 'risk',
-    headerName: 'Risk',
-    cellRenderer: (params:ICellRendererParams) => {
+    field: "risk",
+    headerName: "Risk",
+    cellRenderer: (params: ICellRendererParams) => {
       const value = params.value as RiskLevel;
-      const riskConfig:Record<RiskLevel, JSX.Element> = {
+      const riskConfig: Record<RiskLevel, JSX.Element> = {
         Critical: <div className="bg-red-600 w-3 h-3 rounded-full" />,
         High: <div className="bg-orange-500 w-3 h-3 rounded-full" />,
         Medium: <div className="bg-yellow-500 w-3 h-3 rounded-full" />,
         Low: <div className="bg-green-500 w-3 h-3 rounded-full" />,
-      }
+      };
 
       return (
         <div className="flex flex-col gap-0">
@@ -73,9 +91,9 @@ export const appOwnerColumns: ColDef[] = [
     },
   },
   {
-    field: 'id',
-    headerName: 'ID',
-    cellRenderer: (params:ICellRendererParams) => (
+    field: "id",
+    headerName: "ID",
+    cellRenderer: (params: ICellRendererParams) => (
       <div className="flex flex-col gap-0">
         <span className="font-semibold text-[#175AE4] text-[12px]">ID</span>
         <span className="text-gray-800">{params.value}</span>
@@ -83,52 +101,64 @@ export const appOwnerColumns: ColDef[] = [
     ),
   },
   {
-    field: 'jobTitle',
-    headerName: 'Job Title',
-    cellRenderer: (params:ICellRendererParams) => (
+    field: "jobTitle",
+    headerName: "Job Title",
+    cellRenderer: (params: ICellRendererParams) => (
       <div className="flex flex-col gap-0">
-        <span className="font-semibold text-[#175AE4] text-[12px]">Job Title</span>
+        <span className="font-semibold text-[#175AE4] text-[12px]">
+          Job Title
+        </span>
         <span className="text-gray-800">{params.value}</span>
       </div>
     ),
   },
   {
-    field: 'changeSinceLastReview',
-    headerName: 'Change Since Last Review',
-    cellRenderer: (params:ICellRendererParams) => (
+    field: "changeSinceLastReview",
+    headerName: "Change Since Last Review",
+    cellRenderer: (params: ICellRendererParams) => (
       <div className="flex flex-col gap-0">
-        <span className="font-semibold text-[#175AE4] text-[12px]">Change Since Last Review</span>
+        <span className="font-semibold text-[#175AE4] text-[12px]">
+          Change Since Last Review
+        </span>
         <span className="text-gray-800">{params.value}</span>
       </div>
     ),
   },
   {
-    field: 'aIAssistConfidence',
-    headerName: 'AI Assist Confidence',
-    cellRenderer: (params:ICellRendererParams) => {
+    field: "aIAssistConfidence",
+    headerName: "AI Assist Confidence",
+    cellRenderer: (params: ICellRendererParams) => {
       const icon =
-        params.value === 'thumbs-up' ? (
+        params.value === "thumbs-up" ? (
           <svg width="21" height="18" viewBox="0 0 21 18">
-            <path fill="#34C759" d="M3.76 7.5V18.76H0V7.5H3.76ZM18.76 6.24..." />
+            <path
+              fill="#34C759"
+              d="M3.76 7.5V18.76H0V7.5H3.76ZM18.76 6.24..."
+            />
           </svg>
         ) : (
           <svg width="21" height="19" viewBox="0 0 21 19">
-            <path fill="#FF2D55" d="M3.76 11.24V0H0V11.26L3.76 11.24ZM18.76 12.5..." />
+            <path
+              fill="#FF2D55"
+              d="M3.76 11.24V0H0V11.26L3.76 11.24ZM18.76 12.5..."
+            />
           </svg>
         );
 
       return (
         <div className="flex flex-col gap-0">
-          <span className="font-semibold text-[#175AE4] text-[12px]">AI Assist Confidence</span>
+          <span className="font-semibold text-[#175AE4] text-[12px]">
+            AI Assist Confidence
+          </span>
           <span className="text-gray-800">{icon}</span>
         </div>
       );
     },
   },
   {
-    field: 'actions',
-    headerName: 'Actions',
-    cellRenderer: (params:ICellRendererParams) => {
+    field: "actions",
+    headerName: "Actions",
+    cellRenderer: (params: ICellRendererParams) => {
       return <ActionButtons api={params.api} selectedRows={[params.data]} />;
     },
   },

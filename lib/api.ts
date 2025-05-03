@@ -74,7 +74,11 @@ export async function getLineItemDetails(
   pageNumber?: number
 ): Promise<LineItemDetail[]> {
   const endpoint = `${BASE_URL}/getLineItemDetails/${reviewerId}/${certId}/${taskId}/${lineItemId}`;
-  const response = await fetchApi<any>(endpoint, pageSize, pageNumber);
+  const response: { items?: LineItemDetail[] } = await fetchApi(
+    endpoint,
+    pageSize,
+    pageNumber
+  );
 
   if (Array.isArray(response?.items)) {
     return response.items as LineItemDetail[];

@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { ColDef } from "ag-grid-enterprise";
+import { ColDef, GridApi } from "ag-grid-enterprise";
 import ActionButtons from "../agTable/ActionButtons";
-
 
 export const defaultColDef = {
   sortable: true,
@@ -10,7 +9,25 @@ export const defaultColDef = {
   resizable: true,
 };
 
-export const columnDefs: ColDef[]  = [
+interface CertificationData {
+  certificationType: string;
+  reviewerId: string;
+  certificationCreatedOn: string;
+  certificationExpiration: string;
+  status: string;
+  certificationSignedOff: string;
+  certificateRequester: string;
+  percentageCompleted: number;
+  totalActions: number;
+  totalActionsCompleted: number;
+}
+
+interface ActionCellRendererParams {
+  api: GridApi;
+  data: CertificationData;
+}
+
+export const columnDefs: ColDef[] = [
   { headerName: "Certification Type", field: "certificationType" },
   { headerName: "Reviewer ID", field: "reviewerId" },
   { headerName: "Created On", field: "certificationCreatedOn" },
@@ -24,6 +41,8 @@ export const columnDefs: ColDef[]  = [
   {
     headerName: "Actions",
     width: 200,
-    cellRenderer: (params: any) => <ActionButtons api={params.api} selectedRows={params.data} />,
+    cellRenderer: (params: ActionCellRendererParams) => (
+      <ActionButtons api={params.api} selectedRows={[params.data]} />
+    ),
   },
 ];

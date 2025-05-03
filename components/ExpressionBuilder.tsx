@@ -1,7 +1,13 @@
-'use client';
-import { Control, FieldValues, UseFormSetValue, UseFormWatch, useWatch } from "react-hook-form";
+"use client";
+import {
+  Control,
+  FieldValues,
+  UseFormSetValue,
+  UseFormWatch,
+  useWatch,
+} from "react-hook-form";
 import { CircleX, Plus } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
@@ -13,7 +19,7 @@ const attributes = [
   { label: "Location", value: "location" },
   { label: "Access Level", value: "access_level" },
   { label: "Status", value: "status" },
-  { label: "Job Title", value: "job_title" }
+  { label: "Job Title", value: "job_title" },
 ];
 
 const operators = [
@@ -22,12 +28,12 @@ const operators = [
   { label: "Contains", value: "contains" },
   { label: "Excludes", value: "excludes" },
   { label: "IN", value: "in" },
-  { label: "NOT IN", value: "not_in" }
+  { label: "NOT IN", value: "not_in" },
 ];
 
 const logicalOperators = [
   { label: "AND", value: "AND" },
-  { label: "OR", value: "OR" }
+  { label: "OR", value: "OR" },
 ];
 
 interface Condition {
@@ -46,9 +52,16 @@ interface ExpressionBuilderProps {
   fieldName: string;
 }
 
-const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, setValue, fieldName }) => {
-
-  const conditions: Condition[] = useWatch({ control, name: fieldName }) || [];
+const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({
+  title,
+  control,
+  setValue,
+  fieldName,
+}: ExpressionBuilderProps) => {
+  const watchedConditions = useWatch({ control, name: fieldName });
+  const conditions: Condition[] = useMemo(() => {
+    return Array.isArray(watchedConditions) ? watchedConditions : [];
+  }, [watchedConditions]);
 
   useEffect(() => {
     if (!Array.isArray(conditions)) {
@@ -62,37 +75,51 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
       attribute: null,
       operator: null,
       value: "",
-      logicalOp: "AND"
+      logicalOp: "AND",
     };
 
-    setValue(fieldName, [...conditions, newCondition], { shouldDirty: true, shouldValidate: true });
+    setValue(fieldName, [...conditions, newCondition], {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   const removeCondition = (id: string) => {
-    setValue(fieldName, conditions.filter((cond) => cond.id !== id), { shouldDirty: true, shouldValidate: true });
+    setValue(
+      fieldName,
+      conditions.filter((cond) => cond.id !== id),
+      { shouldDirty: true, shouldValidate: true }
+    );
   };
 
   const formattedExpression = conditions.map((cond) => ({
     attribute: cond.attribute?.value || "",
     operator: cond.operator?.value || "",
     value: cond.value || "",
-    logicalOp: cond.logicalOp || ""
+    logicalOp: cond.logicalOp || "",
   }));
 
   return (
     <>
       {title && <h3 className="font-bold">{title}</h3>}
       <div className="p-4 border rounded-md w-full max-w-2xl border-gray-300 relative">
-        
         {conditions.map((condition, index) => (
-          <div key={ uuidv4()} className="flex space-x-2 items-center mb-2 justify-end">
+          <div
+            key={uuidv4()}
+            className="flex space-x-2 items-center mb-2 justify-end"
+          >
             {/* Logical Operator Dropdown (Not shown for first condition) */}
             {index > 0 && (
               <Controller
                 name={`${fieldName}.${index}.logicalOp`}
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} options={logicalOperators}  isSearchable={false} placeholder="AND/OR" />
+                  <Select
+                    {...field}
+                    options={logicalOperators}
+                    isSearchable={false}
+                    placeholder="AND/OR"
+                  />
                 )}
               />
             )}
@@ -102,7 +129,12 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
               name={`${fieldName}.${index}.attribute`}
               control={control}
               render={({ field }) => (
-                <Select {...field} options={attributes} isSearchable={false} placeholder="Select Attribute" />
+                <Select
+                  {...field}
+                  options={attributes}
+                  isSearchable={false}
+                  placeholder="Select Attribute"
+                />
               )}
             />
 
@@ -111,7 +143,12 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
               name={`${fieldName}.${index}.operator`}
               control={control}
               render={({ field }) => (
-                <Select {...field} options={operators} isSearchable={false}  placeholder="Condition" />
+                <Select
+                  {...field}
+                  options={operators}
+                  isSearchable={false}
+                  placeholder="Condition"
+                />
               )}
             />
 
@@ -153,9 +190,15 @@ const ExpressionBuilder: React.FC<ExpressionBuilderProps> = ({ title, control, s
 
         {/* Live Preview of IAM Expression */}
         <div className="mt-4 border border-gray-300 rounded bg-gray-100">
-          <Accordion iconClass='absolute -top-2 right-5 bg-white rounded-full text-gray-400' iconSize={16} title='Expand/Collapse'>
+          <Accordion
+            iconClass="absolute -top-2 right-5 bg-white rounded-full text-gray-400"
+            iconSize={16}
+            title="Expand/Collapse"
+          >
             <div className="py-3 overflow-auto max-h-40">
-              <pre className="text-sm  px-3">{JSON.stringify(formattedExpression, null, 2)}</pre>
+              <pre className="text-sm  px-3">
+                {JSON.stringify(formattedExpression, null, 2)}
+              </pre>
             </div>
           </Accordion>
         </div>

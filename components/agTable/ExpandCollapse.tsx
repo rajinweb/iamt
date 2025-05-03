@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { GridApi } from 'ag-grid-community';
-import { CopyMinus, CopyPlus } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from "react";
+import { GridApi } from "ag-grid-community";
+import { CopyMinus, CopyPlus } from "lucide-react";
 
 interface ExpandCollapseToggleProps {
   gridApi: GridApi | null;
@@ -12,7 +12,7 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
   const [allExpanded, setAllExpanded] = useState(false);
 
   // Check if all master rows are expanded
-  const areAllRowsExpanded = () => {
+  const areAllRowsExpanded = useCallback(() => {
     if (!gridApi) return false;
 
     let hasMasterRows = false;
@@ -28,7 +28,7 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
     });
 
     return hasMasterRows && expanded;
-  };
+  }, [gridApi]);
 
   // Update initial expanded state on mount or gridApi change
   useEffect(() => {
@@ -42,13 +42,13 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
     };
 
     // Listen for manual expand/collapse or data changes
-    gridApi.addEventListener('rowGroupOpened', updateState);
-    gridApi.addEventListener('rowDataUpdated', updateState);
+    gridApi.addEventListener("rowGroupOpened", updateState);
+    gridApi.addEventListener("rowDataUpdated", updateState);
 
     // Clean up listeners
     return () => {
-      gridApi.removeEventListener('rowGroupOpened', updateState);
-      gridApi.removeEventListener('rowDataUpdated', updateState);
+      gridApi.removeEventListener("rowGroupOpened", updateState);
+      gridApi.removeEventListener("rowDataUpdated", updateState);
     };
   }, [areAllRowsExpanded, gridApi]);
 
