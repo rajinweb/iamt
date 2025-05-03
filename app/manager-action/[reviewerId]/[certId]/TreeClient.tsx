@@ -499,6 +499,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         }}
         pagination={true}
         paginationPageSizeSelector={pageSizeSelector}
+        paginateChildRows={true}
         cacheBlockSize={5}
         overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
         overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}

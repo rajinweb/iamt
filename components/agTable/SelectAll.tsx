@@ -16,68 +16,60 @@ const SelectAll: React.FC<SelectAllProps> = ({
   detailGridApis,
   clearDetailGridApis,
 }) => {
-  const [selectedCount, setSelectedCount] = useState(0);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [isIndeterminate, setIsIndeterminate] = useState(false);
-
-  const getVisibleTopLevelNodes = useCallback((): RowNode[] => {
-    const visible: RowNode[] = [];
-    gridApi?.forEachNodeAfterFilter((node) => {
-      if (!node.group && !node.footer && node.level === 0) {
-        visible.push(node as RowNode);
-      }
-    });
-    return visible;
-  }, [gridApi]);
-
+  const [selectedCount, setSelectedCount] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const updateSelectedCount = useCallback(() => {
     if (!gridApi) return;
 
     let totalVisible = 0;
     let totalSelected = 0;
 
-    // Top level
-    const visibleTopRows = getVisibleTopLevelNodes();
-    totalVisible += visibleTopRows.length;
-    totalSelected += gridApi
-      .getSelectedNodes()
-      .filter(
-        (node) => (node as RowNode).level === 0 && visibleTopRows.includes(node as RowNode)
-      ).length;
-
-    // Detail levels
-    detailGridApis.forEach((detailApi) => {
-      if (!detailApi) return;
-
-      const visibleRows: RowNode[] = [];
-      detailApi.forEachNodeAfterFilter((node) => visibleRows.push(node as RowNode));
-      totalVisible += visibleRows.length;
-      totalSelected += detailApi.getSelectedNodes().map((node) => node as RowNode).length;
+    const visibleMasterNodes: RowNode[] = [];
+    gridApi.forEachNodeAfterFilter((node) => {
+      visibleMasterNodes.push(node as RowNode);
     });
 
-    setSelectedCount(totalSelected);
-    setIsAllSelected(totalSelected > 0 && totalSelected === totalVisible);
-    setIsIndeterminate(totalSelected > 0 && totalSelected < totalVisible);
-  }, [gridApi, detailGridApis, getVisibleTopLevelNodes]);
+    totalVisible += visibleMasterNodes.length;
+    totalSelected += visibleMasterNodes.filter((node) =>
+      node.isSelected()
+    ).length;
 
-  const handleToggleSelectAll = () => {
+    detailGridApis.forEach((detailApi) => {
+      const visibleRows: RowNode[] = [];
+      detailApi.forEachNodeAfterFilter((node) =>
+        visibleRows.push(node as RowNode)
+      );
+      totalVisible += visibleRows.length;
+
+      const selectedNodes = detailApi.getSelectedNodes?.();
+      totalSelected += Array.isArray(selectedNodes) ? selectedNodes.length : 0;
+    });
+
+    setVisibleCount(totalVisible);
+    setSelectedCount(totalSelected);
+
+    setIsAllSelected(totalSelected === totalVisible && totalVisible > 0);
+    setIsIndeterminate(totalSelected > 0 && totalSelected < totalVisible);
+  }, [gridApi, detailGridApis]);
+
+  const toggleSelectAll = () => {
     if (!gridApi) return;
 
-    if (isAllSelected || isIndeterminate) {
-      // Deselect all
-      gridApi.deselectAll();
-      detailGridApis.forEach((api) => api.deselectAll());
-    } else {
-      // Select all visible
-      const visibleTopRows = getVisibleTopLevelNodes();
-      visibleTopRows.forEach((node) => node.setSelected(true));
+    const shouldSelect = !isAllSelected;
 
-      detailGridApis.forEach((api) => {
-        api.forEachNodeAfterFilter((node) => {
-          (node as RowNode).setSelected(true);
-        });
+    // Select/Deselect master rows
+    gridApi.forEachNodeAfterFilter((node) => {
+      node.setSelected(shouldSelect);
+    });
+
+    // Select/Deselect detail rows
+    detailGridApis.forEach((detailApi) => {
+      detailApi.forEachNodeAfterFilter((node) => {
+        node.setSelected(shouldSelect);
       });
-    }
+    });
 
     updateSelectedCount();
   };
@@ -85,18 +77,24 @@ const SelectAll: React.FC<SelectAllProps> = ({
   useEffect(() => {
     if (!gridApi) return;
 
-    gridApi.addEventListener("selectionChanged", updateSelectedCount);
+    updateSelectedCount();
+
+    const listener = () => updateSelectedCount();
+
+    gridApi.addEventListener("selectionChanged", listener);
+    gridApi.addEventListener("paginationChanged", listener);
+    gridApi.addEventListener("rowDataUpdated", listener);
+    gridApi.addEventListener("rowGroupOpened", listener);
+
+    console.log("SelectAll useEffect", clearDetailGridApis);
+
     return () => {
-      gridApi.removeEventListener("selectionChanged", updateSelectedCount);
+      gridApi.removeEventListener("selectionChanged", listener);
+      gridApi.removeEventListener("paginationChanged", listener);
+      gridApi.removeEventListener("rowDataUpdated", listener);
+      gridApi.removeEventListener("rowGroupOpened", listener);
     };
   }, [gridApi, updateSelectedCount]);
-
-  useEffect(() => {
-    // Watch detail grid selections
-    detailGridApis.forEach((api) => {
-      api.addEventListener("selectionChanged", updateSelectedCount);
-    });
-  }, [detailGridApis, updateSelectedCount]);
 
   return (
     <div className="flex items-center text-sm">
@@ -110,19 +108,21 @@ const SelectAll: React.FC<SelectAllProps> = ({
             ref={(el) => {
               if (el) el.indeterminate = isIndeterminate;
             }}
-            onChange={handleToggleSelectAll}
+            onChange={toggleSelectAll}
             className="mr-2 w-4 h-4 cursor-pointer"
           />
           Select All
         </label>
 
-        <div className="px-4 text-blue-600">{selectedCount} Selected</div>
+        <div className="px-4 text-blue-600">
+          {selectedCount} / {visibleCount} Selected
+        </div>
       </div>
 
       {selectedCount > 0 && gridApi && (
         <ActionButtons
           api={gridApi}
-          selectedRows={[]} // optionally pass selected rows here
+          selectedRows={gridApi.getSelectedRows()}
           viewChangeEnable
         />
       )}
