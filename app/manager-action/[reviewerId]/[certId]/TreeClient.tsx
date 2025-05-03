@@ -27,6 +27,9 @@ interface TreeClientProps {
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const gridApiRef = useRef<GridApi | null>(null);
   const [rowData, setRowData] = useState<UserRowData[]>([]);
+  const [detailGridApis, setDetailGridApis] = useState<Map<string, GridApi>>(
+    new Map()
+  );
 
   const [pageSize, setPageSize] = useState(3);
   const [pageNumber, setPageNumber] = useState(2);
@@ -252,8 +255,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         className: "account-table-detail",
         pagination: true,
         onFirstDataRendered: (params: { api: GridApi }) => {
+          const key = `detail-${Date.now()}-${Math.random()}`;
+          setDetailGridApis((prev) => {
+            const updated = new Map(prev);
+            updated.set(key, params.api);
+            return updated;
+          });
           params.api.setGridOption("paginationPageSize", defaultPageSize);
         },
+
         paginationPageSizeSelector: pageSizeSelector,
         masterDetail: true,
         isRowMaster: () => true,
@@ -365,12 +375,20 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             },
             rowSelection: {
               mode: "multiRow",
+              masterSelects: "detail",
             },
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
             onFirstDataRendered: (params: { api: GridApi }) => {
+              const key = `detail-${Date.now()}-${Math.random()}`;
+              setDetailGridApis((prev) => {
+                const updated = new Map(prev);
+                updated.set(key, params.api);
+                return updated;
+              });
               params.api.setGridOption("paginationPageSize", defaultPageSize);
             },
+
             paginationPageSizeSelector: pageSizeSelector,
           },
           getDetailRowData: async (params: any) => {
@@ -437,7 +455,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         <div style={{ color: "red", padding: 10 }}>{String(error)}</div>
       )}
       <div className="flex items-center justify-between mb-4 relative z-10">
-        <SelectAll gridApi={gridApiRef.current || null} />
+        <SelectAll
+          gridApi={gridApiRef.current || null}
+          detailGridApis={detailGridApis}
+          clearDetailGridApis={() => setDetailGridApis(new Map())}
+        />
+
         <div className="flex items-center">
           <CustomPagination gridApi={gridApiRef.current || null} />
           <ColumnSettings

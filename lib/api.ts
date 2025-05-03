@@ -16,7 +16,10 @@ export async function fetchApi<T>(
   if (pageNumber !== undefined) {
     url.searchParams.append("pageNumber", pageNumber.toString());
   }
-  debugger;
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+  };
   const res = await fetch(url.toString());
 
   if (!res.ok) {

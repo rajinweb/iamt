@@ -6,12 +6,15 @@ import { CopyMinus, CopyPlus } from "lucide-react";
 
 interface ExpandCollapseToggleProps {
   gridApi: GridApi | null;
+  clearDetailGridApis?: () => void;
 }
 
-const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
+const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({
+  gridApi,
+  clearDetailGridApis,
+}) => {
   const [allExpanded, setAllExpanded] = useState(false);
 
-  // Check if all master rows are expanded
   const areAllRowsExpanded = useCallback(() => {
     if (!gridApi) return false;
 
@@ -30,7 +33,6 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
     return hasMasterRows && expanded;
   }, [gridApi]);
 
-  // Update initial expanded state on mount or gridApi change
   useEffect(() => {
     if (!gridApi) return;
 
@@ -41,18 +43,15 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
       setAllExpanded(areAllRowsExpanded());
     };
 
-    // Listen for manual expand/collapse or data changes
     gridApi.addEventListener("rowGroupOpened", updateState);
     gridApi.addEventListener("rowDataUpdated", updateState);
 
-    // Clean up listeners
     return () => {
       gridApi.removeEventListener("rowGroupOpened", updateState);
       gridApi.removeEventListener("rowDataUpdated", updateState);
     };
   }, [areAllRowsExpanded, gridApi]);
 
-  // Handle button click
   const toggleExpandCollapse = () => {
     if (!gridApi) return;
 
@@ -65,6 +64,10 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({ gridApi }) => {
     });
 
     setAllExpanded(shouldExpand);
+
+    if (!shouldExpand && clearDetailGridApis) {
+      clearDetailGridApis(); // clear detail grid APIs when collapsing
+    }
   };
 
   return (
