@@ -31,17 +31,18 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     new Map()
   );
 
-  const [pageSize, setPageSize] = useState(3);
-  const [pageNumber, setPageNumber] = useState(2);
+  const pageSizeSelector = [5, 10, 20, 50, 100];
+  const defaultPageSize = pageSizeSelector[0]; // Default page size
+  const [pageNumber, setPageNumber] = useState(1); // Default page number
+  const [totalItems, setTotalItems] = useState(0); // Total items from the server
+  const [totalPages, setTotalPages] = useState(1); // Total pages from the server
 
   const { data: certificationData, error } = useCertificationDetails(
     reviewerId,
     certId,
-    pageSize,
+    defaultPageSize,
     pageNumber
   );
-  const pageSizeSelector = [5, 10, 20, 50, 100];
-  const defaultPageSize = pageSizeSelector[0];
   useEffect(() => {
     if (!certificationData) return;
     const mapped = certificationData.items.map((task: any) => {
@@ -65,7 +66,32 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     });
 
     setRowData(mapped);
+    setTotalItems(certificationData.total_items || 0); // Update total items
+    setTotalPages(certificationData.total_pages || 1); // Update total pages
   }, [certificationData, certId]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage !== pageNumber) {
+      setPageNumber(newPage);
+    }
+  };
+
+  const handleDetailPageChange = async (
+    taskId: string,
+    newPageNumber: number,
+    detailApi: GridApi
+  ) => {
+    const data = await fetchAccessDetails(
+      reviewerId,
+      certId,
+      taskId,
+      undefined,
+      defaultPageSize,
+      newPageNumber
+    );
+
+    detailApi.applyTransaction({ update: data }); // Update the detail grid data with new data
+  };
 
   // Top level
   const columnDefs = useMemo<ColDef[]>(
@@ -254,6 +280,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         },
         className: "account-table-detail",
         pagination: true,
+        /*
         onFirstDataRendered: (params: { api: GridApi }) => {
           const key = `detail-${Date.now()}-${Math.random()}`;
           setDetailGridApis((prev) => {
@@ -262,8 +289,20 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             return updated;
           });
           params.api.setGridOption("paginationPageSize", defaultPageSize);
-        },
+        },*/
+        onPaginationChanged: (params: { api: GridApi }) => {
+          const detailApi = params.api;
+          const taskId = detailApi.getRowNode("0")?.data?.taskId; // Assuming taskId is available in the first row
+          const newPageNumber = detailApi.paginationGetCurrentPage() + 1;
 
+          if (taskId) {
+            handleDetailPageChange(taskId, newPageNumber, detailApi);
+          }
+        },
+        paginationPageSize: defaultPageSize,
+        getRowId: (params: { data: any }) => {
+          `${params.data.taskId}-${params.data.lineItemId}`; // Unique row ID
+        },
         paginationPageSizeSelector: pageSizeSelector,
         masterDetail: true,
         isRowMaster: () => true,
@@ -379,6 +418,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             },
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
+            /*
             onFirstDataRendered: (params: { api: GridApi }) => {
               const key = `detail-${Date.now()}-${Math.random()}`;
               setDetailGridApis((prev) => {
@@ -388,7 +428,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
               });
               params.api.setGridOption("paginationPageSize", defaultPageSize);
             },
-
+            */
             paginationPageSizeSelector: pageSizeSelector,
           },
           getDetailRowData: async (params: any) => {
@@ -446,7 +486,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       },
       detailRowAutoHeight: true,
     }),
-    [certId, reviewerId]
+    [certId, reviewerId, defaultPageSize]
   );
 
   return (
@@ -462,7 +502,13 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         />
 
         <div className="flex items-center">
-          <CustomPagination gridApi={gridApiRef.current || null} />
+          <CustomPagination
+            totalItems={totalItems}
+            currentPage={pageNumber}
+            totalPages={totalPages}
+            pageSize={defaultPageSize}
+            onPageChange={handlePageChange}
+          />
           <ColumnSettings
             columnDefs={columnDefs}
             gridRef={gridApiRef}
@@ -497,7 +543,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           params.api.setGridOption("paginationPageSize", defaultPageSize); // top level pagination
           params.api.sizeColumnsToFit();
         }}
-        pagination={true}
+        pagination={false} // Disable client-side pagination
         paginationPageSizeSelector={pageSizeSelector}
         paginateChildRows={true}
         cacheBlockSize={5}

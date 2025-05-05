@@ -1,49 +1,41 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { GridApi } from 'ag-grid-enterprise';
+"use client";
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const CustomPagination = ({ gridApi }: { gridApi: GridApi | null }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [rowRange, setRowRange] = useState("0 - 0 of 0");
+export interface CustomPaginationProps {
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  onPageChange: (newPage: number) => void;
+}
 
-  useEffect(() => {
-    if (!gridApi) return;
-
-    const updatePagination = () => {
-      const total = gridApi.paginationGetTotalPages();
-      const current = gridApi.paginationGetCurrentPage() + 1;
-      setTotalPages(total);
-      setCurrentPage(current);
-
-      // ✅ Update displayed row range (e.g., "1 - 10 of 52")
-      const pageSize = gridApi.paginationGetPageSize();
-      const startRow = Math.min(current * pageSize - (pageSize - 1), gridApi.getDisplayedRowCount());
-      const endRow = Math.min(current * pageSize, gridApi.getDisplayedRowCount());
-      setRowRange(`${startRow} - ${endRow} of ${gridApi.getDisplayedRowCount()}`);
-    };
-
-    // ✅ Listen for pagination changes
-    gridApi.addEventListener("paginationChanged", updatePagination);
-    updatePagination(); // ✅ Initialize on mount
-
-    return () => {
-      gridApi.removeEventListener("paginationChanged", updatePagination);
-    };
-  }, [gridApi]);
-
+const CustomPagination: React.FC<CustomPaginationProps> = ({
+  totalItems,
+  currentPage,
+  totalPages,
+  pageSize,
+  onPageChange,
+}) => {
   const goToPage = (page: number) => {
-    if (!gridApi || page < 1 || page > totalPages) return;
-    gridApi.paginationGoToPage(page - 1);
+    if (page < 1 || page > totalPages) return;
+    onPageChange(page);
   };
+
+  const startRow = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endRow =
+    totalItems === 0 ? 0 : Math.min(currentPage * pageSize, totalItems);
 
   return (
     <div className="flex justify-between items-center">
-      <span className="text-gray-700">{rowRange}</span>
+      <span className="text-gray-700">
+        {startRow} - {endRow} of {totalItems}
+      </span>
       <div className="flex items-center space-x-2">
         <button
-          className={`p-2 ${currentPage === 1 ? "text-gray-400" : "text-blue-600"}`}
+          className={`p-2 cursor-pointer ${
+            currentPage === 1 ? "text-gray-400" : "text-blue-600"
+          }`}
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -53,7 +45,9 @@ const CustomPagination = ({ gridApi }: { gridApi: GridApi | null }) => {
           {currentPage} / {totalPages}
         </span>
         <button
-          className={`p-2 ${currentPage === totalPages ? "text-gray-400" : "text-blue-600"}`}
+          className={`p-2 cursor-pointer ${
+            currentPage === totalPages ? "text-gray-400" : "text-blue-600"
+          }`}
           onClick={() => goToPage(currentPage + 1)}
           disabled={currentPage === totalPages}
         >

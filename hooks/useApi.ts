@@ -60,7 +60,13 @@ export const useCertificationDetails = (
   enabled = true
 ): UseQueryResult<any> => {
   return useQuery({
-    queryKey: ["certificationDetails", reviewerId, certId],
+    queryKey: [
+      "certificationDetails",
+      reviewerId,
+      certId,
+      pageSize,
+      pageNumber,
+    ], // Include pageSize and pageNumber
     queryFn: async () =>
       await getCertificationDetails<any>(
         reviewerId,
