@@ -310,7 +310,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                   return <span style={{ color: riskColor }}>{userName}</span>;
                 },
               },
-              { field: "Justification", headerName: "Justification" },
+
               { field: "entitlementDescription", headerName: "Description" },
               { field: "accessedWithinAMonth", headerName: "Access History" },
               {
