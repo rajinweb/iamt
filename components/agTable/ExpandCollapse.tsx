@@ -14,23 +14,25 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({
   clearDetailGridApis,
 }) => {
   const [allExpanded, setAllExpanded] = useState(false);
+  const [hasMasterRows, setHasMasterRows] = useState(false);
 
   const areAllRowsExpanded = useCallback(() => {
     if (!gridApi) return false;
 
-    let hasMasterRows = false;
+    let hasMaster = false;
     let expanded = true;
 
     gridApi.forEachNode((node) => {
       if (node.master) {
-        hasMasterRows = true;
+        hasMaster = true;
         if (!node.expanded) {
           expanded = false;
         }
       }
     });
 
-    return hasMasterRows && expanded;
+    setHasMasterRows(hasMaster);
+    return hasMaster && expanded;
   }, [gridApi]);
 
   useEffect(() => {
@@ -69,6 +71,8 @@ const ExpandCollapse: React.FC<ExpandCollapseToggleProps> = ({
       clearDetailGridApis(); // clear detail grid APIs when collapsing
     }
   };
+
+  if (!hasMasterRows) return null;
 
   return (
     <button
