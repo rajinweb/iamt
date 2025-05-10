@@ -277,16 +277,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         },
         className: "account-table-detail",
         pagination: true,
-        /*
-        onFirstDataRendered: (params: { api: GridApi }) => {
-          const key = `detail-${Date.now()}-${Math.random()}`;
-          setDetailGridApis((prev) => {
-            const updated = new Map(prev);
-            updated.set(key, params.api);
-            return updated;
-          });
-          params.api.setGridOption("paginationPageSize", defaultPageSize);
-        },*/
+        paginationPageSize: defaultPageSize,
+        paginationPageSizeSelector: pageSizeSelector,
         onPaginationChanged: (params: { api: GridApi }) => {
           const detailApi = params.api;
           const taskId = detailApi.getRowNode("0")?.data?.taskId; // Assuming taskId is available in the first row
@@ -296,11 +288,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             handleDetailPageChange(taskId, newPageNumber, detailApi);
           }
         },
-        paginationPageSize: defaultPageSize,
         getRowId: (params: { data: any }) => {
           `${params.data.taskId}-${params.data.lineItemId}`; // Unique row ID
         },
-        paginationPageSizeSelector: pageSizeSelector,
         masterDetail: true,
         isRowMaster: () => true,
 
@@ -418,17 +408,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             },
             className: "entitlement-table-detail", // entitlement-details-grid css
             pagination: true,
-            /*
-            onFirstDataRendered: (params: { api: GridApi }) => {
-              const key = `detail-${Date.now()}-${Math.random()}`;
-              setDetailGridApis((prev) => {
-                const updated = new Map(prev);
-                updated.set(key, params.api);
-                return updated;
-              });
-              params.api.setGridOption("paginationPageSize", defaultPageSize);
-            },
-            */
+            paginationPageSize: defaultPageSize,
             paginationPageSizeSelector: pageSizeSelector,
           },
           getDetailRowData: async (params: any) => {
