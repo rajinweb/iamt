@@ -117,34 +117,3 @@ export const fetchAccessDetails = async (
 
   return flattened;
 };
-
-/*
-export const useAccessDetails = (
-  reviewerId: string,
-  certId: string,
-  taskId?: string,
-  all?: string,
-  enabled = true
-): UseQueryResult<any[]> => {
-  return useQuery({
-    queryKey: ["accessDetails", reviewerId, certId, taskId, all],
-    queryFn: () => fetchAccessDetails(reviewerId, certId, taskId, all),
-    enabled,
-    staleTime: 1000 * 60 * 5,
-  });
-};
-
-export const useLineItemDetails = (
-  reviewerId: string,
-  certId: string,
-  taskId: string,
-  lineItemId: string
-) => {
-  return useQuery<LineItemDetail[]>({
-    queryKey: ["lineItemDetails", reviewerId, certId, taskId, lineItemId],
-    queryFn: () => getLineItemDetails(reviewerId, certId, taskId, lineItemId),
-    enabled: !!reviewerId && !!certId && !!taskId && !!lineItemId,
-    staleTime: 1000 * 60 * 5,
-  });
-};
-*/
