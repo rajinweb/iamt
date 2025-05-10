@@ -173,6 +173,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             cellRendererParams: {
               suppressCount: true,
               innerRenderer: (params: ICellRendererParams) => {
+                const lines = params.value?.split?.("\n") ?? ["", ""];
                 return (
                   <div className="flex items-center gap-4">
                     <Image
@@ -183,9 +184,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                       className="w-8 h-8 rounded-full"
                     />
                     <small className="leading-4">
-                      {params.value.split("\n")[0]}
+                      {lines[0]}
                       <br />
-                      {params.value.split("\n")[1]}
+                      {lines[1]}
                     </small>
                   </div>
                 );
@@ -256,9 +257,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             // pinned:"right",
             headerComponent: () => null,
             cellRenderer: (params: ICellRendererParams) => {
-              if (!gridApi) return null;
-
-              return <ActionButtons api={gridApi} selectedRows={params.data} />;
+              return (
+                <ActionButtons api={params.api} selectedRows={params.data} />
+              );
             },
             suppressMenu: true,
             sortable: false,
@@ -394,7 +395,6 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 width: 290,
                 headerComponent: () => null,
                 cellRenderer: (params: ICellRendererParams) => {
-                  if (!gridApi) return null;
                   return (
                     <ActionButtons
                       api={params.api}

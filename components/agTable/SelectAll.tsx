@@ -86,7 +86,6 @@ const SelectAll: React.FC<SelectAllProps> = ({
     gridApi.addEventListener("rowDataUpdated", listener);
     gridApi.addEventListener("rowGroupOpened", listener);
 
-    console.log("SelectAll useEffect", clearDetailGridApis);
 
     return () => {
       gridApi.removeEventListener("selectionChanged", listener);

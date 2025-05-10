@@ -36,33 +36,33 @@ export async function fetchApi<T>(
   return res.json();
 }
 
-export async function getCertifications(
+export async function getCertifications<T>(
   reviewerId: string,
   pageSize?: number,
   pageNumber?: number
-): Promise<PaginatedResponse<any>> {
+): Promise<PaginatedResponse<T>> {
   const endpoint = `${BASE_URL}/getCertificationList/${reviewerId}`;
   return fetchApi(endpoint, pageSize, pageNumber);
 }
 
-export async function getCertificationDetails(
+export async function getCertificationDetails<T>(
   reviewerId: string,
   certId: string,
   pageSize?: number,
   pageNumber?: number
-): Promise<PaginatedResponse<any>> {
+): Promise<PaginatedResponse<T>> {
   const endpoint = `${BASE_URL}/getCertificationDetails/${reviewerId}/${certId}`;
   return fetchApi(endpoint, pageSize, pageNumber);
 }
 
-export async function getAccessDetails(
+export async function getAccessDetails<T>(
   reviewerId: string,
   certId: string,
   taskId?: string,
   all?: string,
   pageSize?: number,
   pageNumber?: number
-): Promise<PaginatedResponse<any>> {
+): Promise<PaginatedResponse<T>> {
   const finalPart = all ? "All" : taskId ?? "";
   const endpoint = `${BASE_URL}/getAccessDetails/${reviewerId}/${certId}/${finalPart}`;
   return fetchApi(endpoint, pageSize, pageNumber);

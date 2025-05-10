@@ -20,7 +20,7 @@ export const useCertifications = (
     queryFn: async () => {
       const res = await getCertifications(reviewerId, pageSize, pageNumber);
       setTotalPages?.(res.total_pages ?? 1);
-      setTotalItems?.(res.total_items ?? res.items.length ?? 0);
+      setTotalItems?.(res.total_items ?? res.items?.length ?? 0);
       return { ...res };
     },
     enabled,
@@ -53,7 +53,7 @@ export const useCertificationDetails = (
         pageNumber
       );
       setTotalPages?.(res.total_pages ?? 1);
-      setTotalItems?.(res.total_items ?? res.items.length ?? 0);
+      setTotalItems?.(res.total_items ?? res.items?.length ?? 0);
       return { ...res };
     },
     enabled,
@@ -71,7 +71,11 @@ export const fetchAccessDetails = async (
   setTotalPages?: (totalPages: number) => void,
   setTotalItems?: (totalItems: number) => void
 ) => {
-  const res = await getAccessDetails(
+  const res: {
+    items?: { accessDetails?: any[] }[];
+    total_pages?: number;
+    total_items?: number;
+  } = await getAccessDetails(
     reviewerId,
     certId,
     taskId,
@@ -81,7 +85,7 @@ export const fetchAccessDetails = async (
   );
 
   setTotalPages?.(res.total_pages ?? 1);
-  setTotalItems?.(res.total_items ?? res.items.length ?? 0);
+  setTotalItems?.(res.total_items ?? res.items?.length ?? 0);
 
   const items = res.items?.[0]?.accessDetails ?? [];
   const flattened: any[] = [];
