@@ -288,8 +288,18 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             handleDetailPageChange(taskId, newPageNumber, detailApi);
           }
         },
-        getRowId: (params: { data: any }) => {
-          `${params.data.taskId}-${params.data.lineItemId}`; // Unique row ID
+        getRowId: (params: GetRowIdParams) => {
+          const taskId = params.data?.taskId;
+          const lineItemId = params.data?.lineItemId;
+          const uniqueId = params.data?.uniqueId; // Add another unique field if available
+
+          if (!taskId || !lineItemId || !uniqueId) {
+            // console.warn("Missing taskId, lineItemId, or uniqueId:", params.data);
+            return `fallback-${Math.random()}`;
+          }
+
+          // Combine taskId, lineItemId, and uniqueId to ensure uniqueness
+          return `${taskId}-${lineItemId}-${uniqueId}`;
         },
         masterDetail: true,
         isRowMaster: () => true,
