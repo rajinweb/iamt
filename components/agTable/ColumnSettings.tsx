@@ -9,17 +9,17 @@ import {
 } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import { ColDef, GridApi } from "ag-grid-enterprise";
-// Handle Drag End for Sorting  
+// Handle Drag End for Sorting
 import { DragEndEvent } from "@dnd-kit/core";
 interface ColumnSettingsProps {
   columnDefs: ColDef[];
   visibleColumns: () => string[];
-  gridRef: RefObject<GridApi | null>;
+  gridApi: GridApi | null;
 }
 
 const ColumnSettings = ({
   columnDefs,
-  gridRef,
+  gridApi,
   visibleColumns,
 }: ColumnSettingsProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,8 +50,8 @@ const ColumnSettings = ({
   };
 
   const applyChanges = (newOrder: string[], newVisibility: string[]) => {
-    if (gridRef.current) {
-      const api = gridRef.current;
+    if (gridApi) {
+      const api = gridApi as GridApi;
 
       // Move Columns
       newOrder.forEach((field, index) => {

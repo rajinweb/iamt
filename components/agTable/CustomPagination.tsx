@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { GridApi } from "ag-grid-enterprise";
 
 export interface CustomPaginationProps {
   totalItems: number;
@@ -8,6 +9,7 @@ export interface CustomPaginationProps {
   totalPages: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
+  gridApi?: GridApi | null;
 }
 
 const CustomPagination: React.FC<CustomPaginationProps> = ({

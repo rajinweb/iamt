@@ -25,7 +25,7 @@ interface TreeClientProps {
 }
 
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
-  const gridApiRef = useRef<GridApi | null>(null);
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const [rowData, setRowData] = useState<UserRowData[]>([]);
   const [detailGridApis, setDetailGridApis] = useState<Map<string, GridApi>>(
     new Map()
@@ -37,15 +37,15 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
   const [totalItems, setTotalItems] = useState(0); // Total items from the server
   const [totalPages, setTotalPages] = useState(1); // Total pages from the server
 
-  const { data: certificationData, error } = useCertificationDetails(
+  const { data: certificationDetailsData, error } = useCertificationDetails(
     reviewerId,
     certId,
     defaultPageSize,
     pageNumber
   );
   useEffect(() => {
-    if (!certificationData) return;
-    const mapped = certificationData.items.map((task: any) => {
+    if (!certificationDetailsData) return;
+    const mapped = certificationDetailsData.items.map((task: any) => {
       const userInfo = task.userInfo?.[0] || {};
       const access = task.access?.[0] || {};
       const delta = task.DeltaChanges?.[0] || {};
@@ -66,9 +66,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     });
 
     setRowData(mapped);
-    setTotalItems(certificationData.total_items || 0); // Update total items
-    setTotalPages(certificationData.total_pages || 1); // Update total pages
-  }, [certificationData, certId]);
+    setTotalItems(certificationDetailsData.total_items || 0); // Update total items
+    setTotalPages(certificationDetailsData.total_pages || 1); // Update total pages
+  }, [certificationDetailsData, certId]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage !== pageNumber) {
@@ -141,10 +141,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         // pinned:"right",
         headerComponent: () => null,
         cellRenderer: (params: ICellRendererParams) => {
-          const api = gridApiRef.current;
-          if (!api) return null;
-
-          return <ActionButtons api={api} selectedRows={params.data} />;
+          return <ActionButtons api={params.api} selectedRows={params.data} />;
         },
         suppressMenu: true,
         sortable: false,
@@ -259,10 +256,9 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             // pinned:"right",
             headerComponent: () => null,
             cellRenderer: (params: ICellRendererParams) => {
-              const api = gridApiRef.current;
-              if (!api) return null;
+              if (!gridApi) return null;
 
-              return <ActionButtons api={api} selectedRows={params.data} />;
+              return <ActionButtons api={gridApi} selectedRows={params.data} />;
             },
             suppressMenu: true,
             sortable: false,
@@ -398,9 +394,13 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 width: 290,
                 headerComponent: () => null,
                 cellRenderer: (params: ICellRendererParams) => {
-                  const api = gridApiRef.current;
-                  if (!api) return null;
-                  return <ActionButtons api={api} selectedRows={params.data} />;
+                  if (!gridApi) return null;
+                  return (
+                    <ActionButtons
+                      api={params.api}
+                      selectedRows={params.data}
+                    />
+                  );
                 },
                 suppressMenu: true,
                 sortable: false,
@@ -496,7 +496,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       )}
       <div className="flex items-center justify-between mb-4 relative z-10">
         <SelectAll
-          gridApi={gridApiRef.current || null}
+          gridApi={gridApi}
           detailGridApis={detailGridApis}
           clearDetailGridApis={() => setDetailGridApis(new Map())}
         />
@@ -511,7 +511,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           />
           <ColumnSettings
             columnDefs={columnDefs}
-            gridRef={gridApiRef}
+            gridApi={gridApi}
             visibleColumns={() => {
               const visibleCols: string[] = [];
               columnDefs.forEach((colDef) => {
@@ -537,19 +537,19 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           mode: "multiRow",
           masterSelects: "detail",
         }}
-        detailCellRendererParams={detailCellRendererParams}
         onGridReady={(params) => {
-          gridApiRef.current = params.api;
-          params.api.setGridOption("paginationPageSize", defaultPageSize); // top level pagination
+          setGridApi(params.api);
           params.api.sizeColumnsToFit();
         }}
         pagination={false} // Disable client-side pagination
+        paginationPageSize={defaultPageSize}
         paginationPageSizeSelector={pageSizeSelector}
+        cacheBlockSize={defaultPageSize}
         paginateChildRows={true}
-        cacheBlockSize={5}
         overlayLoadingTemplate={`<span class="ag-overlay-loading-center">⏳ Loading certification data...</span>`}
         overlayNoRowsTemplate={`<span class="ag-overlay-loading-center">No data to display.</span>`}
         className="ag-theme-quartz ag-main"
+        detailCellRendererParams={detailCellRendererParams}
       />
     </>
   );
