@@ -93,7 +93,7 @@ const ColumnSettings = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         title="Column Settings"
-        className={`cursor-pointer rounded-sm hover:opacity-80 ${
+        className={`w-9 h-9 flex items-center s justify-center cursor-pointer rounded-sm hover:opacity-80 ${
           isOpen ? "bg-[#6D6E73]/20" : ""
         }`}
       >

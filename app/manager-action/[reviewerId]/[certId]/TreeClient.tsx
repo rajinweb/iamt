@@ -13,6 +13,8 @@ import {
 import SelectAll from "@/components/agTable/SelectAll";
 import CustomPagination from "@/components/agTable/CustomPagination";
 import ColumnSettings from "@/components/agTable/ColumnSettings";
+import Filters from "@/components/agTable/Filters";
+import Exports from "@/components/agTable/Exports";
 import ActionButtons from "@/components/agTable/ActionButtons";
 import { useCertificationDetails, fetchAccessDetails } from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
@@ -25,7 +27,8 @@ interface TreeClientProps {
 }
 
 const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
-  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+  // const [gridApi, setGridApi] = useState<GridApi | null>(null);
+  const gridApiRef = useRef<GridApi | null>(null);
   const [rowData, setRowData] = useState<UserRowData[]>([]);
   const [detailGridApis, setDetailGridApis] = useState<Map<string, GridApi>>(
     new Map()
@@ -486,7 +489,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       )}
       <div className="flex items-center justify-between mb-4 relative z-10">
         <SelectAll
-          gridApi={gridApi}
+          gridApi={gridApiRef.current}
           detailGridApis={detailGridApis}
           clearDetailGridApis={() => setDetailGridApis(new Map())}
         />
@@ -499,9 +502,12 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             pageSize={defaultPageSize}
             onPageChange={handlePageChange}
           />
+
+          <Filters gridApi={gridApiRef} />
+          {gridApiRef.current && <Exports gridApi={gridApiRef.current} />}
           <ColumnSettings
             columnDefs={columnDefs}
-            gridApi={gridApi}
+            gridApi={gridApiRef.current}
             visibleColumns={() => {
               const visibleCols: string[] = [];
               columnDefs.forEach((colDef) => {
@@ -528,7 +534,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           masterSelects: "detail",
         }}
         onGridReady={(params) => {
-          setGridApi(params.api);
+          gridApiRef.current = params.api;
           params.api.sizeColumnsToFit();
         }}
         pagination={false} // Disable client-side pagination
