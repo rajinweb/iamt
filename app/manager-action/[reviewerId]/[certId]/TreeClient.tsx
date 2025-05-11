@@ -20,6 +20,7 @@ import { useCertificationDetails, fetchAccessDetails } from "@/hooks/useApi";
 import { getLineItemDetails } from "@/lib/api";
 import { EntitlementInfo } from "@/types/lineItem";
 import { UserRowData } from "@/types/certification";
+import { MoveUp, User } from "lucide-react";
 
 interface TreeClientProps {
   reviewerId: string;
@@ -173,19 +174,18 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
             headerName: "Account",
             width: 130,
             cellRenderer: "agGroupCellRenderer",
+            //cellStyle: { color: "green", fontWeight: "bold" },
+            headerClass: "!px-0",
+            cellClass: "!px-0 [&_span]:!px-0",
             cellRendererParams: {
               suppressCount: true,
               innerRenderer: (params: ICellRendererParams) => {
                 const lines = params.value?.split?.("\n") ?? ["", ""];
                 return (
                   <div className="flex items-center gap-4">
-                    <Image
-                      src="https://avatar.iran.liara.run/public/9"
-                      alt="User Avatar"
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full"
-                    />
+                    <span>
+                      <MoveUp size={18} />
+                    </span>
                     <small className="leading-4">
                       {lines[0]}
                       <br />
@@ -316,19 +316,17 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 field: "entitlementName",
                 headerName: "Entitlement",
                 cellRenderer: "agGroupCellRenderer",
+                headerClass: "!px-0",
+                cellClass: "!px-0 [&_span]:!ml-0",
                 cellRendererParams: {
                   suppressCount: true,
                   innerRenderer: (params: ICellRendererParams) => {
                     return (
                       <div className="flex items-center gap-4">
-                        <Image
-                          src="https://avatar.iran.liara.run/public/9"
-                          alt="User Avatar"
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        {params.value}
+                        <span>
+                          <User size={18} />
+                        </span>
+                        <small className="leading-4">{params.value}</small>
                       </div>
                     );
                   },
@@ -504,7 +502,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           />
 
           <Filters gridApi={gridApiRef} />
-          {gridApiRef.current && <Exports gridApi={gridApiRef.current} />}
+          <Exports gridApi={gridApiRef.current} />
           <ColumnSettings
             columnDefs={columnDefs}
             gridApi={gridApiRef.current}
