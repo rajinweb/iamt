@@ -114,6 +114,6 @@ export const fetchAccessDetails = async (
       });
     });
   });
-
+  
   return flattened;
 };
