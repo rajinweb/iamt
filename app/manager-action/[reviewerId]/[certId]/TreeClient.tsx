@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "@/lib/ag-grid-setup";
 import Image from "next/image";
+// import { createPortal } from "react-dom";
 import {
   ColDef,
   GridApi,
@@ -68,6 +69,8 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
         addedEntitlements: delta.addedEntitlements,
       };
     });
+
+    selectedStatusesRef.current = selectedStatuses;
 
     setRowData(mapped);
     setTotalItems(certificationDetailsData.total_items || 0); // Update total items
@@ -454,6 +457,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
                 };
               });
 
+              
               params.successCallback(mapped);
             } catch (err) {
               console.error("Failed to load entitlements", err);
@@ -466,10 +470,19 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
       getDetailRowData: async (params: any) => {
         const taskId = params.data.taskId;
         if (!taskId) return;
-        console.log("1st level");
+
         try {
           const data = await fetchAccessDetails(reviewerId, certId, taskId);
-          params.successCallback(data ?? []);
+
+          const mappedStatuses = selectedStatusesRef.current.map(
+            (s) => statusMap[s]
+          );
+
+          const filteredData = (data ?? []).filter((item) =>
+            mappedStatuses.length ? mappedStatuses.includes(item.action) : true
+          );
+
+          params.successCallback(filteredData ?? []);
         } catch (err) {
           console.error("Error loading accessDetails", err);
           params.successCallback([]);
@@ -479,6 +492,35 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
     }),
     [certId, reviewerId, defaultPageSize]
   );
+
+  const handleFilterClick = (status: string) => {
+    setSelectedStatuses((prev) => {
+      const newStatuses = prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status];
+
+      return newStatuses;
+    });
+  };
+
+  const FilterIconWithBadge = () => {
+    const hasMultiple = selectedStatuses.length > 0;
+
+    return (
+      <div className="relative">
+        <FilterIcon
+          className={`w-6 h-6 mt-1 transition-colors ${
+            hasMultiple ? "fill-current black" : "text-gray-600"
+          }`}
+        />
+        {selectedStatuses.length > 0 && (
+          <span className="absolute -top-1 -left-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+            {selectedStatuses.length}
+          </span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -518,6 +560,7 @@ const TreeClient: React.FC<TreeClientProps> = ({ reviewerId, certId }) => {
           />
         </div>
       </div>
+
       <AgGridReact
         rowData={rowData}
         getRowId={(params: GetRowIdParams) => params.data.id}
